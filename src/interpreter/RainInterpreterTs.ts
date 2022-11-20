@@ -102,7 +102,6 @@ export class RainInterpreterTs {
     private async eval(data?: any, entrypoint?: number, overrideFns?: overrideFns): Promise<void> {
         const _entrypoint = entrypoint && entrypoint >= 0 ? entrypoint : 0
         for (let i = 0; i < this.state.sources[_entrypoint].length; i += 4) {
-            console.log(this.state.stack)
             const _op = (this.state.sources[_entrypoint][i] << 8) +
                 this.state.sources[_entrypoint][i + 1]
 
