@@ -5,7 +5,7 @@ import { isBigNumberish } from "../../../utils";
 /**
  * @public
  */
-export async function OpStorage(
+export async function OpSet(
     this: RainInterpreterTs,
     _inputs: BigNumber[],
     _operand: number,

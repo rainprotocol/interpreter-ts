@@ -40,7 +40,8 @@ export type IOStructOutput = [string, BigNumber] & {
 export type OrderStruct = {
   owner: PromiseOrValue<string>;
   interpreter: PromiseOrValue<string>;
-  expression: PromiseOrValue<string>;
+  dispatch: PromiseOrValue<BigNumberish>;
+  handleIODispatch: PromiseOrValue<BigNumberish>;
   validInputs: IOStruct[];
   validOutputs: IOStruct[];
 };
@@ -48,13 +49,15 @@ export type OrderStruct = {
 export type OrderStructOutput = [
   string,
   string,
-  string,
+  BigNumber,
+  BigNumber,
   IOStructOutput[],
   IOStructOutput[]
 ] & {
   owner: string;
   interpreter: string;
-  expression: string;
+  dispatch: BigNumber;
+  handleIODispatch: BigNumber;
   validInputs: IOStructOutput[];
   validOutputs: IOStructOutput[];
 };
@@ -204,13 +207,14 @@ export interface OrderBookInterface extends utils.Interface {
   functions: {
     "CALLBACK_SUCCESS()": FunctionFragment;
     "addOrder((address,address,(bytes[],uint256[]),(address,uint256)[],(address,uint256)[]))": FunctionFragment;
-    "clear((address,address,address,(address,uint256)[],(address,uint256)[]),(address,address,address,(address,uint256)[],(address,uint256)[]),(uint256,uint256,uint256,uint256,uint256,uint256))": FunctionFragment;
+    "clear((address,address,uint256,uint256,(address,uint256)[],(address,uint256)[]),(address,address,uint256,uint256,(address,uint256)[],(address,uint256)[]),(uint256,uint256,uint256,uint256,uint256,uint256))": FunctionFragment;
     "deposit((address,uint256,uint256))": FunctionFragment;
     "flashFee(address,uint256)": FunctionFragment;
     "flashLoan(address,address,uint256,bytes)": FunctionFragment;
     "maxFlashLoan(address)": FunctionFragment;
-    "removeOrder((address,address,address,(address,uint256)[],(address,uint256)[]))": FunctionFragment;
-    "takeOrders((address,address,uint256,uint256,uint256,((address,address,address,(address,uint256)[],(address,uint256)[]),uint256,uint256)[]))": FunctionFragment;
+    "multicall(bytes[])": FunctionFragment;
+    "removeOrder((address,address,uint256,uint256,(address,uint256)[],(address,uint256)[]))": FunctionFragment;
+    "takeOrders((address,address,uint256,uint256,uint256,((address,address,uint256,uint256,(address,uint256)[],(address,uint256)[]),uint256,uint256)[]))": FunctionFragment;
     "vaultBalance(address,address,uint256)": FunctionFragment;
     "withdraw((address,uint256,uint256))": FunctionFragment;
   };
@@ -224,6 +228,7 @@ export interface OrderBookInterface extends utils.Interface {
       | "flashFee"
       | "flashLoan"
       | "maxFlashLoan"
+      | "multicall"
       | "removeOrder"
       | "takeOrders"
       | "vaultBalance"
@@ -264,6 +269,10 @@ export interface OrderBookInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: "multicall",
+    values: [PromiseOrValue<BytesLike>[]]
+  ): string;
+  encodeFunctionData(
     functionFragment: "removeOrder",
     values: [OrderStruct]
   ): string;
@@ -297,6 +306,7 @@ export interface OrderBookInterface extends utils.Interface {
     functionFragment: "maxFlashLoan",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "multicall", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "removeOrder",
     data: BytesLike
@@ -313,6 +323,7 @@ export interface OrderBookInterface extends utils.Interface {
     "AfterClear(tuple)": EventFragment;
     "Clear(address,tuple,tuple,tuple)": EventFragment;
     "Deposit(address,tuple)": EventFragment;
+    "Initialized(uint8)": EventFragment;
     "OrderExceedsMaxRatio(address,address,uint256)": EventFragment;
     "OrderNotFound(address,address,uint256)": EventFragment;
     "OrderZeroAmount(address,address,uint256)": EventFragment;
@@ -325,6 +336,7 @@ export interface OrderBookInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "AfterClear"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Clear"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Deposit"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OrderExceedsMaxRatio"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OrderNotFound"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OrderZeroAmount"): EventFragment;
@@ -378,6 +390,13 @@ export type DepositEvent = TypedEvent<
 >;
 
 export type DepositEventFilter = TypedEventFilter<DepositEvent>;
+
+export interface InitializedEventObject {
+  version: number;
+}
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface OrderExceedsMaxRatioEventObject {
   sender: string;
@@ -518,6 +537,11 @@ export interface OrderBook extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    multicall(
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     removeOrder(
       order_: OrderStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -578,6 +602,11 @@ export interface OrderBook extends BaseContract {
     token_: PromiseOrValue<string>,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  multicall(
+    data: PromiseOrValue<BytesLike>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   removeOrder(
     order_: OrderStruct,
@@ -640,6 +669,11 @@ export interface OrderBook extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    multicall(
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
     removeOrder(order_: OrderStruct, overrides?: CallOverrides): Promise<void>;
 
     takeOrders(
@@ -695,6 +729,9 @@ export interface OrderBook extends BaseContract {
 
     "Deposit(address,tuple)"(sender?: null, config?: null): DepositEventFilter;
     Deposit(sender?: null, config?: null): DepositEventFilter;
+
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
 
     "OrderExceedsMaxRatio(address,address,uint256)"(
       sender?: null,
@@ -800,6 +837,11 @@ export interface OrderBook extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    multicall(
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     removeOrder(
       order_: OrderStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -860,6 +902,11 @@ export interface OrderBook extends BaseContract {
     maxFlashLoan(
       token_: PromiseOrValue<string>,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    multicall(
+      data: PromiseOrValue<BytesLike>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     removeOrder(

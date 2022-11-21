@@ -13,23 +13,6 @@ const _abi = [
   {
     inputs: [
       {
-        components: [
-          {
-            internalType: "uint256",
-            name: "pointer",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "length",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct StorageOpcodesRange",
-        name: "storageOpcodesRange",
-        type: "tuple",
-      },
-      {
         internalType: "bytes[]",
         name: "sources",
         type: "bytes[]",
@@ -41,7 +24,7 @@ const _abi = [
       },
       {
         internalType: "uint256[]",
-        name: "finalStacks",
+        name: "minStackOutputs",
         type: "uint256[]",
       },
     ],
@@ -49,12 +32,12 @@ const _abi = [
     outputs: [
       {
         internalType: "uint256",
-        name: "contextScratch_",
+        name: "contextReads",
         type: "uint256",
       },
       {
         internalType: "uint256",
-        name: "maximumStackHeight",
+        name: "stackLength",
         type: "uint256",
       },
     ],

@@ -38,31 +38,29 @@ export type StateConfigStructOutput = [string[], BigNumber[]] & {
 };
 
 export type CombineTierConfigStruct = {
+  expressionDeployer: PromiseOrValue<string>;
+  interpreter: PromiseOrValue<string>;
   combinedTiersLength: PromiseOrValue<BigNumberish>;
-  sourceConfig: StateConfigStruct;
+  stateConfig: StateConfigStruct;
 };
 
 export type CombineTierConfigStructOutput = [
+  string,
+  string,
   BigNumber,
   StateConfigStructOutput
-] & { combinedTiersLength: BigNumber; sourceConfig: StateConfigStructOutput };
-
-export type StorageOpcodesRangeStruct = {
-  pointer: PromiseOrValue<BigNumberish>;
-  length: PromiseOrValue<BigNumberish>;
-};
-
-export type StorageOpcodesRangeStructOutput = [BigNumber, BigNumber] & {
-  pointer: BigNumber;
-  length: BigNumber;
+] & {
+  expressionDeployer: string;
+  interpreter: string;
+  combinedTiersLength: BigNumber;
+  stateConfig: StateConfigStructOutput;
 };
 
 export interface CombineTierInterface extends utils.Interface {
   functions: {
-    "initialize((uint256,(bytes[],uint256[])))": FunctionFragment;
+    "initialize((address,address,uint256,(bytes[],uint256[])))": FunctionFragment;
     "report(address,uint256[])": FunctionFragment;
     "reportTimeForTier(address,uint256,uint256[])": FunctionFragment;
-    "storageOpcodesRange()": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
   };
 
@@ -71,7 +69,6 @@ export interface CombineTierInterface extends utils.Interface {
       | "initialize"
       | "report"
       | "reportTimeForTier"
-      | "storageOpcodesRange"
       | "supportsInterface"
   ): FunctionFragment;
 
@@ -92,10 +89,6 @@ export interface CombineTierInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "storageOpcodesRange",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [PromiseOrValue<BytesLike>]
   ): string;
@@ -107,10 +100,6 @@ export interface CombineTierInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "storageOpcodesRange",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
@@ -118,12 +107,10 @@ export interface CombineTierInterface extends utils.Interface {
   events: {
     "Initialize(address,tuple)": EventFragment;
     "Initialized(uint8)": EventFragment;
-    "SaveInterpreterState(address,uint256,tuple)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Initialize"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SaveInterpreterState"): EventFragment;
 }
 
 export interface InitializeEventObject {
@@ -143,19 +130,6 @@ export interface InitializedEventObject {
 export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
 
 export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
-
-export interface SaveInterpreterStateEventObject {
-  sender: string;
-  id: BigNumber;
-  config: StateConfigStructOutput;
-}
-export type SaveInterpreterStateEvent = TypedEvent<
-  [string, BigNumber, StateConfigStructOutput],
-  SaveInterpreterStateEventObject
->;
-
-export type SaveInterpreterStateEventFilter =
-  TypedEventFilter<SaveInterpreterStateEvent>;
 
 export interface CombineTier extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -202,10 +176,6 @@ export interface CombineTier extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    storageOpcodesRange(
-      overrides?: CallOverrides
-    ): Promise<[StorageOpcodesRangeStructOutput]>;
-
     supportsInterface(
       interfaceId_: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -229,10 +199,6 @@ export interface CombineTier extends BaseContract {
     context_: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
   ): Promise<BigNumber>;
-
-  storageOpcodesRange(
-    overrides?: CallOverrides
-  ): Promise<StorageOpcodesRangeStructOutput>;
 
   supportsInterface(
     interfaceId_: PromiseOrValue<BytesLike>,
@@ -258,10 +224,6 @@ export interface CombineTier extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    storageOpcodesRange(
-      overrides?: CallOverrides
-    ): Promise<StorageOpcodesRangeStructOutput>;
-
     supportsInterface(
       interfaceId_: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
@@ -277,17 +239,6 @@ export interface CombineTier extends BaseContract {
 
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
-
-    "SaveInterpreterState(address,uint256,tuple)"(
-      sender?: null,
-      id?: null,
-      config?: null
-    ): SaveInterpreterStateEventFilter;
-    SaveInterpreterState(
-      sender?: null,
-      id?: null,
-      config?: null
-    ): SaveInterpreterStateEventFilter;
   };
 
   estimateGas: {
@@ -308,8 +259,6 @@ export interface CombineTier extends BaseContract {
       context_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    storageOpcodesRange(overrides?: CallOverrides): Promise<BigNumber>;
 
     supportsInterface(
       interfaceId_: PromiseOrValue<BytesLike>,
@@ -333,10 +282,6 @@ export interface CombineTier extends BaseContract {
       account_: PromiseOrValue<string>,
       tier_: PromiseOrValue<BigNumberish>,
       context_: PromiseOrValue<BigNumberish>[],
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    storageOpcodesRange(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

@@ -7,6 +7,8 @@ import type {
   BigNumberish,
   BytesLike,
   CallOverrides,
+  ContractTransaction,
+  Overrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -23,18 +25,30 @@ import type {
 
 export interface IInterpreterV1Interface extends utils.Interface {
   functions: {
-    "eval(address,uint256,uint256[][])": FunctionFragment;
+    "eval(uint256,uint256[][])": FunctionFragment;
+    "evalWithNamespace(uint256,uint256,uint256[][])": FunctionFragment;
     "functionPointers()": FunctionFragment;
+    "stateChanges(uint256[])": FunctionFragment;
+    "stateChangesWithNamespace(uint256,uint256[])": FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: "eval" | "functionPointers"
+    nameOrSignatureOrTopic:
+      | "eval"
+      | "evalWithNamespace"
+      | "functionPointers"
+      | "stateChanges"
+      | "stateChangesWithNamespace"
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "eval",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>[][]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "evalWithNamespace",
     values: [
-      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>[][]
     ]
@@ -43,10 +57,30 @@ export interface IInterpreterV1Interface extends utils.Interface {
     functionFragment: "functionPointers",
     values?: undefined
   ): string;
+  encodeFunctionData(
+    functionFragment: "stateChanges",
+    values: [PromiseOrValue<BigNumberish>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "stateChangesWithNamespace",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>[]]
+  ): string;
 
   decodeFunctionResult(functionFragment: "eval", data: BytesLike): Result;
   decodeFunctionResult(
+    functionFragment: "evalWithNamespace",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "functionPointers",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "stateChanges",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "stateChangesWithNamespace",
     data: BytesLike
   ): Result;
 
@@ -81,56 +115,171 @@ export interface IInterpreterV1 extends BaseContract {
 
   functions: {
     eval(
-      expressionPointer: PromiseOrValue<string>,
-      entrypoint: PromiseOrValue<BigNumberish>,
+      dispatch: PromiseOrValue<BigNumberish>,
       context: PromiseOrValue<BigNumberish>[][],
       overrides?: CallOverrides
-    ): Promise<[BigNumber[]]>;
+    ): Promise<
+      [BigNumber[], BigNumber[]] & {
+        stack: BigNumber[];
+        stateChanges: BigNumber[];
+      }
+    >;
+
+    evalWithNamespace(
+      namespace: PromiseOrValue<BigNumberish>,
+      dispatch: PromiseOrValue<BigNumberish>,
+      context: PromiseOrValue<BigNumberish>[][],
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber[], BigNumber[]] & {
+        stack: BigNumber[];
+        stateChanges: BigNumber[];
+      }
+    >;
 
     functionPointers(overrides?: CallOverrides): Promise<[string]>;
+
+    stateChanges(
+      stateChanges: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    stateChangesWithNamespace(
+      namespace: PromiseOrValue<BigNumberish>,
+      stateChanges: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
   };
 
   eval(
-    expressionPointer: PromiseOrValue<string>,
-    entrypoint: PromiseOrValue<BigNumberish>,
+    dispatch: PromiseOrValue<BigNumberish>,
     context: PromiseOrValue<BigNumberish>[][],
     overrides?: CallOverrides
-  ): Promise<BigNumber[]>;
+  ): Promise<
+    [BigNumber[], BigNumber[]] & {
+      stack: BigNumber[];
+      stateChanges: BigNumber[];
+    }
+  >;
+
+  evalWithNamespace(
+    namespace: PromiseOrValue<BigNumberish>,
+    dispatch: PromiseOrValue<BigNumberish>,
+    context: PromiseOrValue<BigNumberish>[][],
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber[], BigNumber[]] & {
+      stack: BigNumber[];
+      stateChanges: BigNumber[];
+    }
+  >;
 
   functionPointers(overrides?: CallOverrides): Promise<string>;
 
+  stateChanges(
+    stateChanges: PromiseOrValue<BigNumberish>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  stateChangesWithNamespace(
+    namespace: PromiseOrValue<BigNumberish>,
+    stateChanges: PromiseOrValue<BigNumberish>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     eval(
-      expressionPointer: PromiseOrValue<string>,
-      entrypoint: PromiseOrValue<BigNumberish>,
+      dispatch: PromiseOrValue<BigNumberish>,
       context: PromiseOrValue<BigNumberish>[][],
       overrides?: CallOverrides
-    ): Promise<BigNumber[]>;
+    ): Promise<
+      [BigNumber[], BigNumber[]] & {
+        stack: BigNumber[];
+        stateChanges: BigNumber[];
+      }
+    >;
+
+    evalWithNamespace(
+      namespace: PromiseOrValue<BigNumberish>,
+      dispatch: PromiseOrValue<BigNumberish>,
+      context: PromiseOrValue<BigNumberish>[][],
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber[], BigNumber[]] & {
+        stack: BigNumber[];
+        stateChanges: BigNumber[];
+      }
+    >;
 
     functionPointers(overrides?: CallOverrides): Promise<string>;
+
+    stateChanges(
+      stateChanges: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    stateChangesWithNamespace(
+      namespace: PromiseOrValue<BigNumberish>,
+      stateChanges: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {};
 
   estimateGas: {
     eval(
-      expressionPointer: PromiseOrValue<string>,
-      entrypoint: PromiseOrValue<BigNumberish>,
+      dispatch: PromiseOrValue<BigNumberish>,
+      context: PromiseOrValue<BigNumberish>[][],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    evalWithNamespace(
+      namespace: PromiseOrValue<BigNumberish>,
+      dispatch: PromiseOrValue<BigNumberish>,
       context: PromiseOrValue<BigNumberish>[][],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     functionPointers(overrides?: CallOverrides): Promise<BigNumber>;
+
+    stateChanges(
+      stateChanges: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    stateChangesWithNamespace(
+      namespace: PromiseOrValue<BigNumberish>,
+      stateChanges: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     eval(
-      expressionPointer: PromiseOrValue<string>,
-      entrypoint: PromiseOrValue<BigNumberish>,
+      dispatch: PromiseOrValue<BigNumberish>,
+      context: PromiseOrValue<BigNumberish>[][],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    evalWithNamespace(
+      namespace: PromiseOrValue<BigNumberish>,
+      dispatch: PromiseOrValue<BigNumberish>,
       context: PromiseOrValue<BigNumberish>[][],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     functionPointers(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    stateChanges(
+      stateChanges: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    stateChangesWithNamespace(
+      namespace: PromiseOrValue<BigNumberish>,
+      stateChanges: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
   };
 }

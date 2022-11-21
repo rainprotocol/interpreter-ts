@@ -6,16 +6,10 @@ import type {
   BigNumber,
   BigNumberish,
   BytesLike,
-  CallOverrides,
-  PopulatedTransaction,
   Signer,
   utils,
 } from "ethers";
-import type {
-  FunctionFragment,
-  Result,
-  EventFragment,
-} from "@ethersproject/abi";
+import type { EventFragment } from "@ethersproject/abi";
 import type { Listener, Provider } from "@ethersproject/providers";
 import type {
   TypedEventFilter,
@@ -35,32 +29,8 @@ export type StateConfigStructOutput = [string[], BigNumber[]] & {
   constants: BigNumber[];
 };
 
-export type StorageOpcodesRangeStruct = {
-  pointer: PromiseOrValue<BigNumberish>;
-  length: PromiseOrValue<BigNumberish>;
-};
-
-export type StorageOpcodesRangeStructOutput = [BigNumber, BigNumber] & {
-  pointer: BigNumber;
-  length: BigNumber;
-};
-
 export interface StandardInterpreterInterface extends utils.Interface {
-  functions: {
-    "storageOpcodesRange()": FunctionFragment;
-  };
-
-  getFunction(nameOrSignatureOrTopic: "storageOpcodesRange"): FunctionFragment;
-
-  encodeFunctionData(
-    functionFragment: "storageOpcodesRange",
-    values?: undefined
-  ): string;
-
-  decodeFunctionResult(
-    functionFragment: "storageOpcodesRange",
-    data: BytesLike
-  ): Result;
+  functions: {};
 
   events: {
     "SaveInterpreterState(address,uint256,tuple)": EventFragment;
@@ -108,21 +78,9 @@ export interface StandardInterpreter extends BaseContract {
   once: OnEvent<this>;
   removeListener: OnEvent<this>;
 
-  functions: {
-    storageOpcodesRange(
-      overrides?: CallOverrides
-    ): Promise<[StorageOpcodesRangeStructOutput]>;
-  };
+  functions: {};
 
-  storageOpcodesRange(
-    overrides?: CallOverrides
-  ): Promise<StorageOpcodesRangeStructOutput>;
-
-  callStatic: {
-    storageOpcodesRange(
-      overrides?: CallOverrides
-    ): Promise<StorageOpcodesRangeStructOutput>;
-  };
+  callStatic: {};
 
   filters: {
     "SaveInterpreterState(address,uint256,tuple)"(
@@ -137,13 +95,7 @@ export interface StandardInterpreter extends BaseContract {
     ): SaveInterpreterStateEventFilter;
   };
 
-  estimateGas: {
-    storageOpcodesRange(overrides?: CallOverrides): Promise<BigNumber>;
-  };
+  estimateGas: {};
 
-  populateTransaction: {
-    storageOpcodesRange(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-  };
+  populateTransaction: {};
 }

@@ -26,12 +26,12 @@ const _abi = [
           },
         ],
         internalType: "struct StateConfig",
-        name: "config_",
+        name: "config",
         type: "tuple",
       },
       {
         internalType: "uint256[]",
-        name: "finalMinStacks_",
+        name: "minOutputs",
         type: "uint256[]",
       },
     ],
@@ -44,7 +44,7 @@ const _abi = [
       },
       {
         internalType: "uint256",
-        name: "contextScratch",
+        name: "contextReads",
         type: "uint256",
       },
     ],

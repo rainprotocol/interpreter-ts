@@ -13,13 +13,8 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "address",
-        name: "expressionPointer",
-        type: "address",
-      },
-      {
-        internalType: "SourceIndex",
-        name: "entrypoint",
+        internalType: "EncodedDispatch",
+        name: "dispatch",
         type: "uint256",
       },
       {
@@ -32,7 +27,46 @@ const _abi = [
     outputs: [
       {
         internalType: "uint256[]",
-        name: "",
+        name: "stack",
+        type: "uint256[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "stateChanges",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "StateNamespace",
+        name: "namespace",
+        type: "uint256",
+      },
+      {
+        internalType: "EncodedDispatch",
+        name: "dispatch",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256[][]",
+        name: "context",
+        type: "uint256[][]",
+      },
+    ],
+    name: "evalWithNamespace",
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "stack",
+        type: "uint256[]",
+      },
+      {
+        internalType: "uint256[]",
+        name: "stateChanges",
         type: "uint256[]",
       },
     ],
@@ -50,6 +84,37 @@ const _abi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256[]",
+        name: "stateChanges",
+        type: "uint256[]",
+      },
+    ],
+    name: "stateChanges",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "StateNamespace",
+        name: "namespace",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256[]",
+        name: "stateChanges",
+        type: "uint256[]",
+      },
+    ],
+    name: "stateChangesWithNamespace",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];

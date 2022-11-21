@@ -37,40 +37,19 @@ export type StateConfigStructOutput = [string[], BigNumber[]] & {
   constants: BigNumber[];
 };
 
-export type StorageOpcodesRangeStruct = {
-  pointer: PromiseOrValue<BigNumberish>;
-  length: PromiseOrValue<BigNumberish>;
-};
-
-export type StorageOpcodesRangeStructOutput = [BigNumber, BigNumber] & {
-  pointer: BigNumber;
-  length: BigNumber;
-};
-
 export interface StackHeightTestInterface extends utils.Interface {
   functions: {
     "initialize((bytes[],uint256[]))": FunctionFragment;
-    "storageOpcodesRange()": FunctionFragment;
   };
 
-  getFunction(
-    nameOrSignatureOrTopic: "initialize" | "storageOpcodesRange"
-  ): FunctionFragment;
+  getFunction(nameOrSignatureOrTopic: "initialize"): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "initialize",
     values: [StateConfigStruct]
   ): string;
-  encodeFunctionData(
-    functionFragment: "storageOpcodesRange",
-    values?: undefined
-  ): string;
 
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "storageOpcodesRange",
-    data: BytesLike
-  ): Result;
 
   events: {
     "SaveInterpreterState(address,uint256,tuple)": EventFragment;
@@ -123,10 +102,6 @@ export interface StackHeightTest extends BaseContract {
       stateConfig_: StateConfigStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    storageOpcodesRange(
-      overrides?: CallOverrides
-    ): Promise<[StorageOpcodesRangeStructOutput]>;
   };
 
   initialize(
@@ -134,19 +109,11 @@ export interface StackHeightTest extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  storageOpcodesRange(
-    overrides?: CallOverrides
-  ): Promise<StorageOpcodesRangeStructOutput>;
-
   callStatic: {
     initialize(
       stateConfig_: StateConfigStruct,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    storageOpcodesRange(
-      overrides?: CallOverrides
-    ): Promise<StorageOpcodesRangeStructOutput>;
   };
 
   filters: {
@@ -167,18 +134,12 @@ export interface StackHeightTest extends BaseContract {
       stateConfig_: StateConfigStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    storageOpcodesRange(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
     initialize(
       stateConfig_: StateConfigStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    storageOpcodesRange(
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
 }

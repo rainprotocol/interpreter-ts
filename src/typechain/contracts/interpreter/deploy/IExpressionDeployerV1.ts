@@ -81,27 +81,27 @@ export interface IExpressionDeployerV1 extends BaseContract {
 
   functions: {
     deployExpression(
-      config_: StateConfigStruct,
-      finalMinStacks_: PromiseOrValue<BigNumberish>[],
+      config: StateConfigStruct,
+      minOutputs: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
 
   deployExpression(
-    config_: StateConfigStruct,
-    finalMinStacks_: PromiseOrValue<BigNumberish>[],
+    config: StateConfigStruct,
+    minOutputs: PromiseOrValue<BigNumberish>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   callStatic: {
     deployExpression(
-      config_: StateConfigStruct,
-      finalMinStacks_: PromiseOrValue<BigNumberish>[],
+      config: StateConfigStruct,
+      minOutputs: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<
       [string, BigNumber] & {
         expressionAddress: string;
-        contextScratch: BigNumber;
+        contextReads: BigNumber;
       }
     >;
   };
@@ -110,16 +110,16 @@ export interface IExpressionDeployerV1 extends BaseContract {
 
   estimateGas: {
     deployExpression(
-      config_: StateConfigStruct,
-      finalMinStacks_: PromiseOrValue<BigNumberish>[],
+      config: StateConfigStruct,
+      minOutputs: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     deployExpression(
-      config_: StateConfigStruct,
-      finalMinStacks_: PromiseOrValue<BigNumberish>[],
+      config: StateConfigStruct,
+      minOutputs: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

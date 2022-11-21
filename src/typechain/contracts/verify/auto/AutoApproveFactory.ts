@@ -37,10 +37,26 @@ export type StateConfigStructOutput = [string[], BigNumber[]] & {
   constants: BigNumber[];
 };
 
+export type AutoApproveConfigStruct = {
+  expressionDeployer: PromiseOrValue<string>;
+  interpreter: PromiseOrValue<string>;
+  stateConfig: StateConfigStruct;
+};
+
+export type AutoApproveConfigStructOutput = [
+  string,
+  string,
+  StateConfigStructOutput
+] & {
+  expressionDeployer: string;
+  interpreter: string;
+  stateConfig: StateConfigStructOutput;
+};
+
 export interface AutoApproveFactoryInterface extends utils.Interface {
   functions: {
     "createChild(bytes)": FunctionFragment;
-    "createChildTyped((bytes[],uint256[]))": FunctionFragment;
+    "createChildTyped((address,address,(bytes[],uint256[])))": FunctionFragment;
     "isChild(address)": FunctionFragment;
   };
 
@@ -54,7 +70,7 @@ export interface AutoApproveFactoryInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "createChildTyped",
-    values: [StateConfigStruct]
+    values: [AutoApproveConfigStruct]
   ): string;
   encodeFunctionData(
     functionFragment: "isChild",
@@ -141,7 +157,7 @@ export interface AutoApproveFactory extends BaseContract {
     ): Promise<ContractTransaction>;
 
     createChildTyped(
-      config_: StateConfigStruct,
+      config_: AutoApproveConfigStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -157,7 +173,7 @@ export interface AutoApproveFactory extends BaseContract {
   ): Promise<ContractTransaction>;
 
   createChildTyped(
-    config_: StateConfigStruct,
+    config_: AutoApproveConfigStruct,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -173,7 +189,7 @@ export interface AutoApproveFactory extends BaseContract {
     ): Promise<string>;
 
     createChildTyped(
-      config_: StateConfigStruct,
+      config_: AutoApproveConfigStruct,
       overrides?: CallOverrides
     ): Promise<string>;
 
@@ -210,7 +226,7 @@ export interface AutoApproveFactory extends BaseContract {
     ): Promise<BigNumber>;
 
     createChildTyped(
-      config_: StateConfigStruct,
+      config_: AutoApproveConfigStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -227,7 +243,7 @@ export interface AutoApproveFactory extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     createChildTyped(
-      config_: StateConfigStruct,
+      config_: AutoApproveConfigStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

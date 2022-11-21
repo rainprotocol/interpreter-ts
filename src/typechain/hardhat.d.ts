@@ -233,10 +233,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IInterpreterV1__factory>;
     getContractFactory(
-      name: "RainInterpreter",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.RainInterpreter__factory>;
-    getContractFactory(
       name: "StandardInterpreter",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.StandardInterpreter__factory>;
@@ -252,6 +248,10 @@ declare module "hardhat/types/runtime" {
       name: "NoticeBoard",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.NoticeBoard__factory>;
+    getContractFactory(
+      name: "ZeroExOrderBookFlashBorrower",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ZeroExOrderBookFlashBorrower__factory>;
     getContractFactory(
       name: "IOrderBookV1",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -512,10 +512,6 @@ declare module "hardhat/types/runtime" {
       name: "AutoApproveFactory",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.AutoApproveFactory__factory>;
-    getContractFactory(
-      name: "AutoApproveIntegrity",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.AutoApproveIntegrity__factory>;
     getContractFactory(
       name: "IVerifyCallback",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -809,11 +805,6 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IInterpreterV1>;
     getContractAt(
-      name: "RainInterpreter",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.RainInterpreter>;
-    getContractAt(
       name: "StandardInterpreter",
       address: string,
       signer?: ethers.Signer
@@ -833,6 +824,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.NoticeBoard>;
+    getContractAt(
+      name: "ZeroExOrderBookFlashBorrower",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ZeroExOrderBookFlashBorrower>;
     getContractAt(
       name: "IOrderBookV1",
       address: string,
@@ -1158,11 +1154,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.AutoApproveFactory>;
-    getContractAt(
-      name: "AutoApproveIntegrity",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.AutoApproveIntegrity>;
     getContractAt(
       name: "IVerifyCallback",
       address: string,

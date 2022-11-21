@@ -37,21 +37,11 @@ export type StateConfigStructOutput = [string[], BigNumber[]] & {
   constants: BigNumber[];
 };
 
-export type StorageOpcodesRangeStruct = {
-  pointer: PromiseOrValue<BigNumberish>;
-  length: PromiseOrValue<BigNumberish>;
-};
-
-export type StorageOpcodesRangeStructOutput = [BigNumber, BigNumber] & {
-  pointer: BigNumber;
-  length: BigNumber;
-};
-
 export interface RainterpreterExpressionDeployerInterface
   extends utils.Interface {
   functions: {
     "deployExpression((bytes[],uint256[]),uint256[])": FunctionFragment;
-    "ensureIntegrity((uint256,uint256),bytes[],uint256,uint256[])": FunctionFragment;
+    "ensureIntegrity(bytes[],uint256,uint256[])": FunctionFragment;
   };
 
   getFunction(
@@ -65,7 +55,6 @@ export interface RainterpreterExpressionDeployerInterface
   encodeFunctionData(
     functionFragment: "ensureIntegrity",
     values: [
-      StorageOpcodesRangeStruct,
       PromiseOrValue<BytesLike>[],
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>[]
@@ -94,7 +83,7 @@ export interface DeployExpressionEventObject {
   sender: string;
   config: StateConfigStructOutput;
   expressionAddress: string;
-  contextScratch: BigNumber;
+  contextReads: BigNumber;
 }
 export type DeployExpressionEvent = TypedEvent<
   [string, StateConfigStructOutput, string, BigNumber],
@@ -145,19 +134,18 @@ export interface RainterpreterExpressionDeployer extends BaseContract {
   functions: {
     deployExpression(
       config_: StateConfigStruct,
-      finalMinStacks_: PromiseOrValue<BigNumberish>[],
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     ensureIntegrity(
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       sources_: PromiseOrValue<BytesLike>[],
       constantsLength_: PromiseOrValue<BigNumberish>,
-      finalStacks_: PromiseOrValue<BigNumberish>[],
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
-        contextScratch_: BigNumber;
+        contextReads_: BigNumber;
         stackLength_: BigNumber;
       }
     >;
@@ -165,19 +153,18 @@ export interface RainterpreterExpressionDeployer extends BaseContract {
 
   deployExpression(
     config_: StateConfigStruct,
-    finalMinStacks_: PromiseOrValue<BigNumberish>[],
+    minStackOutputs_: PromiseOrValue<BigNumberish>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   ensureIntegrity(
-    storageOpcodesRange_: StorageOpcodesRangeStruct,
     sources_: PromiseOrValue<BytesLike>[],
     constantsLength_: PromiseOrValue<BigNumberish>,
-    finalStacks_: PromiseOrValue<BigNumberish>[],
+    minStackOutputs_: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber] & {
-      contextScratch_: BigNumber;
+      contextReads_: BigNumber;
       stackLength_: BigNumber;
     }
   >;
@@ -185,19 +172,18 @@ export interface RainterpreterExpressionDeployer extends BaseContract {
   callStatic: {
     deployExpression(
       config_: StateConfigStruct,
-      finalMinStacks_: PromiseOrValue<BigNumberish>[],
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<[string, BigNumber]>;
 
     ensureIntegrity(
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       sources_: PromiseOrValue<BytesLike>[],
       constantsLength_: PromiseOrValue<BigNumberish>,
-      finalStacks_: PromiseOrValue<BigNumberish>[],
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
-        contextScratch_: BigNumber;
+        contextReads_: BigNumber;
         stackLength_: BigNumber;
       }
     >;
@@ -208,13 +194,13 @@ export interface RainterpreterExpressionDeployer extends BaseContract {
       sender?: null,
       config?: null,
       expressionAddress?: null,
-      contextScratch?: null
+      contextReads?: null
     ): DeployExpressionEventFilter;
     DeployExpression(
       sender?: null,
       config?: null,
       expressionAddress?: null,
-      contextScratch?: null
+      contextReads?: null
     ): DeployExpressionEventFilter;
 
     "ValidInterpreter(address,address)"(
@@ -230,15 +216,14 @@ export interface RainterpreterExpressionDeployer extends BaseContract {
   estimateGas: {
     deployExpression(
       config_: StateConfigStruct,
-      finalMinStacks_: PromiseOrValue<BigNumberish>[],
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     ensureIntegrity(
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       sources_: PromiseOrValue<BytesLike>[],
       constantsLength_: PromiseOrValue<BigNumberish>,
-      finalStacks_: PromiseOrValue<BigNumberish>[],
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
@@ -246,15 +231,14 @@ export interface RainterpreterExpressionDeployer extends BaseContract {
   populateTransaction: {
     deployExpression(
       config_: StateConfigStruct,
-      finalMinStacks_: PromiseOrValue<BigNumberish>[],
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     ensureIntegrity(
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       sources_: PromiseOrValue<BytesLike>[],
       constantsLength_: PromiseOrValue<BigNumberish>,
-      finalStacks_: PromiseOrValue<BigNumberish>[],
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

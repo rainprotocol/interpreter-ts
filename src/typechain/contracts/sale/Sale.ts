@@ -29,21 +29,12 @@ import type {
 
 export type SaleConstructorConfigStruct = {
   maximumSaleTimeout: PromiseOrValue<BigNumberish>;
-  maximumCooldownDuration: PromiseOrValue<BigNumberish>;
   redeemableERC20Factory: PromiseOrValue<string>;
-  interpreterIntegrity: PromiseOrValue<string>;
 };
 
-export type SaleConstructorConfigStructOutput = [
-  BigNumber,
-  BigNumber,
-  string,
-  string
-] & {
+export type SaleConstructorConfigStructOutput = [BigNumber, string] & {
   maximumSaleTimeout: BigNumber;
-  maximumCooldownDuration: BigNumber;
   redeemableERC20Factory: string;
-  interpreterIntegrity: string;
 };
 
 export type BuyConfigStruct = {
@@ -170,11 +161,11 @@ export type SaleRedeemableERC20ConfigStructOutput = [
 export interface SaleInterface extends utils.Interface {
   functions: {
     "buy((address,uint256,uint256,uint256,uint256))": FunctionFragment;
-    "calculateBuy(uint256)": FunctionFragment;
-    "canLive()": FunctionFragment;
     "claimFees(address)": FunctionFragment;
     "end()": FunctionFragment;
     "initialize((address,address,(bytes[],uint256[]),address,address,uint256,uint256,uint256,uint256),((string,string,address,uint256),address,uint256,address))": FunctionFragment;
+    "previewCalculateBuy(uint256)": FunctionFragment;
+    "previewCanLive()": FunctionFragment;
     "refund((uint256,address,uint256,uint256,uint256))": FunctionFragment;
     "remainingTokenInventory()": FunctionFragment;
     "reserve()": FunctionFragment;
@@ -188,11 +179,11 @@ export interface SaleInterface extends utils.Interface {
   getFunction(
     nameOrSignatureOrTopic:
       | "buy"
-      | "calculateBuy"
-      | "canLive"
       | "claimFees"
       | "end"
       | "initialize"
+      | "previewCalculateBuy"
+      | "previewCanLive"
       | "refund"
       | "remainingTokenInventory"
       | "reserve"
@@ -208,11 +199,6 @@ export interface SaleInterface extends utils.Interface {
     values: [BuyConfigStruct]
   ): string;
   encodeFunctionData(
-    functionFragment: "calculateBuy",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(functionFragment: "canLive", values?: undefined): string;
-  encodeFunctionData(
     functionFragment: "claimFees",
     values: [PromiseOrValue<string>]
   ): string;
@@ -220,6 +206,14 @@ export interface SaleInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "initialize",
     values: [SaleConfigStruct, SaleRedeemableERC20ConfigStruct]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "previewCalculateBuy",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "previewCanLive",
+    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "refund",
@@ -243,14 +237,17 @@ export interface SaleInterface extends utils.Interface {
   ): string;
 
   decodeFunctionResult(functionFragment: "buy", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "calculateBuy",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "canLive", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "claimFees", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "end", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "previewCalculateBuy",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "previewCanLive",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "refund", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "remainingTokenInventory",
@@ -422,13 +419,6 @@ export interface Sale extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    calculateBuy(
-      targetUnits_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber]>;
-
-    canLive(overrides?: CallOverrides): Promise<[boolean]>;
-
     claimFees(
       recipient_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -443,6 +433,13 @@ export interface Sale extends BaseContract {
       saleRedeemableERC20Config_: SaleRedeemableERC20ConfigStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    previewCalculateBuy(
+      targetUnits_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber]>;
+
+    previewCanLive(overrides?: CallOverrides): Promise<[boolean]>;
 
     refund(
       receipt_: ReceiptStruct,
@@ -473,13 +470,6 @@ export interface Sale extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  calculateBuy(
-    targetUnits_: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<[BigNumber, BigNumber]>;
-
-  canLive(overrides?: CallOverrides): Promise<boolean>;
-
   claimFees(
     recipient_: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -494,6 +484,13 @@ export interface Sale extends BaseContract {
     saleRedeemableERC20Config_: SaleRedeemableERC20ConfigStruct,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
+
+  previewCalculateBuy(
+    targetUnits_: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<[BigNumber, BigNumber]>;
+
+  previewCanLive(overrides?: CallOverrides): Promise<boolean>;
 
   refund(
     receipt_: ReceiptStruct,
@@ -521,13 +518,6 @@ export interface Sale extends BaseContract {
   callStatic: {
     buy(config_: BuyConfigStruct, overrides?: CallOverrides): Promise<void>;
 
-    calculateBuy(
-      targetUnits_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber, BigNumber]>;
-
-    canLive(overrides?: CallOverrides): Promise<boolean>;
-
     claimFees(
       recipient_: PromiseOrValue<string>,
       overrides?: CallOverrides
@@ -540,6 +530,13 @@ export interface Sale extends BaseContract {
       saleRedeemableERC20Config_: SaleRedeemableERC20ConfigStruct,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    previewCalculateBuy(
+      targetUnits_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber, BigNumber]>;
+
+    previewCanLive(overrides?: CallOverrides): Promise<boolean>;
 
     refund(receipt_: ReceiptStruct, overrides?: CallOverrides): Promise<void>;
 
@@ -623,13 +620,6 @@ export interface Sale extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    calculateBuy(
-      targetUnits_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    canLive(overrides?: CallOverrides): Promise<BigNumber>;
-
     claimFees(
       recipient_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -644,6 +634,13 @@ export interface Sale extends BaseContract {
       saleRedeemableERC20Config_: SaleRedeemableERC20ConfigStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    previewCalculateBuy(
+      targetUnits_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    previewCanLive(overrides?: CallOverrides): Promise<BigNumber>;
 
     refund(
       receipt_: ReceiptStruct,
@@ -675,13 +672,6 @@ export interface Sale extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    calculateBuy(
-      targetUnits_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    canLive(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     claimFees(
       recipient_: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
@@ -696,6 +686,13 @@ export interface Sale extends BaseContract {
       saleRedeemableERC20Config_: SaleRedeemableERC20ConfigStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
+
+    previewCalculateBuy(
+      targetUnits_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    previewCanLive(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     refund(
       receipt_: ReceiptStruct,

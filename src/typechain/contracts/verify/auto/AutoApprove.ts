@@ -37,6 +37,22 @@ export type StateConfigStructOutput = [string[], BigNumber[]] & {
   constants: BigNumber[];
 };
 
+export type AutoApproveConfigStruct = {
+  expressionDeployer: PromiseOrValue<string>;
+  interpreter: PromiseOrValue<string>;
+  stateConfig: StateConfigStruct;
+};
+
+export type AutoApproveConfigStructOutput = [
+  string,
+  string,
+  StateConfigStructOutput
+] & {
+  expressionDeployer: string;
+  interpreter: string;
+  stateConfig: StateConfigStructOutput;
+};
+
 export type EvidenceStruct = {
   account: PromiseOrValue<string>;
   data: PromiseOrValue<BytesLike>;
@@ -47,26 +63,15 @@ export type EvidenceStructOutput = [string, string] & {
   data: string;
 };
 
-export type StorageOpcodesRangeStruct = {
-  pointer: PromiseOrValue<BigNumberish>;
-  length: PromiseOrValue<BigNumberish>;
-};
-
-export type StorageOpcodesRangeStructOutput = [BigNumber, BigNumber] & {
-  pointer: BigNumber;
-  length: BigNumber;
-};
-
 export interface AutoApproveInterface extends utils.Interface {
   functions: {
     "afterAdd(address,(address,bytes)[])": FunctionFragment;
     "afterApprove(address,(address,bytes)[])": FunctionFragment;
     "afterBan(address,(address,bytes)[])": FunctionFragment;
     "afterRemove(address,(address,bytes)[])": FunctionFragment;
-    "initialize((bytes[],uint256[]))": FunctionFragment;
+    "initialize((address,address,(bytes[],uint256[])))": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
-    "storageOpcodesRange()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
   };
 
@@ -79,7 +84,6 @@ export interface AutoApproveInterface extends utils.Interface {
       | "initialize"
       | "owner"
       | "renounceOwnership"
-      | "storageOpcodesRange"
       | "transferOwnership"
   ): FunctionFragment;
 
@@ -101,15 +105,11 @@ export interface AutoApproveInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [StateConfigStruct]
+    values: [AutoApproveConfigStruct]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "storageOpcodesRange",
     values?: undefined
   ): string;
   encodeFunctionData(
@@ -134,10 +134,6 @@ export interface AutoApproveInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "storageOpcodesRange",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
@@ -146,21 +142,19 @@ export interface AutoApproveInterface extends utils.Interface {
     "Initialize(address,tuple)": EventFragment;
     "Initialized(uint8)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
-    "SaveInterpreterState(address,uint256,tuple)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Initialize"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "SaveInterpreterState"): EventFragment;
 }
 
 export interface InitializeEventObject {
   sender: string;
-  config: StateConfigStructOutput;
+  config: AutoApproveConfigStructOutput;
 }
 export type InitializeEvent = TypedEvent<
-  [string, StateConfigStructOutput],
+  [string, AutoApproveConfigStructOutput],
   InitializeEventObject
 >;
 
@@ -184,19 +178,6 @@ export type OwnershipTransferredEvent = TypedEvent<
 
 export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
-
-export interface SaveInterpreterStateEventObject {
-  sender: string;
-  id: BigNumber;
-  config: StateConfigStructOutput;
-}
-export type SaveInterpreterStateEvent = TypedEvent<
-  [string, BigNumber, StateConfigStructOutput],
-  SaveInterpreterStateEventObject
->;
-
-export type SaveInterpreterStateEventFilter =
-  TypedEventFilter<SaveInterpreterStateEvent>;
 
 export interface AutoApprove extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -250,7 +231,7 @@ export interface AutoApprove extends BaseContract {
     ): Promise<ContractTransaction>;
 
     initialize(
-      stateConfig_: StateConfigStruct,
+      config_: AutoApproveConfigStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -259,10 +240,6 @@ export interface AutoApprove extends BaseContract {
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
-
-    storageOpcodesRange(
-      overrides?: CallOverrides
-    ): Promise<[StorageOpcodesRangeStructOutput]>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -295,7 +272,7 @@ export interface AutoApprove extends BaseContract {
   ): Promise<ContractTransaction>;
 
   initialize(
-    stateConfig_: StateConfigStruct,
+    config_: AutoApproveConfigStruct,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -304,10 +281,6 @@ export interface AutoApprove extends BaseContract {
   renounceOwnership(
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
-
-  storageOpcodesRange(
-    overrides?: CallOverrides
-  ): Promise<StorageOpcodesRangeStructOutput>;
 
   transferOwnership(
     newOwner: PromiseOrValue<string>,
@@ -340,17 +313,13 @@ export interface AutoApprove extends BaseContract {
     ): Promise<void>;
 
     initialize(
-      stateConfig_: StateConfigStruct,
+      config_: AutoApproveConfigStruct,
       overrides?: CallOverrides
     ): Promise<void>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
     renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    storageOpcodesRange(
-      overrides?: CallOverrides
-    ): Promise<StorageOpcodesRangeStructOutput>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -376,17 +345,6 @@ export interface AutoApprove extends BaseContract {
       previousOwner?: PromiseOrValue<string> | null,
       newOwner?: PromiseOrValue<string> | null
     ): OwnershipTransferredEventFilter;
-
-    "SaveInterpreterState(address,uint256,tuple)"(
-      sender?: null,
-      id?: null,
-      config?: null
-    ): SaveInterpreterStateEventFilter;
-    SaveInterpreterState(
-      sender?: null,
-      id?: null,
-      config?: null
-    ): SaveInterpreterStateEventFilter;
   };
 
   estimateGas: {
@@ -415,7 +373,7 @@ export interface AutoApprove extends BaseContract {
     ): Promise<BigNumber>;
 
     initialize(
-      stateConfig_: StateConfigStruct,
+      config_: AutoApproveConfigStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -424,8 +382,6 @@ export interface AutoApprove extends BaseContract {
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
-
-    storageOpcodesRange(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -459,7 +415,7 @@ export interface AutoApprove extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     initialize(
-      stateConfig_: StateConfigStruct,
+      config_: AutoApproveConfigStruct,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -467,10 +423,6 @@ export interface AutoApprove extends BaseContract {
 
     renounceOwnership(
       overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    storageOpcodesRange(
-      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     transferOwnership(

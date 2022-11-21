@@ -38,19 +38,28 @@ export type StateConfigStructOutput = [string[], BigNumber[]] & {
 };
 
 export type CombineTierConfigStruct = {
+  expressionDeployer: PromiseOrValue<string>;
+  interpreter: PromiseOrValue<string>;
   combinedTiersLength: PromiseOrValue<BigNumberish>;
-  sourceConfig: StateConfigStruct;
+  stateConfig: StateConfigStruct;
 };
 
 export type CombineTierConfigStructOutput = [
+  string,
+  string,
   BigNumber,
   StateConfigStructOutput
-] & { combinedTiersLength: BigNumber; sourceConfig: StateConfigStructOutput };
+] & {
+  expressionDeployer: string;
+  interpreter: string;
+  combinedTiersLength: BigNumber;
+  stateConfig: StateConfigStructOutput;
+};
 
 export interface CombineTierFactoryInterface extends utils.Interface {
   functions: {
     "createChild(bytes)": FunctionFragment;
-    "createChildTyped((uint256,(bytes[],uint256[])))": FunctionFragment;
+    "createChildTyped((address,address,uint256,(bytes[],uint256[])))": FunctionFragment;
     "implementation()": FunctionFragment;
     "isChild(address)": FunctionFragment;
   };

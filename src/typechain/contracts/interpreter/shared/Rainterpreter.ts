@@ -7,6 +7,8 @@ import type {
   BigNumberish,
   BytesLike,
   CallOverrides,
+  ContractTransaction,
+  Overrides,
   PopulatedTransaction,
   Signer,
   utils,
@@ -21,31 +23,32 @@ import type {
   PromiseOrValue,
 } from "../../../common";
 
-export type StorageOpcodesRangeStruct = {
-  pointer: PromiseOrValue<BigNumberish>;
-  length: PromiseOrValue<BigNumberish>;
-};
-
-export type StorageOpcodesRangeStructOutput = [BigNumber, BigNumber] & {
-  pointer: BigNumber;
-  length: BigNumber;
-};
-
 export interface RainterpreterInterface extends utils.Interface {
   functions: {
-    "eval(address,uint256,uint256[][])": FunctionFragment;
+    "eval(uint256,uint256[][])": FunctionFragment;
+    "evalWithNamespace(uint256,uint256,uint256[][])": FunctionFragment;
     "functionPointers()": FunctionFragment;
-    "storageOpcodesRange()": FunctionFragment;
+    "stateChanges(uint256[])": FunctionFragment;
+    "stateChangesWithNamespace(uint256,uint256[])": FunctionFragment;
   };
 
   getFunction(
-    nameOrSignatureOrTopic: "eval" | "functionPointers" | "storageOpcodesRange"
+    nameOrSignatureOrTopic:
+      | "eval"
+      | "evalWithNamespace"
+      | "functionPointers"
+      | "stateChanges"
+      | "stateChangesWithNamespace"
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "eval",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>[][]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "evalWithNamespace",
     values: [
-      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>[][]
     ]
@@ -55,17 +58,29 @@ export interface RainterpreterInterface extends utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "storageOpcodesRange",
-    values?: undefined
+    functionFragment: "stateChanges",
+    values: [PromiseOrValue<BigNumberish>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "stateChangesWithNamespace",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>[]]
   ): string;
 
   decodeFunctionResult(functionFragment: "eval", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "evalWithNamespace",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "functionPointers",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "storageOpcodesRange",
+    functionFragment: "stateChanges",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "stateChangesWithNamespace",
     data: BytesLike
   ): Result;
 
@@ -100,74 +115,141 @@ export interface Rainterpreter extends BaseContract {
 
   functions: {
     eval(
-      statePointer_: PromiseOrValue<string>,
-      entrypoint_: PromiseOrValue<BigNumberish>,
+      dispatch_: PromiseOrValue<BigNumberish>,
       context_: PromiseOrValue<BigNumberish>[][],
       overrides?: CallOverrides
-    ): Promise<[BigNumber[]]>;
+    ): Promise<[BigNumber[], BigNumber[]]>;
+
+    evalWithNamespace(
+      namespace_: PromiseOrValue<BigNumberish>,
+      dispatch_: PromiseOrValue<BigNumberish>,
+      context_: PromiseOrValue<BigNumberish>[][],
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[], BigNumber[]]>;
 
     functionPointers(overrides?: CallOverrides): Promise<[string]>;
 
-    storageOpcodesRange(
-      overrides?: CallOverrides
-    ): Promise<[StorageOpcodesRangeStructOutput]>;
+    stateChanges(
+      stateChanges_: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    stateChangesWithNamespace(
+      stateNamespace_: PromiseOrValue<BigNumberish>,
+      stateChanges_: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
   };
 
   eval(
-    statePointer_: PromiseOrValue<string>,
-    entrypoint_: PromiseOrValue<BigNumberish>,
+    dispatch_: PromiseOrValue<BigNumberish>,
     context_: PromiseOrValue<BigNumberish>[][],
     overrides?: CallOverrides
-  ): Promise<BigNumber[]>;
+  ): Promise<[BigNumber[], BigNumber[]]>;
+
+  evalWithNamespace(
+    namespace_: PromiseOrValue<BigNumberish>,
+    dispatch_: PromiseOrValue<BigNumberish>,
+    context_: PromiseOrValue<BigNumberish>[][],
+    overrides?: CallOverrides
+  ): Promise<[BigNumber[], BigNumber[]]>;
 
   functionPointers(overrides?: CallOverrides): Promise<string>;
 
-  storageOpcodesRange(
-    overrides?: CallOverrides
-  ): Promise<StorageOpcodesRangeStructOutput>;
+  stateChanges(
+    stateChanges_: PromiseOrValue<BigNumberish>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  stateChangesWithNamespace(
+    stateNamespace_: PromiseOrValue<BigNumberish>,
+    stateChanges_: PromiseOrValue<BigNumberish>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   callStatic: {
     eval(
-      statePointer_: PromiseOrValue<string>,
-      entrypoint_: PromiseOrValue<BigNumberish>,
+      dispatch_: PromiseOrValue<BigNumberish>,
       context_: PromiseOrValue<BigNumberish>[][],
       overrides?: CallOverrides
-    ): Promise<BigNumber[]>;
+    ): Promise<[BigNumber[], BigNumber[]]>;
+
+    evalWithNamespace(
+      namespace_: PromiseOrValue<BigNumberish>,
+      dispatch_: PromiseOrValue<BigNumberish>,
+      context_: PromiseOrValue<BigNumberish>[][],
+      overrides?: CallOverrides
+    ): Promise<[BigNumber[], BigNumber[]]>;
 
     functionPointers(overrides?: CallOverrides): Promise<string>;
 
-    storageOpcodesRange(
+    stateChanges(
+      stateChanges_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
-    ): Promise<StorageOpcodesRangeStructOutput>;
+    ): Promise<void>;
+
+    stateChangesWithNamespace(
+      stateNamespace_: PromiseOrValue<BigNumberish>,
+      stateChanges_: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
   };
 
   filters: {};
 
   estimateGas: {
     eval(
-      statePointer_: PromiseOrValue<string>,
-      entrypoint_: PromiseOrValue<BigNumberish>,
+      dispatch_: PromiseOrValue<BigNumberish>,
+      context_: PromiseOrValue<BigNumberish>[][],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    evalWithNamespace(
+      namespace_: PromiseOrValue<BigNumberish>,
+      dispatch_: PromiseOrValue<BigNumberish>,
       context_: PromiseOrValue<BigNumberish>[][],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     functionPointers(overrides?: CallOverrides): Promise<BigNumber>;
 
-    storageOpcodesRange(overrides?: CallOverrides): Promise<BigNumber>;
+    stateChanges(
+      stateChanges_: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    stateChangesWithNamespace(
+      stateNamespace_: PromiseOrValue<BigNumberish>,
+      stateChanges_: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     eval(
-      statePointer_: PromiseOrValue<string>,
-      entrypoint_: PromiseOrValue<BigNumberish>,
+      dispatch_: PromiseOrValue<BigNumberish>,
+      context_: PromiseOrValue<BigNumberish>[][],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    evalWithNamespace(
+      namespace_: PromiseOrValue<BigNumberish>,
+      dispatch_: PromiseOrValue<BigNumberish>,
       context_: PromiseOrValue<BigNumberish>[][],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     functionPointers(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
-    storageOpcodesRange(
-      overrides?: CallOverrides
+    stateChanges(
+      stateChanges_: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    stateChangesWithNamespace(
+      stateNamespace_: PromiseOrValue<BigNumberish>,
+      stateChanges_: PromiseOrValue<BigNumberish>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

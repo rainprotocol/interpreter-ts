@@ -4,7 +4,7 @@ import { RainInterpreterTs } from "../../../interpreter/RainInterpreterTs";
 /**
  * @public
  */
-export function OpState(
+export function OpReadMemory(
     this: RainInterpreterTs,
     _inputs: BigNumber[],
     _operand: number,

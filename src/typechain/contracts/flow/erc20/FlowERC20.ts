@@ -199,7 +199,7 @@ export interface FlowERC20Interface extends utils.Interface {
     "balanceOf(address)": FunctionFragment;
     "decimals()": FunctionFragment;
     "decreaseAllowance(address,uint256)": FunctionFragment;
-    "flow(address,uint256,(address,bytes,uint256[])[])": FunctionFragment;
+    "flow(uint256,uint256,(address,bytes,uint256[])[])": FunctionFragment;
     "increaseAllowance(address,uint256)": FunctionFragment;
     "initialize((string,string,(bytes[],uint256[]),(address,address,(bytes[],uint256[])[])))": FunctionFragment;
     "multicall(bytes[])": FunctionFragment;
@@ -207,7 +207,7 @@ export interface FlowERC20Interface extends utils.Interface {
     "onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)": FunctionFragment;
     "onERC1155Received(address,address,uint256,uint256,bytes)": FunctionFragment;
     "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
-    "previewFlow(address,uint256,(address,bytes,uint256[])[])": FunctionFragment;
+    "previewFlow(uint256,uint256,(address,bytes,uint256[])[])": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "totalSupply()": FunctionFragment;
@@ -258,7 +258,7 @@ export interface FlowERC20Interface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "flow",
     values: [
-      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       SignedContextStruct[]
     ]
@@ -308,7 +308,7 @@ export interface FlowERC20Interface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "previewFlow",
     values: [
-      PromiseOrValue<string>,
+      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       SignedContextStruct[]
     ]
@@ -384,12 +384,14 @@ export interface FlowERC20Interface extends utils.Interface {
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
+    "FlowInitialized(address,address,uint256)": EventFragment;
     "Initialize(address,tuple)": EventFragment;
     "Initialized(uint8)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "FlowInitialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialize"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
@@ -406,6 +408,18 @@ export type ApprovalEvent = TypedEvent<
 >;
 
 export type ApprovalEventFilter = TypedEventFilter<ApprovalEvent>;
+
+export interface FlowInitializedEventObject {
+  sender: string;
+  interpreter: string;
+  dispatch: BigNumber;
+}
+export type FlowInitializedEvent = TypedEvent<
+  [string, string, BigNumber],
+  FlowInitializedEventObject
+>;
+
+export type FlowInitializedEventFilter = TypedEventFilter<FlowInitializedEvent>;
 
 export interface InitializeEventObject {
   sender: string;
@@ -490,7 +504,7 @@ export interface FlowERC20 extends BaseContract {
     ): Promise<ContractTransaction>;
 
     flow(
-      flow_: PromiseOrValue<string>,
+      dispatch_: PromiseOrValue<BigNumberish>,
       id_: PromiseOrValue<BigNumberish>,
       signedContexts_: SignedContextStruct[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
@@ -541,7 +555,7 @@ export interface FlowERC20 extends BaseContract {
     ): Promise<ContractTransaction>;
 
     previewFlow(
-      flow_: PromiseOrValue<string>,
+      dispatch_: PromiseOrValue<BigNumberish>,
       id_: PromiseOrValue<BigNumberish>,
       signedContexts_: SignedContextStruct[],
       overrides?: CallOverrides
@@ -596,7 +610,7 @@ export interface FlowERC20 extends BaseContract {
   ): Promise<ContractTransaction>;
 
   flow(
-    flow_: PromiseOrValue<string>,
+    dispatch_: PromiseOrValue<BigNumberish>,
     id_: PromiseOrValue<BigNumberish>,
     signedContexts_: SignedContextStruct[],
     overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
@@ -647,7 +661,7 @@ export interface FlowERC20 extends BaseContract {
   ): Promise<ContractTransaction>;
 
   previewFlow(
-    flow_: PromiseOrValue<string>,
+    dispatch_: PromiseOrValue<BigNumberish>,
     id_: PromiseOrValue<BigNumberish>,
     signedContexts_: SignedContextStruct[],
     overrides?: CallOverrides
@@ -702,7 +716,7 @@ export interface FlowERC20 extends BaseContract {
     ): Promise<boolean>;
 
     flow(
-      flow_: PromiseOrValue<string>,
+      dispatch_: PromiseOrValue<BigNumberish>,
       id_: PromiseOrValue<BigNumberish>,
       signedContexts_: SignedContextStruct[],
       overrides?: CallOverrides
@@ -753,7 +767,7 @@ export interface FlowERC20 extends BaseContract {
     ): Promise<string>;
 
     previewFlow(
-      flow_: PromiseOrValue<string>,
+      dispatch_: PromiseOrValue<BigNumberish>,
       id_: PromiseOrValue<BigNumberish>,
       signedContexts_: SignedContextStruct[],
       overrides?: CallOverrides
@@ -793,6 +807,17 @@ export interface FlowERC20 extends BaseContract {
       spender?: PromiseOrValue<string> | null,
       value?: null
     ): ApprovalEventFilter;
+
+    "FlowInitialized(address,address,uint256)"(
+      sender?: null,
+      interpreter?: null,
+      dispatch?: null
+    ): FlowInitializedEventFilter;
+    FlowInitialized(
+      sender?: null,
+      interpreter?: null,
+      dispatch?: null
+    ): FlowInitializedEventFilter;
 
     "Initialize(address,tuple)"(
       sender?: null,
@@ -842,7 +867,7 @@ export interface FlowERC20 extends BaseContract {
     ): Promise<BigNumber>;
 
     flow(
-      flow_: PromiseOrValue<string>,
+      dispatch_: PromiseOrValue<BigNumberish>,
       id_: PromiseOrValue<BigNumberish>,
       signedContexts_: SignedContextStruct[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
@@ -893,7 +918,7 @@ export interface FlowERC20 extends BaseContract {
     ): Promise<BigNumber>;
 
     previewFlow(
-      flow_: PromiseOrValue<string>,
+      dispatch_: PromiseOrValue<BigNumberish>,
       id_: PromiseOrValue<BigNumberish>,
       signedContexts_: SignedContextStruct[],
       overrides?: CallOverrides
@@ -949,7 +974,7 @@ export interface FlowERC20 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     flow(
-      flow_: PromiseOrValue<string>,
+      dispatch_: PromiseOrValue<BigNumberish>,
       id_: PromiseOrValue<BigNumberish>,
       signedContexts_: SignedContextStruct[],
       overrides?: PayableOverrides & { from?: PromiseOrValue<string> }
@@ -1000,7 +1025,7 @@ export interface FlowERC20 extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     previewFlow(
-      flow_: PromiseOrValue<string>,
+      dispatch_: PromiseOrValue<BigNumberish>,
       id_: PromiseOrValue<BigNumberish>,
       signedContexts_: SignedContextStruct[],
       overrides?: CallOverrides

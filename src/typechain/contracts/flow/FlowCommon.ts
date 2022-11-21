@@ -102,11 +102,25 @@ export interface FlowCommonInterface extends utils.Interface {
   ): Result;
 
   events: {
+    "FlowInitialized(address,address,uint256)": EventFragment;
     "Initialized(uint8)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "FlowInitialized"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
 }
+
+export interface FlowInitializedEventObject {
+  sender: string;
+  interpreter: string;
+  dispatch: BigNumber;
+}
+export type FlowInitializedEvent = TypedEvent<
+  [string, string, BigNumber],
+  FlowInitializedEventObject
+>;
+
+export type FlowInitializedEventFilter = TypedEventFilter<FlowInitializedEvent>;
 
 export interface InitializedEventObject {
   version: number;
@@ -254,6 +268,17 @@ export interface FlowCommon extends BaseContract {
   };
 
   filters: {
+    "FlowInitialized(address,address,uint256)"(
+      sender?: null,
+      interpreter?: null,
+      dispatch?: null
+    ): FlowInitializedEventFilter;
+    FlowInitialized(
+      sender?: null,
+      interpreter?: null,
+      dispatch?: null
+    ): FlowInitializedEventFilter;
+
     "Initialized(uint8)"(version?: null): InitializedEventFilter;
     Initialized(version?: null): InitializedEventFilter;
   };

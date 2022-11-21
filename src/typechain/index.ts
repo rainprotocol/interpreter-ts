@@ -118,8 +118,6 @@ export type { StandardIntegrity } from "./contracts/interpreter/deploy/StandardI
 export { StandardIntegrity__factory } from "./factories/contracts/interpreter/deploy/StandardIntegrity__factory";
 export type { IInterpreterV1 } from "./contracts/interpreter/run/IInterpreterV1";
 export { IInterpreterV1__factory } from "./factories/contracts/interpreter/run/IInterpreterV1__factory";
-export type { RainInterpreter } from "./contracts/interpreter/run/RainInterpreter";
-export { RainInterpreter__factory } from "./factories/contracts/interpreter/run/RainInterpreter__factory";
 export type { StandardInterpreter } from "./contracts/interpreter/run/StandardInterpreter";
 export { StandardInterpreter__factory } from "./factories/contracts/interpreter/run/StandardInterpreter__factory";
 export type { Rainterpreter } from "./contracts/interpreter/shared/Rainterpreter";
@@ -128,6 +126,8 @@ export type { RainterpreterExpressionDeployer } from "./contracts/interpreter/sh
 export { RainterpreterExpressionDeployer__factory } from "./factories/contracts/interpreter/shared/RainterpreterExpressionDeployer__factory";
 export type { NoticeBoard } from "./contracts/noticeboard/NoticeBoard";
 export { NoticeBoard__factory } from "./factories/contracts/noticeboard/NoticeBoard__factory";
+export type { ZeroExOrderBookFlashBorrower } from "./contracts/orderbook/arb/ZeroExOrderBookFlashBorrower";
+export { ZeroExOrderBookFlashBorrower__factory } from "./factories/contracts/orderbook/arb/ZeroExOrderBookFlashBorrower__factory";
 export type { IOrderBookV1 } from "./contracts/orderbook/IOrderBookV1";
 export { IOrderBookV1__factory } from "./factories/contracts/orderbook/IOrderBookV1__factory";
 export type { OrderBook } from "./contracts/orderbook/OrderBook";
@@ -258,8 +258,6 @@ export type { AutoApprove } from "./contracts/verify/auto/AutoApprove";
 export { AutoApprove__factory } from "./factories/contracts/verify/auto/AutoApprove__factory";
 export type { AutoApproveFactory } from "./contracts/verify/auto/AutoApproveFactory";
 export { AutoApproveFactory__factory } from "./factories/contracts/verify/auto/AutoApproveFactory__factory";
-export type { AutoApproveIntegrity } from "./contracts/verify/auto/AutoApproveIntegrity";
-export { AutoApproveIntegrity__factory } from "./factories/contracts/verify/auto/AutoApproveIntegrity__factory";
 export type { IVerifyCallback } from "./contracts/verify/IVerifyCallback";
 export { IVerifyCallback__factory } from "./factories/contracts/verify/IVerifyCallback__factory";
 export type { Verify } from "./contracts/verify/Verify";

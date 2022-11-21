@@ -29,21 +29,12 @@ import type {
 
 export type SaleConstructorConfigStruct = {
   maximumSaleTimeout: PromiseOrValue<BigNumberish>;
-  maximumCooldownDuration: PromiseOrValue<BigNumberish>;
   redeemableERC20Factory: PromiseOrValue<string>;
-  interpreterIntegrity: PromiseOrValue<string>;
 };
 
-export type SaleConstructorConfigStructOutput = [
-  BigNumber,
-  BigNumber,
-  string,
-  string
-] & {
+export type SaleConstructorConfigStructOutput = [BigNumber, string] & {
   maximumSaleTimeout: BigNumber;
-  maximumCooldownDuration: BigNumber;
   redeemableERC20Factory: string;
-  interpreterIntegrity: string;
 };
 
 export type StateConfigStruct = {

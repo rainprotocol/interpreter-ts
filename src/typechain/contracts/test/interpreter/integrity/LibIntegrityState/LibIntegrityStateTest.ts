@@ -23,16 +23,6 @@ import type {
   PromiseOrValue,
 } from "../../../../../common";
 
-export type StorageOpcodesRangeStruct = {
-  pointer: PromiseOrValue<BigNumberish>;
-  length: PromiseOrValue<BigNumberish>;
-};
-
-export type StorageOpcodesRangeStructOutput = [BigNumber, BigNumber] & {
-  pointer: BigNumber;
-  length: BigNumber;
-};
-
 export interface LibIntegrityStateTestInterface extends utils.Interface {
   functions: {
     "applyFn0(uint256)": FunctionFragment;
@@ -45,14 +35,14 @@ export interface LibIntegrityStateTestInterface extends utils.Interface {
     "applyFn7(uint256,uint256)": FunctionFragment;
     "applyFn8(uint256,uint256)": FunctionFragment;
     "applyFnN(uint256,uint256)": FunctionFragment;
-    "ensureIntegrity((uint256,uint256),bytes[],uint256,uint256[])": FunctionFragment;
-    "ensureIntegrityTest(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)": FunctionFragment;
-    "pop(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)": FunctionFragment;
-    "pop(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256,uint256)": FunctionFragment;
-    "popUnderflowCheck(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)": FunctionFragment;
-    "push(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)": FunctionFragment;
-    "push(bytes[],(uint256,uint256),uint256,uint256,uint256)": FunctionFragment;
-    "syncStackMaxTop(bytes[],(uint256,uint256),uint256,uint256,uint256)": FunctionFragment;
+    "ensureIntegrity(bytes[],uint256,uint256[])": FunctionFragment;
+    "ensureIntegrityTest(bytes[],uint256,uint256,uint256,uint256)": FunctionFragment;
+    "pop(bytes[],uint256,uint256,uint256,uint256,uint256)": FunctionFragment;
+    "pop(bytes[],uint256,uint256,uint256,uint256)": FunctionFragment;
+    "popUnderflowCheck(bytes[],uint256,uint256,uint256,uint256)": FunctionFragment;
+    "push(bytes[],uint256,uint256,uint256,uint256)": FunctionFragment;
+    "push(bytes[],uint256,uint256,uint256)": FunctionFragment;
+    "syncStackMaxTop(bytes[],uint256,uint256,uint256)": FunctionFragment;
   };
 
   getFunction(
@@ -69,11 +59,11 @@ export interface LibIntegrityStateTestInterface extends utils.Interface {
       | "applyFnN"
       | "ensureIntegrity"
       | "ensureIntegrityTest"
-      | "pop(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)"
-      | "pop(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256,uint256)"
+      | "pop(bytes[],uint256,uint256,uint256,uint256,uint256)"
+      | "pop(bytes[],uint256,uint256,uint256,uint256)"
       | "popUnderflowCheck"
-      | "push(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)"
-      | "push(bytes[],(uint256,uint256),uint256,uint256,uint256)"
+      | "push(bytes[],uint256,uint256,uint256,uint256)"
+      | "push(bytes[],uint256,uint256,uint256)"
       | "syncStackMaxTop"
   ): FunctionFragment;
 
@@ -120,7 +110,6 @@ export interface LibIntegrityStateTestInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "ensureIntegrity",
     values: [
-      StorageOpcodesRangeStruct,
       PromiseOrValue<BytesLike>[],
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>[]
@@ -130,7 +119,6 @@ export interface LibIntegrityStateTestInterface extends utils.Interface {
     functionFragment: "ensureIntegrityTest",
     values: [
       PromiseOrValue<BytesLike>[],
-      StorageOpcodesRangeStruct,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
@@ -138,10 +126,10 @@ export interface LibIntegrityStateTestInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "pop(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)",
+    functionFragment: "pop(bytes[],uint256,uint256,uint256,uint256,uint256)",
     values: [
       PromiseOrValue<BytesLike>[],
-      StorageOpcodesRangeStruct,
+      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
@@ -149,11 +137,9 @@ export interface LibIntegrityStateTestInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "pop(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256,uint256)",
+    functionFragment: "pop(bytes[],uint256,uint256,uint256,uint256)",
     values: [
       PromiseOrValue<BytesLike>[],
-      StorageOpcodesRangeStruct,
-      PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
@@ -164,7 +150,6 @@ export interface LibIntegrityStateTestInterface extends utils.Interface {
     functionFragment: "popUnderflowCheck",
     values: [
       PromiseOrValue<BytesLike>[],
-      StorageOpcodesRangeStruct,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
@@ -172,10 +157,9 @@ export interface LibIntegrityStateTestInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "push(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)",
+    functionFragment: "push(bytes[],uint256,uint256,uint256,uint256)",
     values: [
       PromiseOrValue<BytesLike>[],
-      StorageOpcodesRangeStruct,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
@@ -183,10 +167,9 @@ export interface LibIntegrityStateTestInterface extends utils.Interface {
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "push(bytes[],(uint256,uint256),uint256,uint256,uint256)",
+    functionFragment: "push(bytes[],uint256,uint256,uint256)",
     values: [
       PromiseOrValue<BytesLike>[],
-      StorageOpcodesRangeStruct,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
@@ -196,7 +179,6 @@ export interface LibIntegrityStateTestInterface extends utils.Interface {
     functionFragment: "syncStackMaxTop",
     values: [
       PromiseOrValue<BytesLike>[],
-      StorageOpcodesRangeStruct,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>
@@ -222,11 +204,11 @@ export interface LibIntegrityStateTestInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "pop(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)",
+    functionFragment: "pop(bytes[],uint256,uint256,uint256,uint256,uint256)",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "pop(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256,uint256)",
+    functionFragment: "pop(bytes[],uint256,uint256,uint256,uint256)",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -234,11 +216,11 @@ export interface LibIntegrityStateTestInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "push(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)",
+    functionFragment: "push(bytes[],uint256,uint256,uint256,uint256)",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "push(bytes[],(uint256,uint256),uint256,uint256,uint256)",
+    functionFragment: "push(bytes[],uint256,uint256,uint256)",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -332,41 +314,28 @@ export interface LibIntegrityStateTest extends BaseContract {
     ): Promise<[BigNumber]>;
 
     ensureIntegrity(
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       sources_: PromiseOrValue<BytesLike>[],
       constantsLength_: PromiseOrValue<BigNumberish>,
-      finalStacks_: PromiseOrValue<BigNumberish>[],
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
-        contextScratch_: BigNumber;
+        contextReads_: BigNumber;
         stackLength_: BigNumber;
       }
     >;
 
     ensureIntegrityTest(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       sourceIndex_: PromiseOrValue<BigNumberish>,
       stackTop_: PromiseOrValue<BigNumberish>,
-      minimumFinalStackIndex_: PromiseOrValue<BigNumberish>,
+      minStackOutputs_: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    "pop(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)"(
+    "pop(bytes[],uint256,uint256,uint256,uint256,uint256)"(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
-      constantsLength_: PromiseOrValue<BigNumberish>,
-      stackBottom_: PromiseOrValue<BigNumberish>,
-      stackMaxTop_: PromiseOrValue<BigNumberish>,
-      stackTop_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { stackTopAfter_: BigNumber }>;
-
-    "pop(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256,uint256)"(
-      sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackBottom_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
@@ -375,9 +344,17 @@ export interface LibIntegrityStateTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { stackTopAfter_: BigNumber }>;
 
+    "pop(bytes[],uint256,uint256,uint256,uint256)"(
+      sources_: PromiseOrValue<BytesLike>[],
+      constantsLength_: PromiseOrValue<BigNumberish>,
+      stackBottom_: PromiseOrValue<BigNumberish>,
+      stackMaxTop_: PromiseOrValue<BigNumberish>,
+      stackTop_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { stackTopAfter_: BigNumber }>;
+
     popUnderflowCheck(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackBottom_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
@@ -385,9 +362,8 @@ export interface LibIntegrityStateTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[void]>;
 
-    "push(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)"(
+    "push(bytes[],uint256,uint256,uint256,uint256)"(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
       stackTop_: PromiseOrValue<BigNumberish>,
@@ -395,9 +371,8 @@ export interface LibIntegrityStateTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { stackTopAfter_: BigNumber }>;
 
-    "push(bytes[],(uint256,uint256),uint256,uint256,uint256)"(
+    "push(bytes[],uint256,uint256,uint256)"(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
       stackTop_: PromiseOrValue<BigNumberish>,
@@ -406,7 +381,6 @@ export interface LibIntegrityStateTest extends BaseContract {
 
     syncStackMaxTop(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
       stackTop_: PromiseOrValue<BigNumberish>,
@@ -470,41 +444,28 @@ export interface LibIntegrityStateTest extends BaseContract {
   ): Promise<BigNumber>;
 
   ensureIntegrity(
-    storageOpcodesRange_: StorageOpcodesRangeStruct,
     sources_: PromiseOrValue<BytesLike>[],
     constantsLength_: PromiseOrValue<BigNumberish>,
-    finalStacks_: PromiseOrValue<BigNumberish>[],
+    minStackOutputs_: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber] & {
-      contextScratch_: BigNumber;
+      contextReads_: BigNumber;
       stackLength_: BigNumber;
     }
   >;
 
   ensureIntegrityTest(
     sources_: PromiseOrValue<BytesLike>[],
-    storageOpcodesRange_: StorageOpcodesRangeStruct,
     constantsLength_: PromiseOrValue<BigNumberish>,
     sourceIndex_: PromiseOrValue<BigNumberish>,
     stackTop_: PromiseOrValue<BigNumberish>,
-    minimumFinalStackIndex_: PromiseOrValue<BigNumberish>,
+    minStackOutputs_: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  "pop(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)"(
+  "pop(bytes[],uint256,uint256,uint256,uint256,uint256)"(
     sources_: PromiseOrValue<BytesLike>[],
-    storageOpcodesRange_: StorageOpcodesRangeStruct,
-    constantsLength_: PromiseOrValue<BigNumberish>,
-    stackBottom_: PromiseOrValue<BigNumberish>,
-    stackMaxTop_: PromiseOrValue<BigNumberish>,
-    stackTop_: PromiseOrValue<BigNumberish>,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
-
-  "pop(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256,uint256)"(
-    sources_: PromiseOrValue<BytesLike>[],
-    storageOpcodesRange_: StorageOpcodesRangeStruct,
     constantsLength_: PromiseOrValue<BigNumberish>,
     stackBottom_: PromiseOrValue<BigNumberish>,
     stackMaxTop_: PromiseOrValue<BigNumberish>,
@@ -513,9 +474,17 @@ export interface LibIntegrityStateTest extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  "pop(bytes[],uint256,uint256,uint256,uint256)"(
+    sources_: PromiseOrValue<BytesLike>[],
+    constantsLength_: PromiseOrValue<BigNumberish>,
+    stackBottom_: PromiseOrValue<BigNumberish>,
+    stackMaxTop_: PromiseOrValue<BigNumberish>,
+    stackTop_: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
   popUnderflowCheck(
     sources_: PromiseOrValue<BytesLike>[],
-    storageOpcodesRange_: StorageOpcodesRangeStruct,
     constantsLength_: PromiseOrValue<BigNumberish>,
     stackBottom_: PromiseOrValue<BigNumberish>,
     stackMaxTop_: PromiseOrValue<BigNumberish>,
@@ -523,9 +492,8 @@ export interface LibIntegrityStateTest extends BaseContract {
     overrides?: CallOverrides
   ): Promise<void>;
 
-  "push(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)"(
+  "push(bytes[],uint256,uint256,uint256,uint256)"(
     sources_: PromiseOrValue<BytesLike>[],
-    storageOpcodesRange_: StorageOpcodesRangeStruct,
     constantsLength_: PromiseOrValue<BigNumberish>,
     stackMaxTop_: PromiseOrValue<BigNumberish>,
     stackTop_: PromiseOrValue<BigNumberish>,
@@ -533,9 +501,8 @@ export interface LibIntegrityStateTest extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  "push(bytes[],(uint256,uint256),uint256,uint256,uint256)"(
+  "push(bytes[],uint256,uint256,uint256)"(
     sources_: PromiseOrValue<BytesLike>[],
-    storageOpcodesRange_: StorageOpcodesRangeStruct,
     constantsLength_: PromiseOrValue<BigNumberish>,
     stackMaxTop_: PromiseOrValue<BigNumberish>,
     stackTop_: PromiseOrValue<BigNumberish>,
@@ -544,7 +511,6 @@ export interface LibIntegrityStateTest extends BaseContract {
 
   syncStackMaxTop(
     sources_: PromiseOrValue<BytesLike>[],
-    storageOpcodesRange_: StorageOpcodesRangeStruct,
     constantsLength_: PromiseOrValue<BigNumberish>,
     stackMaxTop_: PromiseOrValue<BigNumberish>,
     stackTop_: PromiseOrValue<BigNumberish>,
@@ -608,41 +574,28 @@ export interface LibIntegrityStateTest extends BaseContract {
     ): Promise<BigNumber>;
 
     ensureIntegrity(
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       sources_: PromiseOrValue<BytesLike>[],
       constantsLength_: PromiseOrValue<BigNumberish>,
-      finalStacks_: PromiseOrValue<BigNumberish>[],
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
-        contextScratch_: BigNumber;
+        contextReads_: BigNumber;
         stackLength_: BigNumber;
       }
     >;
 
     ensureIntegrityTest(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       sourceIndex_: PromiseOrValue<BigNumberish>,
       stackTop_: PromiseOrValue<BigNumberish>,
-      minimumFinalStackIndex_: PromiseOrValue<BigNumberish>,
+      minStackOutputs_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "pop(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)"(
+    "pop(bytes[],uint256,uint256,uint256,uint256,uint256)"(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
-      constantsLength_: PromiseOrValue<BigNumberish>,
-      stackBottom_: PromiseOrValue<BigNumberish>,
-      stackMaxTop_: PromiseOrValue<BigNumberish>,
-      stackTop_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "pop(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256,uint256)"(
-      sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackBottom_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
@@ -651,9 +604,17 @@ export interface LibIntegrityStateTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    "pop(bytes[],uint256,uint256,uint256,uint256)"(
+      sources_: PromiseOrValue<BytesLike>[],
+      constantsLength_: PromiseOrValue<BigNumberish>,
+      stackBottom_: PromiseOrValue<BigNumberish>,
+      stackMaxTop_: PromiseOrValue<BigNumberish>,
+      stackTop_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     popUnderflowCheck(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackBottom_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
@@ -661,9 +622,8 @@ export interface LibIntegrityStateTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "push(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)"(
+    "push(bytes[],uint256,uint256,uint256,uint256)"(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
       stackTop_: PromiseOrValue<BigNumberish>,
@@ -671,9 +631,8 @@ export interface LibIntegrityStateTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "push(bytes[],(uint256,uint256),uint256,uint256,uint256)"(
+    "push(bytes[],uint256,uint256,uint256)"(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
       stackTop_: PromiseOrValue<BigNumberish>,
@@ -682,7 +641,6 @@ export interface LibIntegrityStateTest extends BaseContract {
 
     syncStackMaxTop(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
       stackTop_: PromiseOrValue<BigNumberish>,
@@ -749,47 +707,42 @@ export interface LibIntegrityStateTest extends BaseContract {
     ): Promise<BigNumber>;
 
     ensureIntegrity(
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       sources_: PromiseOrValue<BytesLike>[],
       constantsLength_: PromiseOrValue<BigNumberish>,
-      finalStacks_: PromiseOrValue<BigNumberish>[],
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     ensureIntegrityTest(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       sourceIndex_: PromiseOrValue<BigNumberish>,
       stackTop_: PromiseOrValue<BigNumberish>,
-      minimumFinalStackIndex_: PromiseOrValue<BigNumberish>,
+      minStackOutputs_: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    "pop(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)"(
+    "pop(bytes[],uint256,uint256,uint256,uint256,uint256)"(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
-      constantsLength_: PromiseOrValue<BigNumberish>,
-      stackBottom_: PromiseOrValue<BigNumberish>,
-      stackMaxTop_: PromiseOrValue<BigNumberish>,
-      stackTop_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "pop(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256,uint256)"(
-      sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackBottom_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
       stackTop_: PromiseOrValue<BigNumberish>,
       n_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "pop(bytes[],uint256,uint256,uint256,uint256)"(
+      sources_: PromiseOrValue<BytesLike>[],
+      constantsLength_: PromiseOrValue<BigNumberish>,
+      stackBottom_: PromiseOrValue<BigNumberish>,
+      stackMaxTop_: PromiseOrValue<BigNumberish>,
+      stackTop_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     popUnderflowCheck(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackBottom_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
@@ -797,9 +750,8 @@ export interface LibIntegrityStateTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "push(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)"(
+    "push(bytes[],uint256,uint256,uint256,uint256)"(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
       stackTop_: PromiseOrValue<BigNumberish>,
@@ -807,9 +759,8 @@ export interface LibIntegrityStateTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "push(bytes[],(uint256,uint256),uint256,uint256,uint256)"(
+    "push(bytes[],uint256,uint256,uint256)"(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
       stackTop_: PromiseOrValue<BigNumberish>,
@@ -818,7 +769,6 @@ export interface LibIntegrityStateTest extends BaseContract {
 
     syncStackMaxTop(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
       stackTop_: PromiseOrValue<BigNumberish>,
@@ -883,47 +833,42 @@ export interface LibIntegrityStateTest extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     ensureIntegrity(
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       sources_: PromiseOrValue<BytesLike>[],
       constantsLength_: PromiseOrValue<BigNumberish>,
-      finalStacks_: PromiseOrValue<BigNumberish>[],
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     ensureIntegrityTest(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       sourceIndex_: PromiseOrValue<BigNumberish>,
       stackTop_: PromiseOrValue<BigNumberish>,
-      minimumFinalStackIndex_: PromiseOrValue<BigNumberish>,
+      minStackOutputs_: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    "pop(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)"(
+    "pop(bytes[],uint256,uint256,uint256,uint256,uint256)"(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
-      constantsLength_: PromiseOrValue<BigNumberish>,
-      stackBottom_: PromiseOrValue<BigNumberish>,
-      stackMaxTop_: PromiseOrValue<BigNumberish>,
-      stackTop_: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "pop(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256,uint256)"(
-      sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackBottom_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
       stackTop_: PromiseOrValue<BigNumberish>,
       n_: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "pop(bytes[],uint256,uint256,uint256,uint256)"(
+      sources_: PromiseOrValue<BytesLike>[],
+      constantsLength_: PromiseOrValue<BigNumberish>,
+      stackBottom_: PromiseOrValue<BigNumberish>,
+      stackMaxTop_: PromiseOrValue<BigNumberish>,
+      stackTop_: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     popUnderflowCheck(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackBottom_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
@@ -931,9 +876,8 @@ export interface LibIntegrityStateTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "push(bytes[],(uint256,uint256),uint256,uint256,uint256,uint256)"(
+    "push(bytes[],uint256,uint256,uint256,uint256)"(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
       stackTop_: PromiseOrValue<BigNumberish>,
@@ -941,9 +885,8 @@ export interface LibIntegrityStateTest extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "push(bytes[],(uint256,uint256),uint256,uint256,uint256)"(
+    "push(bytes[],uint256,uint256,uint256)"(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
       stackTop_: PromiseOrValue<BigNumberish>,
@@ -952,7 +895,6 @@ export interface LibIntegrityStateTest extends BaseContract {
 
     syncStackMaxTop(
       sources_: PromiseOrValue<BytesLike>[],
-      storageOpcodesRange_: StorageOpcodesRangeStruct,
       constantsLength_: PromiseOrValue<BigNumberish>,
       stackMaxTop_: PromiseOrValue<BigNumberish>,
       stackTop_: PromiseOrValue<BigNumberish>,

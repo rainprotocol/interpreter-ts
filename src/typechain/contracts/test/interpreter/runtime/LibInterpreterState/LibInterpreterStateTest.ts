@@ -34,7 +34,8 @@ export type StateConfigStructOutput = [string[], BigNumber[]] & {
 export type InterpreterStateStruct = {
   stackBottom: PromiseOrValue<BigNumberish>;
   constantsBottom: PromiseOrValue<BigNumberish>;
-  contextReads: PromiseOrValue<BigNumberish>;
+  stateKV: PromiseOrValue<BigNumberish>;
+  stateNamespace: PromiseOrValue<BigNumberish>;
   context: PromiseOrValue<BigNumberish>[][];
   compiledSources: PromiseOrValue<BytesLike>[];
 };
@@ -43,48 +44,38 @@ export type InterpreterStateStructOutput = [
   BigNumber,
   BigNumber,
   BigNumber,
+  BigNumber,
   BigNumber[][],
   string[]
 ] & {
   stackBottom: BigNumber;
   constantsBottom: BigNumber;
-  contextReads: BigNumber;
+  stateKV: BigNumber;
+  stateNamespace: BigNumber;
   context: BigNumber[][];
   compiledSources: string[];
 };
 
-export type StorageOpcodesRangeStruct = {
-  pointer: PromiseOrValue<BigNumberish>;
-  length: PromiseOrValue<BigNumberish>;
-};
-
-export type StorageOpcodesRangeStructOutput = [BigNumber, BigNumber] & {
-  pointer: BigNumber;
-  length: BigNumber;
-};
-
 export interface LibInterpreterStateTestInterface extends utils.Interface {
   functions: {
-    "debug((bytes[],uint256[]),uint256[][],uint8,uint256)": FunctionFragment;
-    "eval((bytes[],uint256[]))": FunctionFragment;
-    "eval((bytes[],uint256[]),uint256)": FunctionFragment;
-    "evalStackTop((bytes[],uint256[]))": FunctionFragment;
-    "evalStackTop((bytes[],uint256[]),uint256)": FunctionFragment;
-    "serDeserialize((bytes[],uint256[]),uint256[][])": FunctionFragment;
-    "serialize((bytes[],uint256[]))": FunctionFragment;
-    "storageOpcodesRange()": FunctionFragment;
+    "debug((bytes[],uint256[]),uint256[][],uint8,uint256,uint256[])": FunctionFragment;
+    "eval((bytes[],uint256[]),uint256,uint256[])": FunctionFragment;
+    "eval((bytes[],uint256[]),uint256[])": FunctionFragment;
+    "evalStackTop((bytes[],uint256[]),uint256,uint256[])": FunctionFragment;
+    "evalStackTop((bytes[],uint256[]),uint256[])": FunctionFragment;
+    "serDeserialize((bytes[],uint256[]),uint256[][],uint256[])": FunctionFragment;
+    "serialize((bytes[],uint256[]),uint256[])": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
       | "debug"
-      | "eval((bytes[],uint256[]))"
-      | "eval((bytes[],uint256[]),uint256)"
-      | "evalStackTop((bytes[],uint256[]))"
-      | "evalStackTop((bytes[],uint256[]),uint256)"
+      | "eval((bytes[],uint256[]),uint256,uint256[])"
+      | "eval((bytes[],uint256[]),uint256[])"
+      | "evalStackTop((bytes[],uint256[]),uint256,uint256[])"
+      | "evalStackTop((bytes[],uint256[]),uint256[])"
       | "serDeserialize"
       | "serialize"
-      | "storageOpcodesRange"
   ): FunctionFragment;
 
   encodeFunctionData(
@@ -93,53 +84,62 @@ export interface LibInterpreterStateTestInterface extends utils.Interface {
       StateConfigStruct,
       PromiseOrValue<BigNumberish>[][],
       PromiseOrValue<BigNumberish>,
-      PromiseOrValue<BigNumberish>
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>[]
     ]
   ): string;
   encodeFunctionData(
-    functionFragment: "eval((bytes[],uint256[]))",
-    values: [StateConfigStruct]
+    functionFragment: "eval((bytes[],uint256[]),uint256,uint256[])",
+    values: [
+      StateConfigStruct,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>[]
+    ]
   ): string;
   encodeFunctionData(
-    functionFragment: "eval((bytes[],uint256[]),uint256)",
-    values: [StateConfigStruct, PromiseOrValue<BigNumberish>]
+    functionFragment: "eval((bytes[],uint256[]),uint256[])",
+    values: [StateConfigStruct, PromiseOrValue<BigNumberish>[]]
   ): string;
   encodeFunctionData(
-    functionFragment: "evalStackTop((bytes[],uint256[]))",
-    values: [StateConfigStruct]
+    functionFragment: "evalStackTop((bytes[],uint256[]),uint256,uint256[])",
+    values: [
+      StateConfigStruct,
+      PromiseOrValue<BigNumberish>,
+      PromiseOrValue<BigNumberish>[]
+    ]
   ): string;
   encodeFunctionData(
-    functionFragment: "evalStackTop((bytes[],uint256[]),uint256)",
-    values: [StateConfigStruct, PromiseOrValue<BigNumberish>]
+    functionFragment: "evalStackTop((bytes[],uint256[]),uint256[])",
+    values: [StateConfigStruct, PromiseOrValue<BigNumberish>[]]
   ): string;
   encodeFunctionData(
     functionFragment: "serDeserialize",
-    values: [StateConfigStruct, PromiseOrValue<BigNumberish>[][]]
+    values: [
+      StateConfigStruct,
+      PromiseOrValue<BigNumberish>[][],
+      PromiseOrValue<BigNumberish>[]
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "serialize",
-    values: [StateConfigStruct]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "storageOpcodesRange",
-    values?: undefined
+    values: [StateConfigStruct, PromiseOrValue<BigNumberish>[]]
   ): string;
 
   decodeFunctionResult(functionFragment: "debug", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "eval((bytes[],uint256[]))",
+    functionFragment: "eval((bytes[],uint256[]),uint256,uint256[])",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "eval((bytes[],uint256[]),uint256)",
+    functionFragment: "eval((bytes[],uint256[]),uint256[])",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "evalStackTop((bytes[],uint256[]))",
+    functionFragment: "evalStackTop((bytes[],uint256[]),uint256,uint256[])",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "evalStackTop((bytes[],uint256[]),uint256)",
+    functionFragment: "evalStackTop((bytes[],uint256[]),uint256[])",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -147,10 +147,6 @@ export interface LibInterpreterStateTestInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "serialize", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "storageOpcodesRange",
-    data: BytesLike
-  ): Result;
 
   events: {};
 }
@@ -187,6 +183,7 @@ export interface LibInterpreterStateTest extends BaseContract {
       context_: PromiseOrValue<BigNumberish>[][],
       debugStyle_: PromiseOrValue<BigNumberish>,
       sourceIndex_: PromiseOrValue<BigNumberish>,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -195,19 +192,10 @@ export interface LibInterpreterStateTest extends BaseContract {
       }
     >;
 
-    "eval((bytes[],uint256[]))"(
-      config_: StateConfigStruct,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        stackTopAfter_: BigNumber;
-        stackBottom_: BigNumber;
-      }
-    >;
-
-    "eval((bytes[],uint256[]),uint256)"(
+    "eval((bytes[],uint256[]),uint256,uint256[])"(
       config_: StateConfigStruct,
       sourceIndex_: PromiseOrValue<BigNumberish>,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -216,8 +204,9 @@ export interface LibInterpreterStateTest extends BaseContract {
       }
     >;
 
-    "evalStackTop((bytes[],uint256[]))"(
+    "eval((bytes[],uint256[]),uint256[])"(
       config_: StateConfigStruct,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -226,9 +215,21 @@ export interface LibInterpreterStateTest extends BaseContract {
       }
     >;
 
-    "evalStackTop((bytes[],uint256[]),uint256)"(
+    "evalStackTop((bytes[],uint256[]),uint256,uint256[])"(
       config_: StateConfigStruct,
       sourceIndex_: PromiseOrValue<BigNumberish>,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        stackTopAfter_: BigNumber;
+        stackBottom_: BigNumber;
+      }
+    >;
+
+    "evalStackTop((bytes[],uint256[]),uint256[])"(
+      config_: StateConfigStruct,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -240,6 +241,7 @@ export interface LibInterpreterStateTest extends BaseContract {
     serDeserialize(
       config_: StateConfigStruct,
       context_: PromiseOrValue<BigNumberish>[][],
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<
       [InterpreterStateStructOutput] & { state_: InterpreterStateStructOutput }
@@ -247,12 +249,9 @@ export interface LibInterpreterStateTest extends BaseContract {
 
     serialize(
       config_: StateConfigStruct,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<[string] & { serialized_: string }>;
-
-    storageOpcodesRange(
-      overrides?: CallOverrides
-    ): Promise<[StorageOpcodesRangeStructOutput]>;
   };
 
   debug(
@@ -260,24 +259,16 @@ export interface LibInterpreterStateTest extends BaseContract {
     context_: PromiseOrValue<BigNumberish>[][],
     debugStyle_: PromiseOrValue<BigNumberish>,
     sourceIndex_: PromiseOrValue<BigNumberish>,
+    minStackOutputs_: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber] & { stackTop_: BigNumber; stackTopAfter_: BigNumber }
   >;
 
-  "eval((bytes[],uint256[]))"(
-    config_: StateConfigStruct,
-    overrides?: CallOverrides
-  ): Promise<
-    [BigNumber, BigNumber] & {
-      stackTopAfter_: BigNumber;
-      stackBottom_: BigNumber;
-    }
-  >;
-
-  "eval((bytes[],uint256[]),uint256)"(
+  "eval((bytes[],uint256[]),uint256,uint256[])"(
     config_: StateConfigStruct,
     sourceIndex_: PromiseOrValue<BigNumberish>,
+    minStackOutputs_: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber] & {
@@ -286,8 +277,9 @@ export interface LibInterpreterStateTest extends BaseContract {
     }
   >;
 
-  "evalStackTop((bytes[],uint256[]))"(
+  "eval((bytes[],uint256[]),uint256[])"(
     config_: StateConfigStruct,
+    minStackOutputs_: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber] & {
@@ -296,9 +288,21 @@ export interface LibInterpreterStateTest extends BaseContract {
     }
   >;
 
-  "evalStackTop((bytes[],uint256[]),uint256)"(
+  "evalStackTop((bytes[],uint256[]),uint256,uint256[])"(
     config_: StateConfigStruct,
     sourceIndex_: PromiseOrValue<BigNumberish>,
+    minStackOutputs_: PromiseOrValue<BigNumberish>[],
+    overrides?: CallOverrides
+  ): Promise<
+    [BigNumber, BigNumber] & {
+      stackTopAfter_: BigNumber;
+      stackBottom_: BigNumber;
+    }
+  >;
+
+  "evalStackTop((bytes[],uint256[]),uint256[])"(
+    config_: StateConfigStruct,
+    minStackOutputs_: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
   ): Promise<
     [BigNumber, BigNumber] & {
@@ -310,17 +314,15 @@ export interface LibInterpreterStateTest extends BaseContract {
   serDeserialize(
     config_: StateConfigStruct,
     context_: PromiseOrValue<BigNumberish>[][],
+    minStackOutputs_: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
   ): Promise<InterpreterStateStructOutput>;
 
   serialize(
     config_: StateConfigStruct,
+    minStackOutputs_: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
   ): Promise<string>;
-
-  storageOpcodesRange(
-    overrides?: CallOverrides
-  ): Promise<StorageOpcodesRangeStructOutput>;
 
   callStatic: {
     debug(
@@ -328,6 +330,7 @@ export interface LibInterpreterStateTest extends BaseContract {
       context_: PromiseOrValue<BigNumberish>[][],
       debugStyle_: PromiseOrValue<BigNumberish>,
       sourceIndex_: PromiseOrValue<BigNumberish>,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -336,19 +339,10 @@ export interface LibInterpreterStateTest extends BaseContract {
       }
     >;
 
-    "eval((bytes[],uint256[]))"(
-      config_: StateConfigStruct,
-      overrides?: CallOverrides
-    ): Promise<
-      [BigNumber, BigNumber] & {
-        stackTopAfter_: BigNumber;
-        stackBottom_: BigNumber;
-      }
-    >;
-
-    "eval((bytes[],uint256[]),uint256)"(
+    "eval((bytes[],uint256[]),uint256,uint256[])"(
       config_: StateConfigStruct,
       sourceIndex_: PromiseOrValue<BigNumberish>,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -357,8 +351,9 @@ export interface LibInterpreterStateTest extends BaseContract {
       }
     >;
 
-    "evalStackTop((bytes[],uint256[]))"(
+    "eval((bytes[],uint256[]),uint256[])"(
       config_: StateConfigStruct,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -367,9 +362,21 @@ export interface LibInterpreterStateTest extends BaseContract {
       }
     >;
 
-    "evalStackTop((bytes[],uint256[]),uint256)"(
+    "evalStackTop((bytes[],uint256[]),uint256,uint256[])"(
       config_: StateConfigStruct,
       sourceIndex_: PromiseOrValue<BigNumberish>,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<
+      [BigNumber, BigNumber] & {
+        stackTopAfter_: BigNumber;
+        stackBottom_: BigNumber;
+      }
+    >;
+
+    "evalStackTop((bytes[],uint256[]),uint256[])"(
+      config_: StateConfigStruct,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
@@ -381,17 +388,15 @@ export interface LibInterpreterStateTest extends BaseContract {
     serDeserialize(
       config_: StateConfigStruct,
       context_: PromiseOrValue<BigNumberish>[][],
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<InterpreterStateStructOutput>;
 
     serialize(
       config_: StateConfigStruct,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<string>;
-
-    storageOpcodesRange(
-      overrides?: CallOverrides
-    ): Promise<StorageOpcodesRangeStructOutput>;
   };
 
   filters: {};
@@ -402,43 +407,48 @@ export interface LibInterpreterStateTest extends BaseContract {
       context_: PromiseOrValue<BigNumberish>[][],
       debugStyle_: PromiseOrValue<BigNumberish>,
       sourceIndex_: PromiseOrValue<BigNumberish>,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "eval((bytes[],uint256[]))"(
-      config_: StateConfigStruct,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "eval((bytes[],uint256[]),uint256)"(
+    "eval((bytes[],uint256[]),uint256,uint256[])"(
       config_: StateConfigStruct,
       sourceIndex_: PromiseOrValue<BigNumberish>,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "evalStackTop((bytes[],uint256[]))"(
+    "eval((bytes[],uint256[]),uint256[])"(
       config_: StateConfigStruct,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "evalStackTop((bytes[],uint256[]),uint256)"(
+    "evalStackTop((bytes[],uint256[]),uint256,uint256[])"(
       config_: StateConfigStruct,
       sourceIndex_: PromiseOrValue<BigNumberish>,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "evalStackTop((bytes[],uint256[]),uint256[])"(
+      config_: StateConfigStruct,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     serDeserialize(
       config_: StateConfigStruct,
       context_: PromiseOrValue<BigNumberish>[][],
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
     serialize(
       config_: StateConfigStruct,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    storageOpcodesRange(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -447,43 +457,46 @@ export interface LibInterpreterStateTest extends BaseContract {
       context_: PromiseOrValue<BigNumberish>[][],
       debugStyle_: PromiseOrValue<BigNumberish>,
       sourceIndex_: PromiseOrValue<BigNumberish>,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "eval((bytes[],uint256[]))"(
-      config_: StateConfigStruct,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "eval((bytes[],uint256[]),uint256)"(
+    "eval((bytes[],uint256[]),uint256,uint256[])"(
       config_: StateConfigStruct,
       sourceIndex_: PromiseOrValue<BigNumberish>,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "evalStackTop((bytes[],uint256[]))"(
+    "eval((bytes[],uint256[]),uint256[])"(
       config_: StateConfigStruct,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "evalStackTop((bytes[],uint256[]),uint256)"(
+    "evalStackTop((bytes[],uint256[]),uint256,uint256[])"(
       config_: StateConfigStruct,
       sourceIndex_: PromiseOrValue<BigNumberish>,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "evalStackTop((bytes[],uint256[]),uint256[])"(
+      config_: StateConfigStruct,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     serDeserialize(
       config_: StateConfigStruct,
       context_: PromiseOrValue<BigNumberish>[][],
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     serialize(
       config_: StateConfigStruct,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    storageOpcodesRange(
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

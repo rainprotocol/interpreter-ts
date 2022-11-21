@@ -3,4 +3,3 @@
 /* eslint-disable */
 export { AutoApprove__factory } from "./AutoApprove__factory";
 export { AutoApproveFactory__factory } from "./AutoApproveFactory__factory";
-export { AutoApproveIntegrity__factory } from "./AutoApproveIntegrity__factory";

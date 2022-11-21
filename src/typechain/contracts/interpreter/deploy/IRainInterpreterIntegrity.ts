@@ -21,19 +21,9 @@ import type {
   PromiseOrValue,
 } from "../../../common";
 
-export type StorageOpcodesRangeStruct = {
-  pointer: PromiseOrValue<BigNumberish>;
-  length: PromiseOrValue<BigNumberish>;
-};
-
-export type StorageOpcodesRangeStructOutput = [BigNumber, BigNumber] & {
-  pointer: BigNumber;
-  length: BigNumber;
-};
-
 export interface IRainInterpreterIntegrityInterface extends utils.Interface {
   functions: {
-    "ensureIntegrity((uint256,uint256),bytes[],uint256,uint256[])": FunctionFragment;
+    "ensureIntegrity(bytes[],uint256,uint256[])": FunctionFragment;
   };
 
   getFunction(nameOrSignatureOrTopic: "ensureIntegrity"): FunctionFragment;
@@ -41,7 +31,6 @@ export interface IRainInterpreterIntegrityInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "ensureIntegrity",
     values: [
-      StorageOpcodesRangeStruct,
       PromiseOrValue<BytesLike>[],
       PromiseOrValue<BigNumberish>,
       PromiseOrValue<BigNumberish>[]
@@ -84,43 +73,37 @@ export interface IRainInterpreterIntegrity extends BaseContract {
 
   functions: {
     ensureIntegrity(
-      storageOpcodesRange: StorageOpcodesRangeStruct,
       sources: PromiseOrValue<BytesLike>[],
       constantsLength: PromiseOrValue<BigNumberish>,
-      finalStacks: PromiseOrValue<BigNumberish>[],
+      minStackOutputs: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
-        contextScratch_: BigNumber;
-        maximumStackHeight: BigNumber;
+        contextReads: BigNumber;
+        stackLength: BigNumber;
       }
     >;
   };
 
   ensureIntegrity(
-    storageOpcodesRange: StorageOpcodesRangeStruct,
     sources: PromiseOrValue<BytesLike>[],
     constantsLength: PromiseOrValue<BigNumberish>,
-    finalStacks: PromiseOrValue<BigNumberish>[],
+    minStackOutputs: PromiseOrValue<BigNumberish>[],
     overrides?: CallOverrides
   ): Promise<
-    [BigNumber, BigNumber] & {
-      contextScratch_: BigNumber;
-      maximumStackHeight: BigNumber;
-    }
+    [BigNumber, BigNumber] & { contextReads: BigNumber; stackLength: BigNumber }
   >;
 
   callStatic: {
     ensureIntegrity(
-      storageOpcodesRange: StorageOpcodesRangeStruct,
       sources: PromiseOrValue<BytesLike>[],
       constantsLength: PromiseOrValue<BigNumberish>,
-      finalStacks: PromiseOrValue<BigNumberish>[],
+      minStackOutputs: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<
       [BigNumber, BigNumber] & {
-        contextScratch_: BigNumber;
-        maximumStackHeight: BigNumber;
+        contextReads: BigNumber;
+        stackLength: BigNumber;
       }
     >;
   };
@@ -129,20 +112,18 @@ export interface IRainInterpreterIntegrity extends BaseContract {
 
   estimateGas: {
     ensureIntegrity(
-      storageOpcodesRange: StorageOpcodesRangeStruct,
       sources: PromiseOrValue<BytesLike>[],
       constantsLength: PromiseOrValue<BigNumberish>,
-      finalStacks: PromiseOrValue<BigNumberish>[],
+      minStackOutputs: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
     ensureIntegrity(
-      storageOpcodesRange: StorageOpcodesRangeStruct,
       sources: PromiseOrValue<BytesLike>[],
       constantsLength: PromiseOrValue<BigNumberish>,
-      finalStacks: PromiseOrValue<BigNumberish>[],
+      minStackOutputs: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

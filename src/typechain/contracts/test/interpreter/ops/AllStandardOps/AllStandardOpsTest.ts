@@ -37,24 +37,13 @@ export type StateConfigStructOutput = [string[], BigNumber[]] & {
   constants: BigNumber[];
 };
 
-export type StorageOpcodesRangeStruct = {
-  pointer: PromiseOrValue<BigNumberish>;
-  length: PromiseOrValue<BigNumberish>;
-};
-
-export type StorageOpcodesRangeStructOutput = [BigNumber, BigNumber] & {
-  pointer: BigNumber;
-  length: BigNumber;
-};
-
 export interface AllStandardOpsTestInterface extends utils.Interface {
   functions: {
-    "initialize((bytes[],uint256[]))": FunctionFragment;
+    "initialize((bytes[],uint256[]),uint256[])": FunctionFragment;
     "run()": FunctionFragment;
     "runContext(uint256[][])": FunctionFragment;
     "stack()": FunctionFragment;
     "stackTop()": FunctionFragment;
-    "storageOpcodesRange()": FunctionFragment;
   };
 
   getFunction(
@@ -64,12 +53,11 @@ export interface AllStandardOpsTestInterface extends utils.Interface {
       | "runContext"
       | "stack"
       | "stackTop"
-      | "storageOpcodesRange"
   ): FunctionFragment;
 
   encodeFunctionData(
     functionFragment: "initialize",
-    values: [StateConfigStruct]
+    values: [StateConfigStruct, PromiseOrValue<BigNumberish>[]]
   ): string;
   encodeFunctionData(functionFragment: "run", values?: undefined): string;
   encodeFunctionData(
@@ -78,20 +66,12 @@ export interface AllStandardOpsTestInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "stack", values?: undefined): string;
   encodeFunctionData(functionFragment: "stackTop", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "storageOpcodesRange",
-    values?: undefined
-  ): string;
 
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "run", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "runContext", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "stack", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "stackTop", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "storageOpcodesRange",
-    data: BytesLike
-  ): Result;
 
   events: {
     "SaveInterpreterState(address,uint256,tuple)": EventFragment;
@@ -142,6 +122,7 @@ export interface AllStandardOpsTest extends BaseContract {
   functions: {
     initialize(
       stateConfig_: StateConfigStruct,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -157,18 +138,11 @@ export interface AllStandardOpsTest extends BaseContract {
     stack(overrides?: CallOverrides): Promise<[BigNumber[]]>;
 
     stackTop(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    storageOpcodesRange(
-      overrides?: CallOverrides
-    ): Promise<
-      [StorageOpcodesRangeStructOutput] & {
-        storageOpcodesRange_: StorageOpcodesRangeStructOutput;
-      }
-    >;
   };
 
   initialize(
     stateConfig_: StateConfigStruct,
+    minStackOutputs_: PromiseOrValue<BigNumberish>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -185,13 +159,10 @@ export interface AllStandardOpsTest extends BaseContract {
 
   stackTop(overrides?: CallOverrides): Promise<BigNumber>;
 
-  storageOpcodesRange(
-    overrides?: CallOverrides
-  ): Promise<StorageOpcodesRangeStructOutput>;
-
   callStatic: {
     initialize(
       stateConfig_: StateConfigStruct,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -205,10 +176,6 @@ export interface AllStandardOpsTest extends BaseContract {
     stack(overrides?: CallOverrides): Promise<BigNumber[]>;
 
     stackTop(overrides?: CallOverrides): Promise<BigNumber>;
-
-    storageOpcodesRange(
-      overrides?: CallOverrides
-    ): Promise<StorageOpcodesRangeStructOutput>;
   };
 
   filters: {
@@ -227,6 +194,7 @@ export interface AllStandardOpsTest extends BaseContract {
   estimateGas: {
     initialize(
       stateConfig_: StateConfigStruct,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -242,13 +210,12 @@ export interface AllStandardOpsTest extends BaseContract {
     stack(overrides?: CallOverrides): Promise<BigNumber>;
 
     stackTop(overrides?: CallOverrides): Promise<BigNumber>;
-
-    storageOpcodesRange(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
     initialize(
       stateConfig_: StateConfigStruct,
+      minStackOutputs_: PromiseOrValue<BigNumberish>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -264,9 +231,5 @@ export interface AllStandardOpsTest extends BaseContract {
     stack(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     stackTop(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    storageOpcodesRange(
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
   };
 }
