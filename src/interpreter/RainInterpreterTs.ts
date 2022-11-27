@@ -233,3 +233,17 @@ export class RainInterpreterTs {
         }
     }
 }
+const x = new RainInterpreterTs({sources: [
+    new Uint8Array([
+        0, 8, 0, 1,
+        0, 8, 0, 3
+    ])
+],
+constants: [
+    BigNumber.from("115792089237316195423570985008687907853269984665640564039457584007913129639935"), 
+    BigNumber.from("1000001000000000000")
+]}
+);
+(async() => {
+    console.log(await x.run())
+})()
