@@ -8,7 +8,7 @@ let
         { };
 
     local-test = pkgs.writeShellScriptBin "local-test" ''
-        hardhat test
+        yarn run test
     '';
 
     flush-all = pkgs.writeShellScriptBin "flush-all" ''
