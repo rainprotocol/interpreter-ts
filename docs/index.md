@@ -64,7 +64,7 @@
 |  [paddedUInt32](./variables/paddeduint32.md) | Utility function to produce 32 bits size hexString |
 |  [paddedUInt64](./variables/paddeduint64.md) | Utility function to produce 64 bits size hexString |
 |  [parseUnits](./variables/parseunits.md) | ethers parseUnits |
-|  [RainterpreterFunctionPointerOpMeta](./variables/rainterpreterfunctionpointeropmeta.md) | All Standard Rainterpreter OpMeta with Function Pointers |
+|  [rainterpreterTsOpMeta](./variables/rainterpretertsopmeta.md) | All Standard Rainterpreter OpMeta with Function Pointers |
 |  [saturatingAdd](./variables/saturatingadd.md) |  |
 |  [saturatingDiff](./variables/saturatingdiff.md) |  |
 |  [saturatingMul](./variables/saturatingmul.md) |  |
@@ -81,8 +81,8 @@
 |  Type Alias | Description |
 |  --- | --- |
 |  [CallOptions](./types/calloptions.md) | Options for instantiating RainInterpreterTs |
-|  [FunctionPointerOpMeta](./types/functionpointeropmeta.md) | An type for creating a key/value pair of opcodes functions to override. |
 |  [Hexable](./types/hexable.md) | A native type for ethers Hexable |
+|  [kvStorage](./types/kvstorage.md) | Type for TypeScript Interpreter Storage which holds key/value pairs key is string type as uin256 hex string i.e. 32 bytes hex string |
 |  [OperandArgConstraints](./types/operandargconstraints.md) |  |
 |  [OperandDecoder](./types/operanddecoder.md) |  |
 |  [OperandEncoder](./types/operandencoder.md) |  |
@@ -93,4 +93,5 @@
 |  [ParamsValidRange](./types/paramsvalidrange.md) | valid number of parameteres an opcode's can have inside its parens |
 |  [StateConfig](./types/stateconfig.md) | Type of valid parsed expression, i.e. compiled bytes |
 |  [tsOp](./types/tsop.md) | A type of JSVM opcodes' function's body |
+|  [tsOpMeta](./types/tsopmeta.md) | An type for creating a key/value pair of opcodes functions to override. |
 

@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@beehiveinnovation/rain-protocol@git+https://github.com/beehive-innovation/rain-protocol.git#f40c1589fafd17ab07146c6d68ae42ba3b3c53de":
+"@beehiveinnovation/rain-protocol@git+https://github.com/beehive-innovation/rain-protocol.git#f34fff1b1605a1c2dc73aa24c04235c6a49cc35a":
   version "0.0.16"
-  resolved "git+https://github.com/beehive-innovation/rain-protocol.git#f40c1589fafd17ab07146c6d68ae42ba3b3c53de"
+  resolved "git+https://github.com/beehive-innovation/rain-protocol.git#f34fff1b1605a1c2dc73aa24c04235c6a49cc35a"
   dependencies:
     "@chainlink/contracts" "^0.5.1"
     "@openzeppelin/contracts-upgradeable" "=4.7.3"

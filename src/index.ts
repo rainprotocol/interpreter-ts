@@ -8,7 +8,7 @@ export * from './lib/TierReport';
 export * from './lib/TierwiseCombine';
 
 export * from './rainterpreter/allStandardOps';
-export * from './rainterpreter/RainterpreterFunctionPointerOpMeta';
+export * from './rainterpreter/opmeta';
 
 export * from './types';
 export * from './utils';

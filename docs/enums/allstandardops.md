@@ -37,6 +37,7 @@ enum AllStandardOps
 |  EXP | `42` | Opcode for exponentiation. |
 |  EXPLODE32 | `24` | Splite an uint256 value into 8 seperate 1 byte size values as uint256 each. |
 |  FOLD\_CONTEXT | `6` |  |
+|  GET | `59` | Opcode to read the value of storage key/value pair which is set by SET opcode |
 |  GREATER\_THAN | `34` | Opcode for GREATER\_THAN. |
 |  HASH | `10` | Hash (solidty kecca256) item(s) of the stack |
 |  IERC1155\_BALANCE\_OF | `17` | Opcode for `IERC1155` `balanceOf`<!-- -->. |
@@ -52,7 +53,7 @@ enum AllStandardOps
 |  ISZERO | `35` | Opcode for ISZERO. |
 |  ITIERV2\_REPORT | `54` | Opcode to call `report` on an `ITierV2` contract. |
 |  ITIERV2\_REPORT\_TIME\_FOR\_TIER | `55` | Opcode to call `reportTimeForTier` on an `ITierV2` contract. |
-|  length | `59` | length of available opcodes |
+|  length | `60` | length of available opcodes |
 |  LESS\_THAN | `36` | Opcode for LESS\_THAN. |
 |  LOOP\_N | `7` | Loop over a source for n times |
 |  MAX | `43` | Opcode for maximum. |
@@ -70,7 +71,7 @@ enum AllStandardOps
 |  SCALE18\_MUL | `27` | Opcode for multiplication. |
 |  SCALEN | `29` | Opcode to rescale an 18 OOMs fixed point number to scale N. |
 |  SELECT\_LTE | `57` | Opcode to tierwise select the best block lte a reference block. |
-|  SET | `9` | used as local opcodes i.e. opcodes to stack the contract's storage contents i.e. porperties/variables. operand determines the storage location to be stacked. |
+|  SET | `9` | Opcode to write a key/value pair into storage |
 |  SUB | `47` | Opcode for subtraction. |
 |  THIS\_ADDRESS | `22` | Opcode for `this` address of the current contract. |
 |  UPDATE\_TIMES\_FOR\_TIER\_RANGE | `58` | Opcode to update the timestamp over a range of tiers for a report. |

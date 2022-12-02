@@ -1,8 +1,8 @@
-import { StateConfig, FunctionPointerOpMeta } from '../types';
+import { StateConfig, tsOpMeta } from '../types';
 import { BigNumber, Contract } from 'ethers';
 import { arrayify } from '../utils';
-import { RainterpreterFunctionPointerOpMeta } from '../rainterpreter/RainterpreterFunctionPointerOpMeta';
-import { CallOptions, overrideFns, State } from './types';
+import { rainterpreterTsOpMeta } from '../rainterpreter/opmeta';
+import { CallOptions, overrideFns, State, kvStorage } from './types';
 
 /**
  * @public - The javascript version of the RainVM, basically does the same job RainVM does
@@ -14,42 +14,48 @@ export class RainInterpreterTs {
     /**
      * The result state of the executed Rain TypeScript Interpreter.
      */
-    public readonly lastState: BigNumber[] = []
+    public readonly lastState: BigNumber[] = [];
 
     /**
      * The property of type State which that RainInterpreterTs will run based on.
      */
-    public readonly state: State
+    public readonly state: State;
 
     /**
      * An ethers Signer.
      */
-    public caller?: string
+    public caller?: string;
 
     /**
      * The thisAddress address of the instance of this class used for THIS_ADDRESS opcode
      */
-    public self?: string
+    public self?: string;
 
     /**
      * 
      */
-    public chainId?: number
+    public chainId?: number;
 
     /**
      * Range of available storage variables accessible by eval
      */
-    public readonly StorageRange: number = 0
+    public readonly StorageRange: number = 0;
 
     /**
      * key/value pair of opcodes and their functions for all standard opcodes
      */
-    public readonly opmeta: FunctionPointerOpMeta[] = RainterpreterFunctionPointerOpMeta
+    public readonly opmeta: tsOpMeta[] = rainterpreterTsOpMeta;
 
     /**
      * functions to override the existing Functions in opmeta
      */
-    public overrideFns?: overrideFns
+    public overrideFns?: overrideFns;
+
+    /**
+     * property of the class to store key/value pairs as Storage.
+     * used by GET/SET in TypeScript Rainterpreter
+     */
+    public readonly storage: kvStorage = {};
 
     /**
      * The constructor of RainInterpreterTs which initiates the RainInterpreterTs and also a State for a RainVM script.

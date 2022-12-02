@@ -1,5 +1,5 @@
 import { BigNumber, Contract } from "ethers";
-import { FunctionPointerOpMeta } from "../types";
+import { tsOpMeta } from "../types";
 
 /**
  * @public - An interface, StateJS is basically javascript version of 'State' struct
@@ -43,5 +43,14 @@ export type CallOptions = {
   caller?: string;
   chainId?: number;
   thisAddress?: string | Contract;
-  opmeta?:  FunctionPointerOpMeta[];
+  opmeta?:  tsOpMeta[];
+}
+
+/**
+ * @public
+ * Type for TypeScript Interpreter Storage which holds key/value pairs
+ * key is string type as uin256 hex string i.e. 32 bytes hex string
+ */
+export type kvStorage = {
+  [key: string]: BigNumber
 }

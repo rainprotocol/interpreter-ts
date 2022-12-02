@@ -11,6 +11,6 @@ type CallOptions = {
     caller?: string;
     chainId?: number;
     thisAddress?: string | Contract;
-    opmeta?: FunctionPointerOpMeta[];
+    opmeta?: tsOpMeta[];
 };
 ```

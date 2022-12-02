@@ -55,7 +55,8 @@ import { OpITierV2ReportTimesForTier } from './ops/tier/OpITierV2ReportTimesForT
 import { OpSaturatingDiff } from './ops/tier/OpSaturatingDiff';
 import { OpSelectLte } from './ops/tier/OpSelectLte';
 import { OpUpdateTimesForTierRange } from './ops/tier/OpUpdateTimesForTierRange';
-import { FunctionPointerOpMeta } from '../types';
+import { OpGet } from './ops/core/OpGet';
+import { tsOpMeta } from '../types';
 import { callOperand, hexlify, loopNOperand, memoryOperand, selectLteOperand, tierRange } from '../utils';
 import { AllStandardOps } from './allStandardOps';
 
@@ -63,7 +64,7 @@ import { AllStandardOps } from './allStandardOps';
  * @public
  * All Standard Rainterpreter OpMeta with Function Pointers
  */
-export const RainterpreterFunctionPointerOpMeta: FunctionPointerOpMeta[] = [
+export const rainterpreterTsOpMeta: tsOpMeta[] = [
     {
         enum: AllStandardOps.CHAINLINK_PRICE,
         name: 'CHAINLIN_PRICE',
@@ -183,47 +184,47 @@ export const RainterpreterFunctionPointerOpMeta: FunctionPointerOpMeta[] = [
         },
     },
     // {
-        // enum: AllStandardOps.CONTEXT_ROW,
-        // name: 'CONTEXT',
-        // description: 'Inserts an argument passed to a contracts function into the stack, context is a 2D array of uint256',
-        // outputs: (_operand) => 1,
-        // inputs: (_operand) => 0,
-        // paramsValidRange: (_paramsLength) => _paramsLength === 0,
-        // operand: {
-        //     // 2 args that construct CONTEXT operand
-        //     argsConstraints: [
-        //         (_value) => _value < 256 && _value >= 0,     // column valid range
-        //         (_value) => _value < 256 && _value >= 0,     // row valid range
-        //     ],
-        //     encoder: (_args) => Number(hexlify(
-        //         new Uint8Array([
-        //             _args[0],    // column
-        //             _args[1]     // row
-        //         ])
-        //     )),
-        //     decoder: (_operand) => [
-        //         _operand >> 8,      // column
-        //         _operand & 0xff     // row
-        //     ]
-        // },
-        // functionPointer: OpContext,
-        // data: {
-        //     description: 'Insert a value from the calling function context',
-        //     category: 'core',
-        //     example: 'context<2 6>()',
-        //     parameters: [
-        //         {
-        //             spread: false,  // not sure 
-        //             name: 'column index',
-        //             description: 'The index of the context column to insert.',
-        //         },
-        //         {
-        //             spread: false,  // not sure
-        //             name: 'row index',
-        //             description: 'The index of the constant row to insert.',
-        //         },
-        //     ],
-        // },
+    // enum: AllStandardOps.CONTEXT_ROW,
+    // name: 'CONTEXT',
+    // description: 'Inserts an argument passed to a contracts function into the stack, context is a 2D array of uint256',
+    // outputs: (_operand) => 1,
+    // inputs: (_operand) => 0,
+    // paramsValidRange: (_paramsLength) => _paramsLength === 0,
+    // operand: {
+    //     // 2 args that construct CONTEXT operand
+    //     argsConstraints: [
+    //         (_value) => _value < 256 && _value >= 0,     // column valid range
+    //         (_value) => _value < 256 && _value >= 0,     // row valid range
+    //     ],
+    //     encoder: (_args) => Number(hexlify(
+    //         new Uint8Array([
+    //             _args[0],    // column
+    //             _args[1]     // row
+    //         ])
+    //     )),
+    //     decoder: (_operand) => [
+    //         _operand >> 8,      // column
+    //         _operand & 0xff     // row
+    //     ]
+    // },
+    // functionPointer: OpContext,
+    // data: {
+    //     description: 'Insert a value from the calling function context',
+    //     category: 'core',
+    //     example: 'context<2 6>()',
+    //     parameters: [
+    //         {
+    //             spread: false,  // not sure 
+    //             name: 'column index',
+    //             description: 'The index of the context column to insert.',
+    //         },
+    //         {
+    //             spread: false,  // not sure
+    //             name: 'row index',
+    //             description: 'The index of the constant row to insert.',
+    //         },
+    //     ],
+    // },
     // }
     {
         enum: AllStandardOps.DEBUG,
@@ -278,48 +279,48 @@ export const RainterpreterFunctionPointerOpMeta: FunctionPointerOpMeta[] = [
             ],
         },
     },
-        // {
-        // enum: AllStandardOps.FOLD_CONTEXT,
-        // name: 'CONTEXT',
-        // description: 'Inserts an argument passed to a contracts function into the stack, context is a 2D array of uint256',
-        // outputs: (_operand) => 1,
-        // inputs: (_operand) => 0,
-        // paramsValidRange: (_paramsLength) => _paramsLength === 0,
-        // operand: {
-        //     // 2 args that construct CONTEXT operand
-        //     argsConstraints: [
-        //         (_value) => _value < 256 && _value >= 0,     // column valid range
-        //         (_value) => _value < 256 && _value >= 0,     // row valid range
-        //     ],
-        //     encoder: (_args) => Number(hexlify(
-        //         new Uint8Array([
-        //             _args[0],    // column
-        //             _args[1]     // row
-        //         ])
-        //     )),
-        //     decoder: (_operand) => [
-        //         _operand >> 8,      // column
-        //         _operand & 0xff     // row
-        //     ]
-        // },
-        // functionPointer: OpContext,
-        // data: {
-        //     description: 'Insert a value from the calling function context',
-        //     category: 'core',
-        //     example: 'context<2 6>()',
-        //     parameters: [
-        //         {
-        //             spread: false,  // not sure 
-        //             name: 'column index',
-        //             description: 'The index of the context column to insert.',
-        //         },
-        //         {
-        //             spread: false,  // not sure
-        //             name: 'row index',
-        //             description: 'The index of the constant row to insert.',
-        //         },
-        //     ],
-        // },
+    // {
+    // enum: AllStandardOps.FOLD_CONTEXT,
+    // name: 'CONTEXT',
+    // description: 'Inserts an argument passed to a contracts function into the stack, context is a 2D array of uint256',
+    // outputs: (_operand) => 1,
+    // inputs: (_operand) => 0,
+    // paramsValidRange: (_paramsLength) => _paramsLength === 0,
+    // operand: {
+    //     // 2 args that construct CONTEXT operand
+    //     argsConstraints: [
+    //         (_value) => _value < 256 && _value >= 0,     // column valid range
+    //         (_value) => _value < 256 && _value >= 0,     // row valid range
+    //     ],
+    //     encoder: (_args) => Number(hexlify(
+    //         new Uint8Array([
+    //             _args[0],    // column
+    //             _args[1]     // row
+    //         ])
+    //     )),
+    //     decoder: (_operand) => [
+    //         _operand >> 8,      // column
+    //         _operand & 0xff     // row
+    //     ]
+    // },
+    // functionPointer: OpContext,
+    // data: {
+    //     description: 'Insert a value from the calling function context',
+    //     category: 'core',
+    //     example: 'context<2 6>()',
+    //     parameters: [
+    //         {
+    //             spread: false,  // not sure 
+    //             name: 'column index',
+    //             description: 'The index of the context column to insert.',
+    //         },
+    //         {
+    //             spread: false,  // not sure
+    //             name: 'row index',
+    //             description: 'The index of the constant row to insert.',
+    //         },
+    //     ],
+    // },
     // }
     {
         enum: AllStandardOps.LOOP_N,
@@ -392,31 +393,33 @@ export const RainterpreterFunctionPointerOpMeta: FunctionPointerOpMeta[] = [
         },
     },
     {
-        // @TODO: update
         enum: AllStandardOps.SET,
         name: 'SET',
-        description: 'Insert a value from contract storage into the stack',
-        outputs: (_operand) => 1,
-        inputs: (_operand) => 0,
-        paramsValidRange: (_paramsLength) => _paramsLength === 0,
+        description: 'Write a key/value pair from constants array into contract storage',
+        outputs: (_operand) => 0,
+        inputs: (_operand) => 2,
+        paramsValidRange: (_paramsLength) => _paramsLength === 2,
         operand: {
-            argsConstraints: [
-                (_value) => _value < 256 && _value >= 0,     // index of Storage slot valid range
-            ],
-            encoder: (_args) => _args[0],
-            decoder: (_operand) => [_operand]
+            argsConstraints: [],
+            encoder: (_args, _paramsLength) => 0,
+            decoder: (_operand) => []
         },
-        aliases: ['MEMORY'],
         functionPointer: OpSet,
+        aliases: ['WRITE'],
         data: {
-            description: 'Insert a value from contract storage.',
+            description: 'Write a key/value to contract storage.',
             category: 'core',
-            example: 'storage(0)',
+            example: 'set(0x123456 0xabcde)',
             parameters: [
                 {
                     spread: false,
-                    name: 'index',
-                    description: 'The index of the storage value to insert.',
+                    name: 'key',
+                    description: 'The key of the key/value pair.',
+                },
+                {
+                    spread: false,
+                    name: 'value',
+                    description: 'The value of the value/key pair.',
                 },
             ],
         },
@@ -1998,6 +2001,33 @@ export const RainterpreterFunctionPointerOpMeta: FunctionPointerOpMeta[] = [
                     spread: false,
                     name: 'report',
                     description: 'The report to update its tier range',
+                },
+            ],
+        },
+    },
+    {
+        enum: AllStandardOps.GET,
+        name: 'GET',
+        description: 'Read a key/value pair from contract storage by providing the key and stack the value',
+        outputs: (_operand) => 1,
+        inputs: (_operand) => 1,
+        paramsValidRange: (_paramsLength) => _paramsLength === 1,
+        operand: {
+            argsConstraints: [],
+            encoder: (_args, _paramsLength) => 0,
+            decoder: (_operand) => []
+        },
+        functionPointer: OpGet,
+        aliases: ['READ'],
+        data: {
+            description: 'Read a key/value pair from contract storage by providing the key and stack the value.',
+            category: 'core',
+            example: 'get(0x123456)',
+            parameters: [
+                {
+                    spread: false,
+                    name: 'key',
+                    description: 'The key of the key/value pair.',
                 },
             ],
         },
