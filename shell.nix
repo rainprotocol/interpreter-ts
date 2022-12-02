@@ -80,6 +80,7 @@ let
             lint
             copy-contracts
             typechain
+            compile
         ];
 
         shellHook = ''
