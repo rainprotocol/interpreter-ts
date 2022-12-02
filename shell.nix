@@ -44,7 +44,7 @@ let
     '';
 
     lint = pkgs.writeShellScriptBin "lint" ''
-        eslint --fix \"src/**\" \"test/**\"
+        yarn run lint
     '';
 
     copy-contracts = pkgs.writeShellScriptBin "copy-contracts" ''
