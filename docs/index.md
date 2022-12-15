@@ -23,17 +23,18 @@
 
 |  Function | Description |
 |  --- | --- |
-|  [callOperand(inputSize, outputSize, sourceIndex)](./variables/calloperand_1.md) | Constructs the operand for RainInterpreter's `CALL` opcode by packing 3 numbers into a single byte. |
+|  [callOperand(inputSize, outputSize, sourceIndex)](./variables/calloperand_1.md) | Builds the operand for RainInterpreter's `CALL` opcode by packing 3 numbers into a single byte. |
 |  [callSize(sourceIndex, loopSize, valSize)](./variables/callsize_1.md) | Constructs the operand for RainVM's `zipmap` opcode by packing 3 numbers into a single byte. All parameters use zero-based counting i.e. an `fnSize` of 0 means to allocate one element (32 bytes) on the stack to define your functions, while an `fnSize` of 3 means to allocate all four elements (4 \* 32 bytes) on the stack. |
 |  [deepFreeze(object)](./variables/deepfreeze_1.md) | Deeply freezes an object, all of the properties of propterties gets frozen |
+|  [doWhileOperand(inputSize, reserved, sourceIndex)](./variables/dowhileoperand_1.md) | Builds the operand for RainInterpreter's `DO_WHILE` opcode by packing 3 numbers into a single byte. |
 |  [extractFromMap(map, properties)](./variables/extractfrommap_1.md) | Extract some of the properites from a Map as a new Map with same keys. |
 |  [extractFromRecord(record, properties)](./variables/extractfromrecord_1.md) | Extract some of the properties from a Record as new Record with same keys. |
 |  [isBigNumberish(value)](./variables/isbignumberish_1.md) | function to check if the a value is of type BigNumberish |
-|  [loopNOperand(n, sourceIndex)](./variables/loopnoperand_1.md) | Constructs the operand for RainInterpreter's `LOOP_N` opcode by packing 2 numbers into a single byte. |
+|  [loopNOperand(n, inputSize, outputSize, sourceIndex)](./variables/loopnoperand_1.md) | Builds the operand for RainInterpreter's `LOOP_N` opcode by packing 4 numbers into a single byte. |
 |  [mapToRecord(map, properties)](./variables/maptorecord_1.md) | Conver a Map to a equivelant Record (a key/value pair object). Map keys must be of type acceptable by Record constructor, which are string, number or symbol. |
 |  [memoryOperand(type, offset)](./variables/memoryoperand_1.md) | Constructs operand for standard STATE opecode |
 |  [recordToMap(record, properties)](./variables/recordtomap_1.md) | Conver a Record (a key/value pair object) to a equivelant Map. Map keys will be of type acceptable by Record constructor, which are string, number or symbol. |
-|  [selectLteOperand(logic, mode, length)](./variables/selectlteoperand_1.md) | function to set up the operand for a SELECT\_LTE opcode |
+|  [selectLteOperand(logic, mode, inputSize)](./variables/selectlteoperand_1.md) | function to set up the operand for a SELECT\_LTE opcode |
 |  [tierRange(startTier, endTier)](./variables/tierrange_1.md) | function to pack start/end tier range into a byte size number for the UPDATE\_BLOCKS\_FOR\_TIER\_RANGE opcode |
 
 ## Interfaces
@@ -64,7 +65,7 @@
 |  [paddedUInt32](./variables/paddeduint32.md) | Utility function to produce 32 bits size hexString |
 |  [paddedUInt64](./variables/paddeduint64.md) | Utility function to produce 64 bits size hexString |
 |  [parseUnits](./variables/parseunits.md) | ethers parseUnits |
-|  [RainterpreterFunctionPointerOpMeta](./variables/rainterpreterfunctionpointeropmeta.md) | All Standard Rainterpreter OpMeta with Function Pointers |
+|  [rainterpreterTsOpMeta](./variables/rainterpretertsopmeta.md) | All Standard Rainterpreter OpMeta with Function Pointers |
 |  [saturatingAdd](./variables/saturatingadd.md) |  |
 |  [saturatingDiff](./variables/saturatingdiff.md) |  |
 |  [saturatingMul](./variables/saturatingmul.md) |  |
@@ -81,8 +82,8 @@
 |  Type Alias | Description |
 |  --- | --- |
 |  [CallOptions](./types/calloptions.md) | Options for instantiating RainInterpreterTs |
-|  [FunctionPointerOpMeta](./types/functionpointeropmeta.md) | An type for creating a key/value pair of opcodes functions to override. |
 |  [Hexable](./types/hexable.md) | A native type for ethers Hexable |
+|  [kvStorage](./types/kvstorage.md) | Type for TypeScript Interpreter Storage which holds key/value pairs key is string type as uin256 hex string i.e. 32 bytes hex string |
 |  [OperandArgConstraints](./types/operandargconstraints.md) |  |
 |  [OperandDecoder](./types/operanddecoder.md) |  |
 |  [OperandEncoder](./types/operandencoder.md) |  |
@@ -93,4 +94,5 @@
 |  [ParamsValidRange](./types/paramsvalidrange.md) | valid number of parameteres an opcode's can have inside its parens |
 |  [StateConfig](./types/stateconfig.md) | Type of valid parsed expression, i.e. compiled bytes |
 |  [tsOp](./types/tsop.md) | A type of JSVM opcodes' function's body |
+|  [tsOpMeta](./types/tsopmeta.md) | An type for creating a key/value pair of opcodes functions to override. |
 

@@ -103,11 +103,4 @@ export type tsOp = {
  * @public
  * An type for creating a key/value pair of opcodes functions to override.
  */
-export type FunctionPointerOpMeta = (OpMeta & { functionPointer: tsOp })
-
-// /**
-//  * @public
-//  */
-// export type FunctionPointerInterpreterMeta = InterpreterMeta & { 
-//     functionPointerOpMeta: FunctionPointerOpMeta[] 
-// }
+export type tsOpMeta = (OpMeta & { functionPointer: tsOp })

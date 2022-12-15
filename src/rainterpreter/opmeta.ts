@@ -55,15 +55,16 @@ import { OpITierV2ReportTimesForTier } from './ops/tier/OpITierV2ReportTimesForT
 import { OpSaturatingDiff } from './ops/tier/OpSaturatingDiff';
 import { OpSelectLte } from './ops/tier/OpSelectLte';
 import { OpUpdateTimesForTierRange } from './ops/tier/OpUpdateTimesForTierRange';
-import { FunctionPointerOpMeta } from '../types';
-import { callOperand, hexlify, loopNOperand, memoryOperand, selectLteOperand, tierRange } from '../utils';
+import { OpGet } from './ops/core/OpGet';
+import { tsOpMeta } from '../types';
+import { callOperand, doWhileOperand, hexlify, loopNOperand, memoryOperand, selectLteOperand, tierRange } from '../utils';
 import { AllStandardOps } from './allStandardOps';
 
 /**
  * @public
  * All Standard Rainterpreter OpMeta with Function Pointers
  */
-export const RainterpreterFunctionPointerOpMeta: FunctionPointerOpMeta[] = [
+export const rainterpreterTsOpMeta: tsOpMeta[] = [
     {
         enum: AllStandardOps.CHAINLINK_PRICE,
         name: 'CHAINLIN_PRICE',
@@ -100,27 +101,31 @@ export const RainterpreterFunctionPointerOpMeta: FunctionPointerOpMeta[] = [
         enum: AllStandardOps.CALL,
         name: 'CALL',
         description: 'Takes some items from the stack and runs a source with sub-stack and puts the results back to the stack',
-        outputs: (_operand) => (_operand >> 3) & 3,
-        inputs: (_operand) => _operand & 7,
-        paramsValidRange: (_paramsLength) => _paramsLength >= 0 && _paramsLength < 8,
+        outputs: (_operand) => (_operand >> 4) & 15,
+        inputs: (_operand) => _operand & 15,
+        paramsValidRange: (_paramsLength) => _paramsLength >= 0 && _paramsLength < 16,
         operand: {
             // 3 args that construct CALL operand
             argsConstraints: [
-                (_value, _paramsLength) =>
-                    _value < 8 && _value >= 0 && _paramsLength === _value,      // inputSize valid range
-                (_value) => _value < 4 && _value > 0,                           // outputSize valid range
-                (_value) => _value < 8 && _value > 0,                           // sourceIndex valid range
+                (_value, _paramsLength) => _value < 16 && _value > 0 && _value === _paramsLength,       // inputSize valid range
+                (_value) => _value < 16 && _value >= 0,                                                 // outputSize valid range
+                (_value) => _value < 16 && _value > 0,                                                  // sourceIndex valid range
             ],
             encoder: (_args) => callOperand(_args[0], _args[1], _args[2]),
-            decoder: (_operand) => [_operand & 7, (_operand >> 3) & 3, _operand >> 5],
+            decoder: (_operand) => [_operand & 15, (_operand >> 4) & 15, _operand >> 8],
         },
         aliases: ['FUNCTION', 'FN'],
         functionPointer: OpCall,
         data: {
             description: 'Call a source with some inputs and put the outputs back into the stack',
             category: 'core',
-            example: 'call<1, 1>(100 50)',
+            example: 'call<1, 1, 1>(100)',
             parameters: [
+                {
+                    spread: true,
+                    name: 'inputSize',
+                    description: 'number of inputs',
+                },
                 {
                     spread: false,
                     name: 'outputSize',
@@ -130,11 +135,6 @@ export const RainterpreterFunctionPointerOpMeta: FunctionPointerOpMeta[] = [
                     spread: false,
                     name: 'sourceIndex',
                     description: 'Source index to run.',
-                },
-                {
-                    spread: true,
-                    name: 'input values',
-                    argsConstraints: [],
                 },
             ],
         },
@@ -183,47 +183,47 @@ export const RainterpreterFunctionPointerOpMeta: FunctionPointerOpMeta[] = [
         },
     },
     // {
-        // enum: AllStandardOps.CONTEXT_ROW,
-        // name: 'CONTEXT',
-        // description: 'Inserts an argument passed to a contracts function into the stack, context is a 2D array of uint256',
-        // outputs: (_operand) => 1,
-        // inputs: (_operand) => 0,
-        // paramsValidRange: (_paramsLength) => _paramsLength === 0,
-        // operand: {
-        //     // 2 args that construct CONTEXT operand
-        //     argsConstraints: [
-        //         (_value) => _value < 256 && _value >= 0,     // column valid range
-        //         (_value) => _value < 256 && _value >= 0,     // row valid range
-        //     ],
-        //     encoder: (_args) => Number(hexlify(
-        //         new Uint8Array([
-        //             _args[0],    // column
-        //             _args[1]     // row
-        //         ])
-        //     )),
-        //     decoder: (_operand) => [
-        //         _operand >> 8,      // column
-        //         _operand & 0xff     // row
-        //     ]
-        // },
-        // functionPointer: OpContext,
-        // data: {
-        //     description: 'Insert a value from the calling function context',
-        //     category: 'core',
-        //     example: 'context<2 6>()',
-        //     parameters: [
-        //         {
-        //             spread: false,  // not sure 
-        //             name: 'column index',
-        //             description: 'The index of the context column to insert.',
-        //         },
-        //         {
-        //             spread: false,  // not sure
-        //             name: 'row index',
-        //             description: 'The index of the constant row to insert.',
-        //         },
-        //     ],
-        // },
+    // enum: AllStandardOps.CONTEXT_ROW,
+    // name: 'CONTEXT',
+    // description: 'Inserts an argument passed to a contracts function into the stack, context is a 2D array of uint256',
+    // outputs: (_operand) => 1,
+    // inputs: (_operand) => 0,
+    // paramsValidRange: (_paramsLength) => _paramsLength === 0,
+    // operand: {
+    //     // 2 args that construct CONTEXT operand
+    //     argsConstraints: [
+    //         (_value) => _value < 256 && _value >= 0,     // column valid range
+    //         (_value) => _value < 256 && _value >= 0,     // row valid range
+    //     ],
+    //     encoder: (_args) => Number(hexlify(
+    //         new Uint8Array([
+    //             _args[0],    // column
+    //             _args[1]     // row
+    //         ])
+    //     )),
+    //     decoder: (_operand) => [
+    //         _operand >> 8,      // column
+    //         _operand & 0xff     // row
+    //     ]
+    // },
+    // functionPointer: OpContext,
+    // data: {
+    //     description: 'Insert a value from the calling function context',
+    //     category: 'core',
+    //     example: 'context<2 6>()',
+    //     parameters: [
+    //         {
+    //             spread: false,  // not sure 
+    //             name: 'column index',
+    //             description: 'The index of the context column to insert.',
+    //         },
+    //         {
+    //             spread: false,  // not sure
+    //             name: 'row index',
+    //             description: 'The index of the constant row to insert.',
+    //         },
+    //     ],
+    // },
     // }
     {
         enum: AllStandardOps.DEBUG,
@@ -251,25 +251,37 @@ export const RainterpreterFunctionPointerOpMeta: FunctionPointerOpMeta[] = [
     {
         enum: AllStandardOps.DO_WHILE,
         name: 'DO_WHILE',
-        description: 'Runs a source on stack item(s) until a condition is not met anymore',
+        description: 'Runs a while loop on number of items taken from a stack until a conditions is met',
         outputs: (_operand) => 0,
-        inputs: (_operand) => 0,
-        paramsValidRange: (_paramsLength) => _paramsLength > 0,
+        inputs: (_operand) => _operand & 15,
+        paramsValidRange: (_paramsLength) => _paramsLength >= 0 && _paramsLength < 16,
         operand: {
             // 1 arg that constructs DO_WHILE operand
             argsConstraints: [
-                (_value) => _value < 256 && _value > 0,     // sourceIndex valid range
+                (_value, _paramsLength) => _value < 16 && _value > 0 && _value === _paramsLength,       // inputSize valid range
+                (_value) => _value < 16 && _value >= 0,                                                 // reserved valid range
+                (_value) => _value < 16 && _value > 0,                                                  // sourceIndex valid range
             ],
-            encoder: (_args) => _args[0],
-            decoder: (_operand) => [_operand]
+            encoder: (_args) => doWhileOperand(_args[0], _args[1], _args[2]),
+            decoder: (_operand) => [_operand & 15, (_operand >> 4) & 15, _operand >> 8],
         },
         aliases: ['WHILE', 'DOWHILE'],
         functionPointer: OpDoWhile,
         data: {
-            description: 'Insert a constant into the expression.',
+            description: 'Runs a while loop on number of items taken from a stack until a conditions is met.',
             category: 'core',
-            example: 'do_while<1>(exp1 exp2 condition); add(STATE<0> STATE<1>) sub(STATE<1> 1) condition;',
+            example: 'do_while<2 0 1>(exp1 condition); add(STATE<0> STATE<1>) sub(STATE<1> 1) condition;',
             parameters: [
+                {
+                    spread: true,
+                    name: 'inputs',
+                    description: 'inputs of the do_while op.',
+                },
+                {
+                    spread: false,
+                    name: 'reserved',
+                    description: 'reserved bits.',
+                },
                 {
                     spread: false,
                     name: 'condition',
@@ -278,79 +290,93 @@ export const RainterpreterFunctionPointerOpMeta: FunctionPointerOpMeta[] = [
             ],
         },
     },
-        // {
-        // enum: AllStandardOps.FOLD_CONTEXT,
-        // name: 'CONTEXT',
-        // description: 'Inserts an argument passed to a contracts function into the stack, context is a 2D array of uint256',
-        // outputs: (_operand) => 1,
-        // inputs: (_operand) => 0,
-        // paramsValidRange: (_paramsLength) => _paramsLength === 0,
-        // operand: {
-        //     // 2 args that construct CONTEXT operand
-        //     argsConstraints: [
-        //         (_value) => _value < 256 && _value >= 0,     // column valid range
-        //         (_value) => _value < 256 && _value >= 0,     // row valid range
-        //     ],
-        //     encoder: (_args) => Number(hexlify(
-        //         new Uint8Array([
-        //             _args[0],    // column
-        //             _args[1]     // row
-        //         ])
-        //     )),
-        //     decoder: (_operand) => [
-        //         _operand >> 8,      // column
-        //         _operand & 0xff     // row
-        //     ]
-        // },
-        // functionPointer: OpContext,
-        // data: {
-        //     description: 'Insert a value from the calling function context',
-        //     category: 'core',
-        //     example: 'context<2 6>()',
-        //     parameters: [
-        //         {
-        //             spread: false,  // not sure 
-        //             name: 'column index',
-        //             description: 'The index of the context column to insert.',
-        //         },
-        //         {
-        //             spread: false,  // not sure
-        //             name: 'row index',
-        //             description: 'The index of the constant row to insert.',
-        //         },
-        //     ],
-        // },
+    // {
+    // enum: AllStandardOps.FOLD_CONTEXT,
+    // name: 'CONTEXT',
+    // description: 'Inserts an argument passed to a contracts function into the stack, context is a 2D array of uint256',
+    // outputs: (_operand) => 1,
+    // inputs: (_operand) => 0,
+    // paramsValidRange: (_paramsLength) => _paramsLength === 0,
+    // operand: {
+    //     // 2 args that construct CONTEXT operand
+    //     argsConstraints: [
+    //         (_value) => _value < 256 && _value >= 0,     // column valid range
+    //         (_value) => _value < 256 && _value >= 0,     // row valid range
+    //     ],
+    //     encoder: (_args) => Number(hexlify(
+    //         new Uint8Array([
+    //             _args[0],    // column
+    //             _args[1]     // row
+    //         ])
+    //     )),
+    //     decoder: (_operand) => [
+    //         _operand >> 8,      // column
+    //         _operand & 0xff     // row
+    //     ]
+    // },
+    // functionPointer: OpContext,
+    // data: {
+    //     description: 'Insert a value from the calling function context',
+    //     category: 'core',
+    //     example: 'context<2 6>()',
+    //     parameters: [
+    //         {
+    //             spread: false,  // not sure 
+    //             name: 'column index',
+    //             description: 'The index of the context column to insert.',
+    //         },
+    //         {
+    //             spread: false,  // not sure
+    //             name: 'row index',
+    //             description: 'The index of the constant row to insert.',
+    //         },
+    //     ],
+    // },
     // }
     {
         enum: AllStandardOps.LOOP_N,
         name: 'LOOP_N',
-        description: 'Loop a source n times on stack items',
-        outputs: (_operand) => 0,
-        inputs: (_operand) => 0,
-        paramsValidRange: (_paramsLength) => _paramsLength === 0,
+        description: 'Loop a source n times by taking some items from stack and putting the results back into stack',
+        outputs: (_operand) => (_operand >> 4) & 15,
+        inputs: (_operand) => _operand & 15,
+        paramsValidRange: (_paramsLength) => _paramsLength >= 0 && _paramsLength < 16,
         operand: {
             // 2 args that construct LOOP_N operand
             argsConstraints: [
-                (_value) => _value < 16 && _value >= 0,     // loopSize valid range
-                (_value) => _value < 16 && _value > 0,     // sourceIndex valid range
+                (_value) => _value < 16 && _value >= 0,                                                 // loopSize valid range
+                (_value, _paramsLength) => _value < 16 && _value > 0 && _value === _paramsLength,       // inputSize valid range
+                (_value) => _value < 16 && _value >= 0,                                                 // outputSize valid range
+                (_value) => _value < 16 && _value > 0,                                                  // sourceIndex valid range
             ],
             encoder: (_args) => loopNOperand(
-                _args[0],    // loop size, n times 
-                _args[1]     // source index
+                _args[0],   // loop size, n times 
+                _args[1],   // inputSize
+                _args[2],   // outputSize
+                _args[3]    // source index
             ),
             decoder: (_operand) => [_operand & 15, _operand >> 4]
         },
         aliases: ['LOOP', 'LOOPN', 'FOR'],
         functionPointer: OpLoopN,
         data: {
-            description: 'Loop a source n times on stack items.',
+            description: 'Loop a source n times by taking some items from stack and putting the results back into stack.',
             category: 'core',
-            example: 'loop_n<8 1>(exp1 exp2); add(STATE<0> STATE<1>) sub(1 STATE<1>);',
+            example: 'loop_n<8 1 2 1>(exp1); add(STATE<0> STATE<1>) sub(1 STATE<1>);',
             parameters: [
                 {
                     spread: false,
                     name: 'loopSize',
                     description: 'loop for this size times (0<n<16).',
+                },
+                {
+                    spread: false,
+                    name: 'inputSize',
+                    description: 'number of inputs',
+                },
+                {
+                    spread: false,
+                    name: 'outputSize',
+                    description: 'number of outputs',
                 },
                 {
                     spread: false,
@@ -392,31 +418,33 @@ export const RainterpreterFunctionPointerOpMeta: FunctionPointerOpMeta[] = [
         },
     },
     {
-        // @TODO: update
         enum: AllStandardOps.SET,
         name: 'SET',
-        description: 'Insert a value from contract storage into the stack',
-        outputs: (_operand) => 1,
-        inputs: (_operand) => 0,
-        paramsValidRange: (_paramsLength) => _paramsLength === 0,
+        description: 'Write a key/value pair from constants array into contract storage',
+        outputs: (_operand) => 0,
+        inputs: (_operand) => 2,
+        paramsValidRange: (_paramsLength) => _paramsLength === 2,
         operand: {
-            argsConstraints: [
-                (_value) => _value < 256 && _value >= 0,     // index of Storage slot valid range
-            ],
-            encoder: (_args) => _args[0],
-            decoder: (_operand) => [_operand]
+            argsConstraints: [],
+            encoder: (_args, _paramsLength) => 0,
+            decoder: (_operand) => []
         },
-        aliases: ['MEMORY'],
         functionPointer: OpSet,
+        aliases: ['WRITE'],
         data: {
-            description: 'Insert a value from contract storage.',
+            description: 'Write a key/value to contract storage.',
             category: 'core',
-            example: 'storage(0)',
+            example: 'set(0x123456 0xabcde)',
             parameters: [
                 {
                     spread: false,
-                    name: 'index',
-                    description: 'The index of the storage value to insert.',
+                    name: 'key',
+                    description: 'The key of the key/value pair.',
+                },
+                {
+                    spread: false,
+                    name: 'value',
+                    description: 'The value of the value/key pair.',
                 },
             ],
         },
@@ -1905,17 +1933,17 @@ export const RainterpreterFunctionPointerOpMeta: FunctionPointerOpMeta[] = [
         name: 'SELECT_LTE',
         description: 'Inserts the result of selecting the less than equal to specified value taken from stack among number of reports by a logic and mode into the stack',
         outputs: (_operand) => 1,
-        inputs: (_operand) => _operand & 31,
+        inputs: (_operand) => _operand & 256,
         paramsValidRange: (_paramsLength) => _paramsLength > 1,
         operand: {
             argsConstraints: [
                 (_value) => _value >= 0 && _value <= 1,    // logic
                 (_value) => _value >= 0 && _value <= 2,    // mode
                 (_value, _paramsLength) =>
-                    _value >= 1 && _value <= 31 && _paramsLength - _value === 1,   // length
+                    _value >= 1 && _value < 256 && _paramsLength === _value,   // inputSize valid range
             ],
             encoder: (_args) => selectLteOperand(_args[0], _args[1], _args[2]),
-            decoder: (_operand) => [_operand >> 7, (_operand >> 5) & 3, _operand & 31],
+            decoder: (_operand) => [_operand >> 13, (_operand >> 8) & 31, _operand & 256],
         },
         aliases: ['SELECTLTE', 'SELECT'],
         functionPointer: OpSelectLte,
@@ -1998,6 +2026,33 @@ export const RainterpreterFunctionPointerOpMeta: FunctionPointerOpMeta[] = [
                     spread: false,
                     name: 'report',
                     description: 'The report to update its tier range',
+                },
+            ],
+        },
+    },
+    {
+        enum: AllStandardOps.GET,
+        name: 'GET',
+        description: 'Read a key/value pair from contract storage by providing the key and stack the value',
+        outputs: (_operand) => 1,
+        inputs: (_operand) => 1,
+        paramsValidRange: (_paramsLength) => _paramsLength === 1,
+        operand: {
+            argsConstraints: [],
+            encoder: (_args, _paramsLength) => 0,
+            decoder: (_operand) => []
+        },
+        functionPointer: OpGet,
+        aliases: ['READ'],
+        data: {
+            description: 'Read a key/value pair from contract storage by providing the key and stack the value.',
+            category: 'core',
+            example: 'get(0x123456)',
+            parameters: [
+                {
+                    spread: false,
+                    name: 'key',
+                    description: 'The key of the key/value pair.',
                 },
             ],
         },

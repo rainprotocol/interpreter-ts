@@ -1,9 +1,8 @@
 /**
  * @public
- *
  * All the standard Op Codes
  */
- export enum AllStandardOps {
+export enum AllStandardOps {
     /**
      * Get price from Chainlink Oracle
      */
@@ -45,8 +44,7 @@
      */
     READ_MEMORY,
     /**
-     * used as local opcodes i.e. opcodes to stack the contract's storage contents i.e.
-     * porperties/variables. operand determines the storage location to be stacked.
+     * Opcode to write a key/value pair into storage
      */
     SET,
     /**
@@ -252,6 +250,10 @@
      * Opcode to update the timestamp over a range of tiers for a report.
      */
     UPDATE_TIMES_FOR_TIER_RANGE,
+    /**
+     * Opcode to read the value of storage key/value pair which is set by SET opcode
+     */
+    GET,
     /**
      * length of available opcodes
      */

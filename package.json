@@ -25,13 +25,13 @@
         "node": ">=10"
     },
     "scripts": {
-        "build": "tsc",
+        "build": "yarn run copy-contracts && yarn run typechain && tsc",
         "prepare": "tsc",
-        "test": "npx hardhat test",
-        "lint": "eslint \"src/**\" \"test/**\"",
-        "docgen": "api-extractor run --local && api-documenter -i ./ -o ./docs",
+        "test": "echo 'there is no test at the moment'",
+        "lint": "eslint --fix \"src/**\" \"test/**\"",
+        "docgen": "rm -rf ./docs && api-extractor run --local && api-documenter -i ./ -o ./docs",
         "copy-contracts": "mkdir -p contracts && cp -r node_modules/@beehiveinnovation/rain-protocol/contracts . && hardhat compile --no-typechain",
-        "gen-typechain": "hardhat typechain && rm -rf src/typechain && mkdir -p src/typechain && cp -r typechain src"
+        "typechain": "hardhat typechain && rm -rf src/typechain && mkdir -p src/typechain && cp -r typechain src"
     },
     "prettier": {
         "printWidth": 100,
@@ -42,7 +42,7 @@
         "trailingComma": "es5"
     },
     "devDependencies": {
-        "@beehiveinnovation/rain-protocol": "git+https://github.com/beehive-innovation/rain-protocol.git#f40c1589fafd17ab07146c6d68ae42ba3b3c53de",
+        "@beehiveinnovation/rain-protocol": "git+https://github.com/beehive-innovation/rain-protocol.git#f34fff1b1605a1c2dc73aa24c04235c6a49cc35a",
         "@microsoft/api-extractor": "^7.33.5",
         "@nomiclabs/hardhat-ethers": "2.1.1",
         "@nomiclabs/hardhat-waffle": "2.0.1",

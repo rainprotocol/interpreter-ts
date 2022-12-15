@@ -13,12 +13,11 @@ node_modules
 
 # Generate output
 dist
+rain-interpreter-ts.api.json
 /artifacts
 /cache
 /contracts
 /typechain
-rainlang.api.json
 
 # That one file that may bother :D
 .DS_Store
-

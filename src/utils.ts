@@ -172,10 +172,10 @@ export function memoryOperand(type: number, offset: number): number {
 
 /**
  * @public
- * Constructs the operand for RainInterpreter's `CALL` opcode by packing 3 numbers into a single byte.
+ * Builds the operand for RainInterpreter's `CALL` opcode by packing 3 numbers into a single byte.
  *
- * @param inputSize - number of inputs being passed to the source (range 0-7)
- * @param outputSize - number of output returned by the source (range 1-3)
+ * @param inputSize - number of inputs being passed to the source
+ * @param outputSize - number of outputs returned by the source
  * @param sourceIndex - index of function source
  */
 export function callOperand(
@@ -183,41 +183,52 @@ export function callOperand(
     outputSize: number,
     sourceIndex: number
 ): number {
-    if (sourceIndex < 0 || sourceIndex > 7) {
-        throw new Error("Invalid sourceIndex")
-    } else if (inputSize < 0 || inputSize > 7) {
-        throw new Error("Invalid inputSize")
-    } else if (outputSize < 1 || outputSize > 3) {
-        throw new Error("Invalid outputSize")
-    }
-  
-    return (sourceIndex << 5) + (outputSize << 3) + inputSize
+    const operand = (sourceIndex << 8) + (outputSize << 4) + inputSize;
+    return operand;
 }
   
 /**
  * @public
- * Constructs the operand for RainInterpreter's `LOOP_N` opcode by packing 2 numbers into a single byte.
+ * Builds the operand for RainInterpreter's `LOOP_N` opcode by packing 4 numbers into a single byte.
  *
- * @param n - loop the source for n times (range 0-15)
+ * @param n - loop the source for n times
+ * @param inputSize - number of inputs being passed to the source
+ * @param outputSize - number of outputs returned by the source
  * @param sourceIndex - index of function source
  */
-export function loopNOperand(n: number, sourceIndex: number): number {
-    if (sourceIndex < 0 || sourceIndex > 15) {
-        throw new Error("Invalid sourceIndex")
-    }
-    else if (n < 0 || n > 15) {
-        throw new Error("Invalid n")
-    }
+export function loopNOperand(
+    n: number,
+    inputSize: number,
+    outputSize: number,
+    sourceIndex: number
+): number {
+    const operand = (n << 12) + callOperand(inputSize, outputSize, sourceIndex);
+    return operand;
+}
   
-    return (sourceIndex << 4) + n
+/**
+ * @public
+ * Builds the operand for RainInterpreter's `DO_WHILE` opcode by packing 3 numbers into a single byte.
+ *
+ * @param inputSize - number of inputs being passed to the source
+ * @param reserved - reserved bytes
+ * @param sourceIndex - index of function source
+ */
+export function doWhileOperand(
+    inputSize: number,
+    reserved: number,
+    sourceIndex: number
+): number {
+    const operand = (sourceIndex << 8) + (reserved << 4) + inputSize;
+    return operand;
 }
 
 /**
- * @public function to pack start/end tier range into a byte size number for the UPDATE_BLOCKS_FOR_TIER_RANGE opcode
+ * @public
+ * function to pack start/end tier range into a byte size number for the UPDATE_BLOCKS_FOR_TIER_RANGE opcode
  *
  * @param startTier - the start tier of the updating which ranges between 0 to 8 (exclusive)
  * @param endTier - the end tier of the updating which ranges between 0 to 8 (inclusive)
- *
  * @returns a byte size number
  */
 export function tierRange(startTier: number, endTier: number): number {
@@ -276,22 +287,21 @@ export function callSize(
 }
 
 /**
- * @public function to set up the operand for a SELECT_LTE opcode
+ * @public
+ * function to set up the operand for a SELECT_LTE opcode
  *
  * @param logic - 0 = every, 1 = any, acts like a logical and/or for the check against BLOCK_NUMBER
  * @param mode - 0 = min, 1 = max, 2 = first, the way to select the reports that pass the check against BLOCK_NUMBER
- * @param length - the number of reports to stack for SELECT_LTE opcode
- *
+ * @param inputSize - the number of reports to stack for SELECT_LTE opcode
  * @returns a byte size number
  */
-export function selectLteOperand(logic: number, mode: number, length: number): number {
-    let lte = logic
-    lte <<= 2
-    lte += mode
-    lte <<= 5
-    lte += length
-
-    return lte
+export function selectLteOperand(
+    logic: number,
+    mode: number,
+    inputSize: number
+): number {
+    const operand = (logic << 13) + (mode << 8) + inputSize;
+    return operand;
 }
 
 /**

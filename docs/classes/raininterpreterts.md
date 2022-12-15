@@ -17,10 +17,11 @@ class RainInterpreterTs
 |  [caller](./raininterpreterts.md#caller-property) | `string` | An ethers Signer. |
 |  [chainId](./raininterpreterts.md#chainId-property) | `number` |  |
 |  [lastState](./raininterpreterts.md#lastState-property) | `BigNumber[]` | The result state of the executed Rain TypeScript Interpreter. |
-|  [opmeta](./raininterpreterts.md#opmeta-property) | `FunctionPointerOpMeta[]` | key/value pair of opcodes and their functions for all standard opcodes |
+|  [opmeta](./raininterpreterts.md#opmeta-property) | `tsOpMeta[]` | key/value pair of opcodes and their functions for all standard opcodes |
 |  [overrideFns](./raininterpreterts.md#overrideFns-property) | [overrideFns](../types/overridefns.md) | functions to override the existing Functions in opmeta |
 |  [self](./raininterpreterts.md#self-property) | `string` | The thisAddress address of the instance of this class used for THIS\_ADDRESS opcode |
 |  [state](./raininterpreterts.md#state-property) | [State](../interfaces/state.md) | The property of type State which that RainInterpreterTs will run based on. |
+|  [storage](./raininterpreterts.md#storage-property) | [kvStorage](../types/kvstorage.md) | property of the class to store key/value pairs as Storage. used by GET/SET in TypeScript Rainterpreter |
 |  [StorageRange](./raininterpreterts.md#StorageRange-property) | `number` | Range of available storage variables accessible by eval |
 
 ## Methods
@@ -77,7 +78,7 @@ key/value pair of opcodes and their functions for all standard opcodes
 <b>Signature:</b>
 
 ```typescript
-readonly opmeta: FunctionPointerOpMeta[];
+readonly opmeta: tsOpMeta[];
 ```
 
 <a id="overrideFns-property"></a>
@@ -114,6 +115,18 @@ The property of type State which that RainInterpreterTs will run based on.
 
 ```typescript
 readonly state: State;
+```
+
+<a id="storage-property"></a>
+
+### storage
+
+property of the class to store key/value pairs as Storage. used by GET/SET in TypeScript Rainterpreter
+
+<b>Signature:</b>
+
+```typescript
+readonly storage: kvStorage;
 ```
 
 <a id="StorageRange-property"></a>
