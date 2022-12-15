@@ -17,6 +17,7 @@ class Simulation
 |  [chainId](./simulation.md#chainId-property) | `number` | Chain ID of this simulation |
 |  [interpreterInstances](./simulation.md#interpreterInstances-property) | `RainInterpreterTs[]` |  |
 |  [mock](./simulation.md#mock-property) | [Mock](../types/mock.md) |  |
+|  [provider](./simulation.md#provider-property) | `providers.BaseProvider` | Ethersjs provider |
 
 ## Static Methods
 
@@ -86,6 +87,18 @@ readonly interpreterInstances: RainInterpreterTs[];
 
 ```typescript
 mock?: Mock;
+```
+
+<a id="provider-property"></a>
+
+### provider
+
+Ethersjs provider
+
+<b>Signature:</b>
+
+```typescript
+readonly provider: providers.BaseProvider;
 ```
 
 ## Static Method Details

@@ -48,16 +48,17 @@ export class Simulation {
     public readonly chainId: number;
 
     /**
+     * @public
      * Ethersjs provider
      */
-    private readonly _provider: providers.BaseProvider
+    public readonly provider: providers.BaseProvider
 
     /**
      * Constructor of the class
      */
     private constructor(chainId: number, mock?: Mock) {
         this.chainId = chainId
-        this._provider = getProvider(chainId)
+        this.provider = getProvider(chainId)
         if (mock) this.mock = mock
     }
 
@@ -149,8 +150,8 @@ export class Simulation {
      * properties with current on-chain data
      */
     public async initMock() {
-        const _number = await this._provider.getBlockNumber()
-        const _timestamp = (await this._provider.getBlock(_number)).timestamp
+        const _number = await this.provider.getBlockNumber()
+        const _timestamp = (await this.provider.getBlock(_number)).timestamp
         if (this.mock) {
             this.mock.blockNumber = _number
             this.mock.blockTimestamp = _timestamp
@@ -305,11 +306,10 @@ export class Simulation {
                 }
                 if (mode === 'once') {
                     if (i === 0) {
-                        await this.initMock()
-                    }
-                    _block = {
-                        number: this.mock?.blockNumber ?? 0,
-                        timestamp: this.mock?.blockTimestamp ?? 0
+                        await this.initMock().then(() => _block = {
+                            number: this.mock?.blockNumber ?? 0,
+                            timestamp: this.mock?.blockTimestamp ?? 0
+                        })
                     }
                 }
                 if (mode === 'always') _block = undefined
