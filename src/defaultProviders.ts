@@ -23,7 +23,7 @@ export const defaultProvidersUrls: Record<number, string> = {
  */
 export const getProvider = (chainId: number): providers.BaseProvider => {
     const network = getNetwork(chainId)
-    if (network._defaultProvider !== undefined) return getDefaultProvider(chainId)
+    if (network._defaultProvider) return getDefaultProvider(chainId)
     else {
         try {
             if (defaultProvidersUrls[chainId]) {

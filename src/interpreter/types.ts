@@ -140,7 +140,7 @@ export type ReservedData = {
 /**
  * @public
  * Additional data available for opcodes' closures during eval, some names are reserved 
- * as they are necessary for any eval such as context, namespace and simulationCount
+ * as they are necessary for any eval such as context and namespace
  */
 export type RuntimeData = {
     [key: string]: any;
@@ -152,7 +152,7 @@ export type RuntimeData = {
      * Namespace address, The private k/v storage is namespaced by this address, will be ignored 
      * for 'public' and 'none' namespace types
      */
-    namespace: string;
+    namespace?: string;
 }
 
 /**

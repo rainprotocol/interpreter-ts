@@ -75,7 +75,7 @@ export class Simulation {
         chainId: number,
         configs: RainterpreterSimulationArgs[],
         mock?: Mock
-    ) {
+    ): Simulation {
         const _instance = new Simulation(chainId, mock)
         for (let i = 0; i < configs.length; i++) {
             const _index = _instance.interpreterInstances.findIndex(
@@ -99,6 +99,7 @@ export class Simulation {
                 }
             }
         }
+        return _instance
     }
 
     /**
@@ -114,7 +115,7 @@ export class Simulation {
         chainId: number,
         configs: CustomSimulationArgs[],
         mock?: Mock
-    ) {
+    ): Simulation {
         const _instance = new Simulation(chainId, mock)
         for (let i = 0; i < configs.length; i++) {
             const _index = _instance.interpreterInstances.findIndex(
@@ -138,6 +139,7 @@ export class Simulation {
                 }
             }
         }
+        return _instance
     }
 
     /**

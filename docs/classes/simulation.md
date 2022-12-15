@@ -99,7 +99,7 @@ Instantiates the class object with custom opcodes closures All simulations will 
 <b>Signature:</b>
 
 ```typescript
-static custom(chainId: number, configs: CustomSimulationArgs[], mock?: Mock): void;
+static custom(chainId: number, configs: CustomSimulationArgs[], mock?: Mock): Simulation;
 ```
 
 #### Parameters
@@ -112,7 +112,7 @@ static custom(chainId: number, configs: CustomSimulationArgs[], mock?: Mock): vo
 
 <b>Returns:</b>
 
-`void`
+`Simulation`
 
 <a id="getBalance-method-static-1"></a>
 
@@ -346,7 +346,7 @@ Instantiates the class object with default Rainterpreter opcodes All simulations
 <b>Signature:</b>
 
 ```typescript
-static rainterpreter(chainId: number, configs: RainterpreterSimulationArgs[], mock?: Mock): void;
+static rainterpreter(chainId: number, configs: RainterpreterSimulationArgs[], mock?: Mock): Simulation;
 ```
 
 #### Parameters
@@ -359,7 +359,7 @@ static rainterpreter(chainId: number, configs: RainterpreterSimulationArgs[], mo
 
 <b>Returns:</b>
 
-`void`
+`Simulation`
 
 <a id="updateChainlink-method-static-1"></a>
 

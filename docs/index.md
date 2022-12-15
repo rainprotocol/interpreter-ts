@@ -103,7 +103,7 @@
 |  [RainterpreterSimulationArgs](./types/rainterpretersimulationargs.md) | Arguments for initiating a default simulation which uses Rainterpreter opcodes |
 |  [ReservedData](./types/reserveddata.md) | Reserved properties and values available to opcodes' closures at runtime, these will stay intact during eval with some exceptions which are 'storage' and 'mock' that can reassigned and/or modified during eval |
 |  [RunConfig](./types/runconfig.md) | Configurations and options for eval |
-|  [RuntimeData](./types/runtimedata.md) | Additional data available for opcodes' closures during eval, some names are reserved as they are necessary for any eval such as context, namespace and simulationCount |
+|  [RuntimeData](./types/runtimedata.md) | Additional data available for opcodes' closures during eval, some names are reserved as they are necessary for any eval such as context and namespace |
 |  [SimulationError](./types/simulationerror.md) | Result of a failed expression eval in a simulation that is available in run() callback signature |
 |  [SimulationMode](./types/simulationmode.md) | Defines where and how data is used for a simulation - always: read the data from on-chain all the times, any mock data will be ignored entirely - once: only read the data from on-chain the first time simulation runs, optionally store that in mock data and reaed from mock data for next simulation runs - never: read from mock data all the times, and never try to read data from on-chain, if mock data is not available simulation will throw error |
 |  [SimulationResult](./types/simulationresult.md) | Result of a successfull evaluated expression in a simulation that is available in run() callback signature |

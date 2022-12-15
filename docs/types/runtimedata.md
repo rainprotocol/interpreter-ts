@@ -2,7 +2,7 @@
 
 # Type RuntimeData
 
-Additional data available for opcodes' closures during eval, some names are reserved as they are necessary for any eval such as context, namespace and simulationCount
+Additional data available for opcodes' closures during eval, some names are reserved as they are necessary for any eval such as context and namespace
 
 <b>Signature:</b>
 
@@ -10,6 +10,6 @@ Additional data available for opcodes' closures during eval, some names are rese
 type RuntimeData = {
     [key: string]: any;
     context: BigNumber[][];
-    namespace: string;
+    namespace?: string;
 };
 ```
