@@ -1,12 +1,13 @@
 import { BigNumber } from "ethers";
+import { InterpreterData, opClosure } from "../../../interpreter/types";
 
 /**
  * @public
  */
-export function OpContextRow(
+export const OpContextRow: opClosure = (
     _inputs: BigNumber[],
     _operand: number,
-    _data?: any
-): BigNumber[] {
+    _data: InterpreterData
+): BigNumber[] => {
     return []
 }

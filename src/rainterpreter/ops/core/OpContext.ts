@@ -1,13 +1,14 @@
 import { BigNumber } from "ethers";
+import { InterpreterData, opClosure } from "../../../interpreter/types";
 
 /**
  * @public
  */
-export function OpContext(
+export const OpContext: opClosure = (
     _inputs: BigNumber[],
     _operand: number,
-    _data?: any
-): BigNumber[] {
+    _data: InterpreterData
+): BigNumber[] => {
     const column = _operand >> 8
     const row = _operand & 8
     if (_data?.context && _data.context[column][row] !== undefined) {

@@ -6,15 +6,19 @@
 
 |  Class | Description |
 |  --- | --- |
-|  [RainInterpreterTs](./classes/raininterpreterts.md) | - The javascript version of the RainVM, basically does the same job RainVM does but off-chain. |
+|  [RainInterpreterTs](./classes/raininterpreterts.md) | - The typescript (javascript) version of the RainInterpreter.sol, which basically does the same job offchain, i.e evaluates an expression off-chain with either reading necessary data with onchain calls or by some provided mock data. There are many usecases, simulating and forecasting are just a few to mention. |
+|  [Simulation](./classes/simulation.md) | All the things needed in order to conduct a simulation/forecast of Rain Interpreter. this uses RainInterpreterTs under the hood to eval expressions with provided opcode closures and data. Data is either mocked or fetched from on-chain as there are 3 types of simulation defined: always, once, never. These determine how the data will be handled and provided for default simulation which uses Rainterpreter opcodes and their default overrides. For a custom simulation that uses custom interpreter and opcode closures, the opcode closures need to be provided by the user. |
 
 ## Enumerations
 
 |  Enumeration | Description |
 |  --- | --- |
 |  [AllStandardOps](./enums/allstandardops.md) | All the standard Op Codes |
+|  [AssetType](./enums/assettype.md) | Valid token types |
 |  [Debug](./enums/debug.md) |  |
+|  [iSaleStatus](./enums/isalestatus.md) | Valid ISale status |
 |  [MemoryType](./enums/memorytype.md) |  |
+|  [NamespaceType](./enums/namespacetype.md) | Defines the namespace type for each expression that is being evaluated |
 |  [selectLteLogic](./enums/selectltelogic.md) | An enum for selectLte logic |
 |  [selectLteMode](./enums/selectltemode.md) | An enum for selectLte mode |
 |  [Tier](./enums/tier.md) | All the contract tier levels availables in all ITier contracts. |
@@ -41,7 +45,7 @@
 
 |  Interface | Description |
 |  --- | --- |
-|  [State](./interfaces/state.md) | - An interface, StateJS is basically javascript version of 'State' struct in RainVM, although it doesn't need stackLength and argumentsLength to operate. It receives a regular RainVM in the constructor and initiates the stack for it and all opcodes do their operations to the stack. |
+|  [State](./interfaces/state.md) | The eval state of current expression of interpreter-ts |
 
 ## Variables
 
@@ -51,9 +55,12 @@
 |  [arrayify](./variables/arrayify.md) | ethers arrayify |
 |  [bytify](./variables/bytify.md) | Converts a value to raw bytes representation. Assumes `value` is less than or equal to 1 byte, unless a desired `bytesLength` is specified. |
 |  [concat](./variables/concat.md) | ethers concat |
+|  [defaultOverrides](./variables/defaultoverrides.md) | All default Rainterpreter override closures for Simulation |
+|  [defaultProvidersUrls](./variables/defaultprovidersurls.md) | Default RPC URLs for networks that are not available in ethersjs getDefaultProvider() |
 |  [eighteenZeros](./variables/eighteenzeros.md) |  |
 |  [fixedPointDiv](./variables/fixedpointdiv.md) |  |
 |  [fixedPointMul](./variables/fixedpointmul.md) |  |
+|  [getProvider](./variables/getprovider.md) | Function to get an ethers provider form chainId |
 |  [hexlify](./variables/hexlify.md) | ethers hexlify |
 |  [hexZeroPad](./variables/hexzeropad.md) | ethers hexZeroPad |
 |  [max](./variables/max.md) | calculate the maximum among array of BigNumbers |
@@ -65,7 +72,7 @@
 |  [paddedUInt32](./variables/paddeduint32.md) | Utility function to produce 32 bits size hexString |
 |  [paddedUInt64](./variables/paddeduint64.md) | Utility function to produce 64 bits size hexString |
 |  [parseUnits](./variables/parseunits.md) | ethers parseUnits |
-|  [rainterpreterTsOpMeta](./variables/rainterpretertsopmeta.md) | All Standard Rainterpreter OpMeta with Function Pointers |
+|  [rainterpreterClosures](./variables/rainterpreterclosures.md) | All Standard Rainterpreter OpMeta with Function Pointers |
 |  [saturatingAdd](./variables/saturatingadd.md) |  |
 |  [saturatingDiff](./variables/saturatingdiff.md) |  |
 |  [saturatingMul](./variables/saturatingmul.md) |  |
@@ -81,18 +88,24 @@
 
 |  Type Alias | Description |
 |  --- | --- |
-|  [CallOptions](./types/calloptions.md) | Options for instantiating RainInterpreterTs |
+|  [CustomSimulationArgs](./types/customsimulationargs.md) | Arguments for initiating a default simulation which uses any custom opcodes' closures |
 |  [Hexable](./types/hexable.md) | A native type for ethers Hexable |
-|  [kvStorage](./types/kvstorage.md) | Type for TypeScript Interpreter Storage which holds key/value pairs key is string type as uin256 hex string i.e. 32 bytes hex string |
-|  [OperandArgConstraints](./types/operandargconstraints.md) |  |
-|  [OperandDecoder](./types/operanddecoder.md) |  |
-|  [OperandEncoder](./types/operandencoder.md) |  |
-|  [OperandMeta](./types/operandmeta.md) |  |
-|  [OpIO](./types/opio.md) |  |
-|  [OpMeta](./types/opmeta.md) |  |
-|  [overrideFns](./types/overridefns.md) |  |
-|  [ParamsValidRange](./types/paramsvalidrange.md) | valid number of parameteres an opcode's can have inside its parens |
+|  [InterpreterData](./types/interpreterdata.md) | All data and values available to opcodes' closures during eval, consists of Reserved and Runtime data |
+|  [kvStorage](./types/kvstorage.md) | Type os interpreter-ts storage obj which holds key/value pairs mapped by sender and namespace addresses |
+|  [Mock](./types/mock.md) | All data and information needed to make mock data |
+|  [MockAccount](./types/mockaccount.md) | Ethers account mock type |
+|  [MockERC1155](./types/mockerc1155.md) | ERC1155 token mock type |
+|  [MockERC20](./types/mockerc20.md) | ERC20 token mock type |
+|  [MockERC721](./types/mockerc721.md) | ERC721 token mock type |
+|  [opClosure](./types/opclosure.md) | Type of an interpreter-ts opcode function (closure) |
+|  [opConfig](./types/opconfig.md) | All needed for interpreter-ts to eval an opcode |
+|  [OverrideFns](./types/overridefns.md) | Functions (closures) to override opcodes' original functions |
+|  [RainterpreterSimulationArgs](./types/rainterpretersimulationargs.md) | Arguments for initiating a default simulation which uses Rainterpreter opcodes |
+|  [ReservedData](./types/reserveddata.md) | Reserved properties and values available to opcodes' closures at runtime, these will stay intact during eval with some exceptions which are 'storage' and 'mock' that can reassigned and/or modified during eval |
+|  [RunConfig](./types/runconfig.md) | Configurations and options for eval |
+|  [RuntimeData](./types/runtimedata.md) | Additional data available for opcodes' closures during eval, some names are reserved as they are necessary for any eval such as context, namespace and simulationCount |
+|  [SimulationError](./types/simulationerror.md) | Result of a failed expression eval in a simulation that is available in run() callback signature |
+|  [SimulationMode](./types/simulationmode.md) | Defines where and how data is used for a simulation - always: read the data from on-chain all the times, any mock data will be ignored entirely - once: only read the data from on-chain the first time simulation runs, optionally store that in mock data and reaed from mock data for next simulation runs - never: read from mock data all the times, and never try to read data from on-chain, if mock data is not available simulation will throw error |
+|  [SimulationResult](./types/simulationresult.md) | Result of a successfull evaluated expression in a simulation that is available in run() callback signature |
 |  [StateConfig](./types/stateconfig.md) | Type of valid parsed expression, i.e. compiled bytes |
-|  [tsOp](./types/tsop.md) | A type of JSVM opcodes' function's body |
-|  [tsOpMeta](./types/tsopmeta.md) | An type for creating a key/value pair of opcodes functions to override. |
 

@@ -1,31 +1,38 @@
 import { BigNumber } from "ethers";
 import { RainInterpreterTs } from "../../../interpreter/RainInterpreterTs";
+import { InterpreterData, opClosure } from "../../../interpreter/types";
+import { rainterpreterClosures } from "../../rainterpreterOpsConfigs";
 
 /**
  * @public
  */
-export async function OpCall(
-    this: RainInterpreterTs,
+export const OpCall: opClosure = async(
     _inputs: BigNumber[],
     _operand: number,
-    _data?: any
-): Promise<BigNumber[]> {
+    _data: InterpreterData
+): Promise<BigNumber[]> => {
     const _interpreter = new RainInterpreterTs(
-        {
-            constants: this.state.constants,
-            sources: this.state.sources
-        },
-        {
-            caller: this.caller,
-            thisAddress: this.self,
-            opmeta: this.opmeta
-        }
+        _data.interpreterAddress,
+        _data.chainId,
+        rainterpreterClosures,
+        _data.overrides,
+        [_data.stateConfig],
+        _data.storage
     )
     _interpreter.state.stack.push(..._inputs)
-    const _overrideFns = this.overrideFns
-    const _entrypoint = _operand >> 5
-    const _outputs = (_operand >> 3) & 3
-    const _result = await _interpreter.run(this.caller, _data, _entrypoint, _overrideFns)
-    if (_result.length >= _outputs) return _result.splice(-_outputs)
+    const _entrypoint = _operand >> 8
+    const _outputs = (_operand >> 4) & 15
+    const _result = await _interpreter.run(
+        _data.sender,
+        _data,
+        {
+            namespaceType: _data.namespaceType,
+            block: _data.block,
+            entrypoint: _entrypoint,
+            overrideFunctions: _data.overrides
+        }
+    )
+    if (_result.finalStack.length >= _outputs) 
+        return _result.finalStack.splice(-_outputs)
     else throw new Error('out-of-bound outputs')
 }

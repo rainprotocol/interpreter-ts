@@ -2,7 +2,8 @@
 import type { BytesLike } from 'ethers';
 import { isBytes, isHexString } from 'ethers/lib/utils';
 import { BigNumber, BigNumberish, ethers, utils } from 'ethers';
-import { StateConfig } from './types';
+import { StateConfig } from './interpreter/types';
+
 
 export const {
     /**
