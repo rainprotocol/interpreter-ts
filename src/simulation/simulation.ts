@@ -456,8 +456,10 @@ export class Simulation {
      * @param mock - The mock data object
      * @param accountAddress - The account address
      * @param assetAddress - The asset address
-     * @param id - id of the token for erc721 and erc1155 tokens or snapshot id of erc20 token (passing id for erc20 token will get the snapshot balance)
-     * @returns The balance of the account of the asset, 0 if either account or asset or id (in case of erc721 and erc1155) was not present
+     * @param id - id of the token for erc721 and erc1155 tokens or snapshot id of erc20 token (passing 
+     * id for erc20 token will get the snapshot balance)
+     * @returns The balance of the account of the asset, 0 if either account or asset or id (in case of 
+     * erc721 and erc1155) was not present
      */
     public static getBalance(
         mock: Mock,
@@ -859,7 +861,8 @@ export class Simulation {
 
     /**
      * @public
-     * Method to get the vault balance of an account from mock data, returns 0 if vault with provided details is not present
+     * Method to get the vault balance of an account from mock data, returns 0 if vault with 
+     * provided details is not present
      * 
      * @param mock - The mock data to search
      * @param accountAddress - The address of the account to get its vault balance
@@ -957,5 +960,5 @@ export class Simulation {
             }]
         })
     }
-
 }
+
