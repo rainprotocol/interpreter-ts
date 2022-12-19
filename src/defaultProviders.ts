@@ -1,7 +1,5 @@
-import * as dotenv from 'dotenv';
 import { isBigNumberish } from './utils';
 import { BigNumber, BigNumberish, ethers, providers } from "ethers";
-dotenv?.config()
 
 /**
  * @public
@@ -20,18 +18,18 @@ export type Providerish = BigNumberish | string | providers.BaseProvider
  * desired key/value (number -\> string) to this object as you do normally with any js object
  */
 export const defaultProvidersUrls: Record<number, string> = {
-    1       :   process?.env?.RPC_ETH         ??  'https://rpc.ankr.com/eth',
-    5       :   process?.env?.RPC_GOERLI      ??  'https://goerli.infura.io/v3/',
-    137     :   process?.env?.RPC_POLYGON     ??  'https://polygon-rpc.com/',
-    80001   :   process?.env?.RPC_MUMBAI      ??  'https://rpc-mumbai.maticvigil.com',
-    42161   :   process?.env?.RPC_ARB         ??  'https://arb1.arbitrum.io/rpc',
-    42220   :   process?.env?.RPC_CELO        ??  'https://forno.celo.org',
-    56      :   process?.env?.RPC_BSC         ??  'https://bsc-dataseed.binance.org/',
-    97      :   process?.env?.RPC_BSC_TEST    ??  'https://data-seed-prebsc-1-s1.binance.org:8545',
-    43114   :   process?.env?.RPC_AVAX        ??  'https://api.avax.network/ext/bc/C/rpc',
-    43113   :   process?.env?.RPC_AVAX_TEST   ??  'https://api.avax-test.network/ext/bc/C/rpc',
-    100     :   process?.env?.RPC_XDAI        ??  'https://rpc.ankr.com/gnosis',
-    250     :   process?.env?.RPC_FTM         ??  'https://rpc.ftm.tools',
+    1      :  'https://rpc.ankr.com/eth',
+    5      :  'https://goerli.infura.io/v3/',
+    137    :  'https://polygon-rpc.com/',
+    80001  :  'https://rpc-mumbai.maticvigil.com',
+    42161  :  'https://arb1.arbitrum.io/rpc',
+    42220  :  'https://forno.celo.org',
+    56     :  'https://bsc-dataseed.binance.org/',
+    97     :  'https://data-seed-prebsc-1-s1.binance.org:8545',
+    43114  :  'https://api.avax.network/ext/bc/C/rpc',
+    43113  :  'https://api.avax-test.network/ext/bc/C/rpc',
+    100    :  'https://rpc.ankr.com/gnosis',
+    250    :  'https://rpc.ftm.tools',
 }
 
 /**
