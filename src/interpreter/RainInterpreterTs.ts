@@ -1,6 +1,6 @@
 import { BigNumber, providers, VoidSigner } from 'ethers';
-import { arrayify } from '../utils';
-import { getProvider } from '../defaultProviders';
+import { arrayify, isBigNumberish } from '../utils';
+import { getProvider, Providerish } from '../defaultProviders';
 import { 
     OverrideFns,
     State,
@@ -12,6 +12,7 @@ import {
     RuntimeData,
     InterpreterData,
 } from './types';
+
 
 /**
  * @public - The typescript (javascript) version of the RainInterpreter.sol, which basically does 
@@ -81,18 +82,20 @@ export class RainInterpreterTs {
     private readonly _voidSigner: VoidSigner;
 
     /**
-     * @public
-     * The constructor of RainInterpreterTs which initiates the RainInterpreterTs and also a State for a RainVM script.
+     * The private constructor of RainInterpreterTs which initiates the RainInterpreterTs and also a State for a RainVM script.
+     * This is a private constructore so for instantiating the class object one need to use the static .init() method
      *
      * @param interpreterAddress - The interpreter's address
-     * @param chainId - The chain ID this interpreter is deployed on
+     * @param provider - The provider object in order to instantiate the class
+     * @param chainId - The chain ID of the network
      * @param functionPointers - Array of functions (closures) paired with opcodes' enums and their inputs and ouputs
      * @param overrides - (optional) The functions to override the original opcode functions of interpreter-ts instance
      * @param stateConfigs - (optional) StateConfigs to add to this instance of interpreter-ts
      * @param storages - (optional) The storage obj to add to this interpreter-ts instance
      */
-    constructor(
+    private constructor(
         interpreterAddress: string,
+        provider: providers.BaseProvider,
         chainId: number,
         functionPointers: opConfig[],
         overrides?: OverrideFns,
@@ -127,12 +130,51 @@ export class RainInterpreterTs {
         }
         this.interpreterAddress = interpreterAddress.toLowerCase()
         this.functionPointers = functionPointers
+        this.overrideFns = overrides;
+        this._provider = provider
         this.chainId = chainId
-        this.overrideFns = overrides
-        this._provider = getProvider(chainId)
         this._voidSigner = new VoidSigner(
             '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
             this._provider
+        )
+    }
+
+    /**
+     * @public
+     * The constructor of RainInterpreterTs which initiates the RainInterpreterTs and also a State for a RainVM script.
+     *
+     * @param interpreterAddress - The interpreter's address
+     * @param providerish - The chainId or rpc url or a valid ethersj provider
+     * @param functionPointers - Array of functions (closures) paired with opcodes' enums and their inputs and ouputs
+     * @param overrides - (optional) The functions to override the original opcode functions of interpreter-ts instance
+     * @param stateConfigs - (optional) StateConfigs to add to this instance of interpreter-ts
+     * @param storages - (optional) The storage obj to add to this interpreter-ts instance
+     */
+    public static async init(
+        interpreterAddress: string,
+        providerish: Providerish,
+        functionPointers: opConfig[],
+        overrides?: OverrideFns,
+        stateConfigs?: StateConfig[],
+        storages?: kvStorage
+    ): Promise<RainInterpreterTs> {
+        let _network = {
+            name: '',
+            chainId: -1
+        }
+        if (isBigNumberish(providerish)) 
+            _network.chainId = BigNumber.from(providerish).toNumber()
+        const _provider = getProvider(providerish);
+        if (_network.chainId < 0)
+            _network = await _provider.getNetwork()
+        return new RainInterpreterTs(
+            interpreterAddress,
+            _provider,
+            _network.chainId,
+            functionPointers,
+            overrides,
+            stateConfigs,
+            storages
         )
     }
 
@@ -168,6 +210,7 @@ export class RainInterpreterTs {
             Object.assign(data.sender, _interpreterData.sender)
             Object.assign(data.namespaceType, _interpreterData.namespaceType)
             Object.assign(data.block, _interpreterData.block)
+            Object.assign(data.opConfigs, _interpreterData.opConfigs)
             Object.assign(data.overrides, _interpreterData.overrides)
             Object.assign(data.stack, this.state.stack)
             if (!data.mode) data.mode = 'always'
@@ -323,6 +366,7 @@ export class RainInterpreterTs {
                         ? config.namespaceType
                         : NamespaceType.public,
                     block: { number: _number, timestamp: _timestamp },
+                    opConfigs: this.functionPointers,
                     overrides: overrides,
                     storage: {},
                     mode: config?.simulationArgs?.mode,

@@ -113,6 +113,10 @@ export type ReservedData = {
      */
     block: { number: number; timestamp: number};
     /**
+     * opcodes' configs, ie the opcode enum, input, output and closure
+     */
+    opConfigs: opConfig[]
+    /**
      * The OverrideFns, functions that override original opcode functions at runtime
      */
     overrides: OverrideFns;

@@ -60,7 +60,7 @@
 |  [eighteenZeros](./variables/eighteenzeros.md) |  |
 |  [fixedPointDiv](./variables/fixedpointdiv.md) |  |
 |  [fixedPointMul](./variables/fixedpointmul.md) |  |
-|  [getProvider](./variables/getprovider.md) | Function to get an ethers provider form chainId |
+|  [getProvider](./variables/getprovider.md) | Function to get an ethers Provider |
 |  [hexlify](./variables/hexlify.md) | ethers hexlify |
 |  [hexZeroPad](./variables/hexzeropad.md) | ethers hexZeroPad |
 |  [max](./variables/max.md) | calculate the maximum among array of BigNumbers |
@@ -100,6 +100,7 @@
 |  [opClosure](./types/opclosure.md) | Type of an interpreter-ts opcode function (closure) |
 |  [opConfig](./types/opconfig.md) | All needed for interpreter-ts to eval an opcode |
 |  [OverrideFns](./types/overridefns.md) | Functions (closures) to override opcodes' original functions |
+|  [Providerish](./types/providerish.md) | Type needed to construct a provider, which is either: - chain id of the network to construct the Provider from default or .evn URLs - https(s) or websocket (ws, wss) URL of the RPC to construct the Provider from - any valid ethersjs Provider |
 |  [RainterpreterSimulationArgs](./types/rainterpretersimulationargs.md) | Arguments for initiating a default simulation which uses Rainterpreter opcodes |
 |  [ReservedData](./types/reserveddata.md) | Reserved properties and values available to opcodes' closures at runtime, these will stay intact during eval with some exceptions which are 'storage' and 'mock' that can reassigned and/or modified during eval |
 |  [RunConfig](./types/runconfig.md) | Configurations and options for eval |

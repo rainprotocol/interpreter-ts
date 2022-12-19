@@ -2,10 +2,10 @@
 
 # Variable getProvider
 
-Function to get an ethers provider form chainId
+Function to get an ethers Provider
 
 <b>Signature:</b>
 
 ```typescript
-getProvider: (chainId: number) => providers.BaseProvider
+getProvider: (providerish: Providerish) => providers.BaseProvider
 ```

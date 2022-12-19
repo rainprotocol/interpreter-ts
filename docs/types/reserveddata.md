@@ -20,6 +20,7 @@ type ReservedData = {
         number: number;
         timestamp: number;
     };
+    opConfigs: opConfig[];
     overrides: OverrideFns;
     storage: kvStorage;
     mode?: SimulationMode;

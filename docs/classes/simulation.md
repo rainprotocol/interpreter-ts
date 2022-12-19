@@ -23,7 +23,7 @@ class Simulation
 
 |  Method | Description |
 |  --- | --- |
-|  [custom(chainId, configs, mock)](./simulation.md#custom-method-static-1) | Instantiates the class object with custom opcodes closures All simulations will be using these custom opcodes and their overrides |
+|  [custom(providerish, configs, mock)](./simulation.md#custom-method-static-1) | Instantiates the class object with custom opcodes closures All simulations will be using these custom opcodes and their overrides |
 |  [getBalance(mock, accountAddress, assetAddress, id)](./simulation.md#getBalance-method-static-1) | Method to get the balance of a asset for an account, returns zero if such asset or account is not present in the mock data |
 |  [getChainlink(mock, chainlinkAddress)](./simulation.md#getChainlink-method-static-1) | Method to get the chainlink price from mock data, returns undefined if the chainlink account is not present |
 |  [getDecimals(mock, accountAddress, assetAddress)](./simulation.md#getDecimals-method-static-1) | Method to get the total supply of a asset for an account, returns zero if such asset or account or token is of type erc721 or erc1155 |
@@ -32,7 +32,7 @@ class Simulation
 |  [getReport(mock, accountAddress, iTierAddress)](./simulation.md#getReport-method-static-1) | Method to get the report of an account from mock data, returns NEVER if any of provided account or iTier address are not present in the mock data |
 |  [getTotalSupply(mock, assetAddress, id)](./simulation.md#getTotalSupply-method-static-1) | Method to get the total supply of a asset for an account, returns zero if such asset or account or token id (in case of erc1155) is not present in the mock data and return or asset is of type erc721 |
 |  [getVaultBalance(mock, accountAddress, iOrderbookAddress, tokenAddress, vaultId)](./simulation.md#getVaultBalance-method-static-1) | Method to get the vault balance of an account from mock data, returns 0 if vault with provided details is not present |
-|  [rainterpreter(chainId, configs, mock)](./simulation.md#rainterpreter-method-static-1) | Instantiates the class object with default Rainterpreter opcodes All simulations will be using the Rainterpreter opcodes and its overrides all teh time |
+|  [rainterpreter(providerish, configs, mock)](./simulation.md#rainterpreter-method-static-1) | Instantiates the class object with default Rainterpreter opcodes All simulations will be using the Rainterpreter opcodes and its overrides all teh time |
 |  [updateChainlink(mock, chainlinkAddress, updatedAt, answer)](./simulation.md#updateChainlink-method-static-1) | Method to update the mock data with an chainlink account that has aswer and updatedat properties If an account with this address is not present in the mock data, it will create it with provided details and if present the answwer and updatedAt properties will be updated to provided values |
 |  [updateISale(mock, iSaleAddress, status, reserve, token)](./simulation.md#updateISale-method-static-1) | Method to update the mock data with provided iSale details for an account, If an account with this address is not present in the mock data, it will create it with provided details and if present the report property will be updated to provided values |
 |  [updateMockAsset(mock, account, asset)](./simulation.md#updateMockAsset-method-static-1) | Method to update asset of an account in mock data, if the account is already present in the mock data, as well as the asset for that account, it will overwrite it with provided asset, so in order to for example update the balance of such account for that asset, caller must use the getBalance() and calculate the final amount seperately |
@@ -105,27 +105,27 @@ readonly provider: providers.BaseProvider;
 
 <a id="custom-method-static-1"></a>
 
-### custom(chainId, configs, mock)
+### custom(providerish, configs, mock)
 
 Instantiates the class object with custom opcodes closures All simulations will be using these custom opcodes and their overrides
 
 <b>Signature:</b>
 
 ```typescript
-static custom(chainId: number, configs: CustomSimulationArgs[], mock?: Mock): Simulation;
+static custom(providerish: Providerish, configs: CustomSimulationArgs[], mock?: Mock): Promise<Simulation>;
 ```
 
 #### Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  chainId | `number` | The chain Id |
+|  providerish | [Providerish](../types/providerish.md) | The rpc url, chainId or a valid ethersjs provider |
 |  configs | `CustomSimulationArgs[]` | Arguments needed to instantiate the RainInterpreterTs objects with custom opcode closures |
 |  mock | [Mock](../types/mock.md) | Mock data |
 
 <b>Returns:</b>
 
-`Simulation`
+`Promise<Simulation>`
 
 <a id="getBalance-method-static-1"></a>
 
@@ -352,27 +352,27 @@ static getVaultBalance(mock: Mock, accountAddress: string | BigNumber, iOrderboo
 
 <a id="rainterpreter-method-static-1"></a>
 
-### rainterpreter(chainId, configs, mock)
+### rainterpreter(providerish, configs, mock)
 
 Instantiates the class object with default Rainterpreter opcodes All simulations will be using the Rainterpreter opcodes and its overrides all teh time
 
 <b>Signature:</b>
 
 ```typescript
-static rainterpreter(chainId: number, configs: RainterpreterSimulationArgs[], mock?: Mock): Simulation;
+static rainterpreter(providerish: Providerish, configs: RainterpreterSimulationArgs[], mock?: Mock): Promise<Simulation>;
 ```
 
 #### Parameters
 
 |  Parameter | Type | Description |
 |  --- | --- | --- |
-|  chainId | `number` | The chain Id |
+|  providerish | [Providerish](../types/providerish.md) | The rpc url, chainId or a valid ethersjs provider |
 |  configs | `RainterpreterSimulationArgs[]` | Arguments needed to instantiate the RainInterpreterTs objects |
 |  mock | [Mock](../types/mock.md) | Mock data |
 
 <b>Returns:</b>
 
-`Simulation`
+`Promise<Simulation>`
 
 <a id="updateChainlink-method-static-1"></a>
 

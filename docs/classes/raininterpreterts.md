@@ -29,6 +29,7 @@ class RainInterpreterTs
 |  --- | --- |
 |  [addStorage(storage, sender, namespace, kv)](./raininterpreterts.md#addStorage-method-static-1) | Method to add key/value storage for a interpreter-ts instance |
 |  [getStorage(storage, sender, namespace)](./raininterpreterts.md#getStorage-method-static-1) | Methdo to get the k/v items of a sender and namespace, undefined if doesn't exist |
+|  [init(interpreterAddress, providerish, functionPointers, overrides, stateConfigs, storages)](./raininterpreterts.md#init-method-static-1) | The constructor of RainInterpreterTs which initiates the RainInterpreterTs and also a State for a RainVM script. |
 
 ## Methods
 
@@ -196,6 +197,33 @@ static getStorage(storage: kvStorage, sender: string, namespace: string): {
     }[] | undefined`
 
 Array of key/value pairs, undefined if not found
+
+<a id="init-method-static-1"></a>
+
+### init(interpreterAddress, providerish, functionPointers, overrides, stateConfigs, storages)
+
+The constructor of RainInterpreterTs which initiates the RainInterpreterTs and also a State for a RainVM script.
+
+<b>Signature:</b>
+
+```typescript
+static init(interpreterAddress: string, providerish: Providerish, functionPointers: opConfig[], overrides?: OverrideFns, stateConfigs?: StateConfig[], storages?: kvStorage): Promise<RainInterpreterTs>;
+```
+
+#### Parameters
+
+|  Parameter | Type | Description |
+|  --- | --- | --- |
+|  interpreterAddress | `string` | The interpreter's address |
+|  providerish | [Providerish](../types/providerish.md) | The chainId or rpc url or a valid ethersj provider |
+|  functionPointers | `opConfig[]` | Array of functions (closures) paired with opcodes' enums and their inputs and ouputs |
+|  overrides | [OverrideFns](../types/overridefns.md) | (optional) The functions to override the original opcode functions of interpreter-ts instance |
+|  stateConfigs | `StateConfig[]` | (optional) StateConfigs to add to this instance of interpreter-ts |
+|  storages | [kvStorage](../types/kvstorage.md) | (optional) The storage obj to add to this interpreter-ts instance |
+
+<b>Returns:</b>
+
+`Promise<RainInterpreterTs>`
 
 ## Method Details
 

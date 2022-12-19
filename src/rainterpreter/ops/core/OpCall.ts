@@ -1,7 +1,6 @@
 import { BigNumber } from "ethers";
 import { RainInterpreterTs } from "../../../interpreter/RainInterpreterTs";
 import { InterpreterData, opClosure } from "../../../interpreter/types";
-import { rainterpreterClosures } from "../../rainterpreterOpsConfigs";
 
 /**
  * @public
@@ -11,10 +10,10 @@ export const OpCall: opClosure = async(
     _operand: number,
     _data: InterpreterData
 ): Promise<BigNumber[]> => {
-    const _interpreter = new RainInterpreterTs(
+    const _interpreter = await RainInterpreterTs.init(
         _data.interpreterAddress,
-        _data.chainId,
-        rainterpreterClosures,
+        _data.provider,
+        _data.opConfigs,
         _data.overrides,
         [_data.stateConfig],
         _data.storage

@@ -1,5 +1,5 @@
 import { BigNumber, ethers, providers } from "ethers";
-import { getProvider } from "../defaultProviders";
+import { getProvider, Providerish } from "../defaultProviders";
 import { RainInterpreterTs } from "../interpreter/RainInterpreterTs";
 import { RunConfig, RuntimeData, StateConfig } from "../interpreter/types";
 import { rainterpreterClosures } from "../rainterpreter/rainterpreterOpsConfigs";
@@ -18,6 +18,7 @@ import {
     AssetType,
     iSaleStatus
 } from "./types";
+import { isBigNumberish } from "../utils";
 
 
 /**
@@ -56,9 +57,9 @@ export class Simulation {
     /**
      * Constructor of the class
      */
-    private constructor(chainId: number, mock?: Mock) {
+    private constructor(chainId: number, provider: providers.BaseProvider, mock?: Mock) {
         this.chainId = chainId
-        this.provider = getProvider(chainId)
+        this.provider = provider
         if (mock) this.mock = mock
     }
 
@@ -68,25 +69,34 @@ export class Simulation {
      * All simulations will be using the Rainterpreter opcodes and its overrides
      * all teh time
      * 
-     * @param chainId - The chain Id
+     * @param providerish - The rpc url, chainId or a valid ethersjs provider
      * @param configs - Arguments needed to instantiate the RainInterpreterTs objects
      * @param mock - Mock data
      */
-    public static rainterpreter(
-        chainId: number,
+    public static async rainterpreter(
+        providerish: Providerish,
         configs: RainterpreterSimulationArgs[],
         mock?: Mock
-    ): Simulation {
-        const _instance = new Simulation(chainId, mock)
+    ): Promise<Simulation> {
+        let _network = {
+            name: '',
+            chainId: -1
+        }
+        const _provider = getProvider(providerish)
+        if (isBigNumberish(providerish)) 
+            _network.chainId = BigNumber.from(providerish).toNumber()
+        if (_network.chainId < 0)
+            _network = await _provider.getNetwork()
+        const _instance = new Simulation(_network.chainId, _provider, mock)
         for (let i = 0; i < configs.length; i++) {
             const _index = _instance.interpreterInstances.findIndex(
                 v => v.interpreterAddress === 
                     configs[i].interpreterAddress.toLowerCase()
             )
             if (_index < 0) {
-                _instance.interpreterInstances.push(new RainInterpreterTs(
+                _instance.interpreterInstances.push(await RainInterpreterTs.init(
                     configs[i].interpreterAddress,
-                    chainId,
+                    _provider,
                     rainterpreterClosures,
                     defaultOverrides,
                     configs[i].stateConfigs,
@@ -108,25 +118,34 @@ export class Simulation {
      * Instantiates the class object with custom opcodes closures
      * All simulations will be using these custom opcodes and their overrides
      * 
-     * @param chainId - The chain Id
+     * @param providerish - The rpc url, chainId or a valid ethersjs provider
      * @param configs - Arguments needed to instantiate the RainInterpreterTs objects with custom opcode closures
      * @param mock - Mock data
      */
-    public static custom(
-        chainId: number,
+    public static async custom(
+        providerish: Providerish,
         configs: CustomSimulationArgs[],
         mock?: Mock
-    ): Simulation {
-        const _instance = new Simulation(chainId, mock)
+    ): Promise<Simulation> {
+        let _network = {
+            name: '',
+            chainId: -1
+        }
+        const _provider = getProvider(providerish)
+        if (isBigNumberish(providerish)) 
+            _network.chainId = BigNumber.from(providerish).toNumber()
+        if (_network.chainId < 0)
+            _network = await _provider.getNetwork()
+        const _instance = new Simulation(_network.chainId, _provider, mock)
         for (let i = 0; i < configs.length; i++) {
             const _index = _instance.interpreterInstances.findIndex(
                 v => v.interpreterAddress === 
                     configs[i].interpreterAddress.toLowerCase()
             )
             if (_index < 0) {
-                _instance.interpreterInstances.push(new RainInterpreterTs(
+                _instance.interpreterInstances.push(await RainInterpreterTs.init(
                     configs[i].interpreterAddress,
-                    chainId,
+                    _provider,
                     configs[i].functionPointers,
                     configs[i].overrides,
                     configs[i].stateConfigs,
