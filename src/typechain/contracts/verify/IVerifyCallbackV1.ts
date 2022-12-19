@@ -32,7 +32,7 @@ export type EvidenceStructOutput = [string, string] & {
   data: string;
 };
 
-export interface IVerifyCallbackInterface extends utils.Interface {
+export interface IVerifyCallbackV1Interface extends utils.Interface {
   functions: {
     "afterAdd(address,(address,bytes)[])": FunctionFragment;
     "afterApprove(address,(address,bytes)[])": FunctionFragment;
@@ -79,12 +79,12 @@ export interface IVerifyCallbackInterface extends utils.Interface {
   events: {};
 }
 
-export interface IVerifyCallback extends BaseContract {
+export interface IVerifyCallbackV1 extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: IVerifyCallbackInterface;
+  interface: IVerifyCallbackV1Interface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,

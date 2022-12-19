@@ -32,5 +32,10 @@ type MockAccount = {
         reserve: MockERC20;
         token: MockERC20;
     } | undefined;
+    iVerify: {
+        iVerifyContract: BigNumber;
+        status: iVerifyStatus;
+        timestamp: number;
+    }[];
 };
 ```

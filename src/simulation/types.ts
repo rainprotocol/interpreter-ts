@@ -24,6 +24,17 @@ export enum iSaleStatus {
 
 /**
  * @public
+ * Valid IVerify status
+ */
+export enum iVerifyStatus {
+    nil,
+    added,
+    approved,
+    banned
+}
+
+/**
+ * @public
  * Defines where and how data is used for a simulation
  * - always: read the data from on-chain all the times, any mock data will be ignored entirely
  * - once: only read the data from on-chain the first time simulation runs, optionally store 
@@ -100,6 +111,10 @@ export type MockAccount = {
      * If this account is a iSale, else this property will be an empty object
      */
     iSale: { status: iSaleStatus; reserve: MockERC20; token: MockERC20 } | undefined;
+    /**
+     * All Verify statuses for this account
+     */
+    iVerify: { iVerifyContract: BigNumber; status: iVerifyStatus; timestamp: number }[];
 }
 
 /**

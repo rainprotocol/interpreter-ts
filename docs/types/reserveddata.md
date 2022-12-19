@@ -8,7 +8,6 @@ Reserved properties and values available to opcodes' closures at runtime, these 
 
 ```typescript
 type ReservedData = {
-    chainId: number;
     provider: providers.BaseProvider;
     voidSigner: VoidSigner;
     stateConfig: StateConfig;

@@ -58,6 +58,10 @@ import { OpUpdateTimesForTierRange } from './ops/tier/OpUpdateTimesForTierRange'
 import { OpGet } from './ops/core/OpGet';
 import { AllStandardOps } from './allStandardOps';
 import { opConfig } from '../interpreter/types';
+import { OpIVerifyV1AccountStatusAtTime } from './ops/rain/IVerifyV1/OpIVerifyV1AccountStatusAtTime';
+import { OpContextRow } from './ops/core/OpContextRow';
+import { OpFoldContext } from './ops/core/OpFoldContext';
+
 
 /**
  * @public
@@ -82,12 +86,12 @@ export const rainterpreterClosures: opConfig[] = [
         inputs: (_operand) => 0,
         functionPointer: OpContext,
     },
-    // {
-    // enum: AllStandardOps.CONTEXT_ROW,
-    // outputs: (_operand) => 1,
-    // inputs: (_operand) => 0,
-    // functionPointer: OpContext,
-    // }
+    {
+        enum: AllStandardOps.CONTEXT_ROW,
+        outputs: (_operand) => 1,
+        inputs: (_operand) => 1,
+        functionPointer: OpContextRow,
+    },
     {
         enum: AllStandardOps.DEBUG,
         outputs: (_operand) => 0,
@@ -100,12 +104,12 @@ export const rainterpreterClosures: opConfig[] = [
         inputs: (_operand) => _operand & 15 + 1,
         functionPointer: OpDoWhile,
     },
-    // {
-    // enum: AllStandardOps.FOLD_CONTEXT,
-    // outputs: (_operand) => 1,
-    // inputs: (_operand) => 0,
-    // functionPointer: OpContext,
-    // }
+    {
+        enum: AllStandardOps.FOLD_CONTEXT,
+        outputs: (_operand) => _operand >> 12,
+        inputs: (_operand) => _operand >> 12,
+        functionPointer: OpFoldContext,
+    },
     {
         enum: AllStandardOps.LOOP_N,
         outputs: (_operand) => (_operand >> 4) & 15,
@@ -388,6 +392,12 @@ export const rainterpreterClosures: opConfig[] = [
         outputs: (_operand) => 1,
         inputs: (_operand) => 1,
         functionPointer: OpISaleV2TotalReserveReceived,
+    },
+    {
+        enum: AllStandardOps.IVERIFYV1_ACCOUNT_STATUS_AT_TIME,
+        outputs: (_operand) => 1,
+        inputs: (_operand) => 3,
+        functionPointer: OpIVerifyV1AccountStatusAtTime,
     },
     {
         enum: AllStandardOps.ITIERV2_REPORT,

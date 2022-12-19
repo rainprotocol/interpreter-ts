@@ -14,6 +14,7 @@ import {
     IOrderBookV1__factory,
     ISaleV2__factory,
     ITierV2__factory,
+    IVerifyV1__factory,
 } from "../typechain";
 
 
@@ -913,6 +914,60 @@ export const defaultOverrides: OverrideFns = {
                 )
             }
             return [_received]
+        }
+    },
+
+    [AllStandardOps.IVERIFYV1_ACCOUNT_STATUS_AT_TIME]: async(
+        _inputs: BigNumber[],
+        _operand: number,
+        _data: InterpreterData
+    ): Promise<BigNumber[]> => {
+        const _contract = _inputs[0]
+        const _account = _inputs[1]
+        const _timestamp = _inputs[2]
+        const blockTag = _data.blockNumber
+        const voidSigner = _data.voidSigner
+        if (
+            _data.mode === 'never' || 
+            (_data.mode === 'once' && _data.simulationCount && _data.simulationCount > 0)
+        ) {
+            if (_data.mock) {
+                return [BigNumber.from(
+                    Simulation.getIVerifyStatusAtTime(
+                        _data.mock,
+                        _account, 
+                        _contract, 
+                        _timestamp.toNumber()
+                    )
+                )]
+            }
+            else return [BigNumber.from(0)]
+        }
+        else {
+            const _iVerify = IVerifyV1__factory.connect(
+                paddedUInt160(_contract),
+                voidSigner
+            )
+            const _status = await _iVerify.accountStatusAtTime(
+                paddedUInt160(_account),
+                _timestamp,
+                { blockTag }
+            )
+            if (_data.mode === 'once') {
+                if (!_data.mock) _data.mock = {
+                    blockNumber: _data.block.number,
+                    blockTimestamp: _data.block.timestamp,
+                    accounts: []
+                }
+                Simulation.updateIVerify(
+                    _data.mock, 
+                    _account,
+                    _contract,
+                    _status.toNumber(),
+                    _data.block.timestamp
+                )
+            }
+            return [_status]
         }
     },
 

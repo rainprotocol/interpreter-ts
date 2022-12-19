@@ -14,14 +14,15 @@ class RainInterpreterTs
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [chainId](./raininterpreterts.md#chainId-property) | `number` | The chain ID interpreter is deployed on |
 |  [expressions](./raininterpreterts.md#expressions-property) | `StateConfig[]` | The expressions of this iterpreter |
 |  [functionPointers](./raininterpreterts.md#functionPointers-property) | `opConfig[]` | Array of opcodes' enums and their ts functions, inputs and outputs which defines the closure for each of them |
 |  [interpreterAddress](./raininterpreterts.md#interpreterAddress-property) | `string` | The interpreter's address |
 |  [lastStack](./raininterpreterts.md#lastStack-property) | `BigNumber[]` | The latest result (final stack) of an evaluated expression. |
 |  [overrideFns](./raininterpreterts.md#overrideFns-property) | [OverrideFns](../types/overridefns.md) | Functions to override the existing opcodes ts functions (closures) |
+|  [provider](./raininterpreterts.md#provider-property) | `providers.BaseProvider` | An ethersjs provider used to read onchain data |
 |  [state](./raininterpreterts.md#state-property) | [State](../interfaces/state.md) | The state which which is used to eval an expression. |
 |  [storage](./raininterpreterts.md#storage-property) | [kvStorage](../types/kvstorage.md) | An object to store key/value pairs of an interpreter which is mapped by each msg.sender and namespace |
+|  [voidSigner](./raininterpreterts.md#voidSigner-property) | `VoidSigner` | An etherjs VoidSigner used to read onchain data |
 
 ## Static Methods
 
@@ -29,7 +30,6 @@ class RainInterpreterTs
 |  --- | --- |
 |  [addStorage(storage, sender, namespace, kv)](./raininterpreterts.md#addStorage-method-static-1) | Method to add key/value storage for a interpreter-ts instance |
 |  [getStorage(storage, sender, namespace)](./raininterpreterts.md#getStorage-method-static-1) | Methdo to get the k/v items of a sender and namespace, undefined if doesn't exist |
-|  [init(interpreterAddress, providerish, functionPointers, overrides, stateConfigs, storages)](./raininterpreterts.md#init-method-static-1) | The constructor of RainInterpreterTs which initiates the RainInterpreterTs and also a State for a RainVM script. |
 
 ## Methods
 
@@ -39,18 +39,6 @@ class RainInterpreterTs
 |  [run(sender, data, config)](./raininterpreterts.md#run-method-1) | Method to run eval for an expression of an instance of interpreter-ts. If no expression or index provided it will evaluate the last available expression in the instance's expressions array |
 
 ## Property Details
-
-<a id="chainId-property"></a>
-
-### chainId
-
-The chain ID interpreter is deployed on
-
-<b>Signature:</b>
-
-```typescript
-chainId: number;
-```
 
 <a id="expressions-property"></a>
 
@@ -112,6 +100,18 @@ Functions to override the existing opcodes ts functions (closures)
 overrideFns?: OverrideFns;
 ```
 
+<a id="provider-property"></a>
+
+### provider
+
+An ethersjs provider used to read onchain data
+
+<b>Signature:</b>
+
+```typescript
+readonly provider: providers.BaseProvider;
+```
+
 <a id="state-property"></a>
 
 ### state
@@ -134,6 +134,18 @@ An object to store key/value pairs of an interpreter which is mapped by each msg
 
 ```typescript
 readonly storage: kvStorage;
+```
+
+<a id="voidSigner-property"></a>
+
+### voidSigner
+
+An etherjs VoidSigner used to read onchain data
+
+<b>Signature:</b>
+
+```typescript
+readonly voidSigner: VoidSigner;
 ```
 
 ## Static Method Details
@@ -197,33 +209,6 @@ static getStorage(storage: kvStorage, sender: string, namespace: string): {
     }[] | undefined`
 
 Array of key/value pairs, undefined if not found
-
-<a id="init-method-static-1"></a>
-
-### init(interpreterAddress, providerish, functionPointers, overrides, stateConfigs, storages)
-
-The constructor of RainInterpreterTs which initiates the RainInterpreterTs and also a State for a RainVM script.
-
-<b>Signature:</b>
-
-```typescript
-static init(interpreterAddress: string, providerish: Providerish, functionPointers: opConfig[], overrides?: OverrideFns, stateConfigs?: StateConfig[], storages?: kvStorage): Promise<RainInterpreterTs>;
-```
-
-#### Parameters
-
-|  Parameter | Type | Description |
-|  --- | --- | --- |
-|  interpreterAddress | `string` | The interpreter's address |
-|  providerish | [Providerish](../types/providerish.md) | The chainId or rpc url or a valid ethersj provider |
-|  functionPointers | `opConfig[]` | Array of functions (closures) paired with opcodes' enums and their inputs and ouputs |
-|  overrides | [OverrideFns](../types/overridefns.md) | (optional) The functions to override the original opcode functions of interpreter-ts instance |
-|  stateConfigs | `StateConfig[]` | (optional) StateConfigs to add to this instance of interpreter-ts |
-|  storages | [kvStorage](../types/kvstorage.md) | (optional) The storage obj to add to this interpreter-ts instance |
-
-<b>Returns:</b>
-
-`Promise<RainInterpreterTs>`
 
 ## Method Details
 

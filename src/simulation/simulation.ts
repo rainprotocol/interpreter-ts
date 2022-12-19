@@ -16,7 +16,8 @@ import {
     MockERC721,
     MockERC1155,
     AssetType,
-    iSaleStatus
+    iSaleStatus,
+    iVerifyStatus
 } from "./types";
 import { isBigNumberish } from "../utils";
 
@@ -44,12 +45,6 @@ export class Simulation {
 
     /**
      * @public
-     * Chain ID of this simulation
-     */
-    public readonly chainId: number;
-
-    /**
-     * @public
      * Ethersjs provider
      */
     public readonly provider: providers.BaseProvider
@@ -57,8 +52,7 @@ export class Simulation {
     /**
      * Constructor of the class
      */
-    private constructor(chainId: number, provider: providers.BaseProvider, mock?: Mock) {
-        this.chainId = chainId
+    private constructor(provider: providers.BaseProvider, mock?: Mock) {
         this.provider = provider
         if (mock) this.mock = mock
     }
@@ -73,28 +67,20 @@ export class Simulation {
      * @param configs - Arguments needed to instantiate the RainInterpreterTs objects
      * @param mock - Mock data
      */
-    public static async rainterpreter(
+    public static rainterpreter(
         providerish: Providerish,
         configs: RainterpreterSimulationArgs[],
         mock?: Mock
-    ): Promise<Simulation> {
-        let _network = {
-            name: '',
-            chainId: -1
-        }
+    ): Simulation {
         const _provider = getProvider(providerish)
-        if (isBigNumberish(providerish)) 
-            _network.chainId = BigNumber.from(providerish).toNumber()
-        if (_network.chainId < 0)
-            _network = await _provider.getNetwork()
-        const _instance = new Simulation(_network.chainId, _provider, mock)
+        const _instance = new Simulation(_provider, mock)
         for (let i = 0; i < configs.length; i++) {
             const _index = _instance.interpreterInstances.findIndex(
                 v => v.interpreterAddress === 
                     configs[i].interpreterAddress.toLowerCase()
             )
             if (_index < 0) {
-                _instance.interpreterInstances.push(await RainInterpreterTs.init(
+                _instance.interpreterInstances.push(new RainInterpreterTs(
                     configs[i].interpreterAddress,
                     _provider,
                     rainterpreterClosures,
@@ -122,28 +108,20 @@ export class Simulation {
      * @param configs - Arguments needed to instantiate the RainInterpreterTs objects with custom opcode closures
      * @param mock - Mock data
      */
-    public static async custom(
+    public static custom(
         providerish: Providerish,
         configs: CustomSimulationArgs[],
         mock?: Mock
-    ): Promise<Simulation> {
-        let _network = {
-            name: '',
-            chainId: -1
-        }
+    ): Simulation {
         const _provider = getProvider(providerish)
-        if (isBigNumberish(providerish)) 
-            _network.chainId = BigNumber.from(providerish).toNumber()
-        if (_network.chainId < 0)
-            _network = await _provider.getNetwork()
-        const _instance = new Simulation(_network.chainId, _provider, mock)
+        const _instance = new Simulation(_provider, mock)
         for (let i = 0; i < configs.length; i++) {
             const _index = _instance.interpreterInstances.findIndex(
                 v => v.interpreterAddress === 
                     configs[i].interpreterAddress.toLowerCase()
             )
             if (_index < 0) {
-                _instance.interpreterInstances.push(await RainInterpreterTs.init(
+                _instance.interpreterInstances.push(new RainInterpreterTs(
                     configs[i].interpreterAddress,
                     _provider,
                     configs[i].functionPointers,
@@ -666,7 +644,8 @@ export class Simulation {
             chainlink: undefined,
             iSale: undefined,
             iTier: [],
-            iOrderbook: []
+            iOrderbook: [],
+            iVerify: []
         })
         // }
         // else {
@@ -754,7 +733,8 @@ export class Simulation {
             chainlink: { updatedAt, answer},
             iSale: undefined,
             iTier: [],
-            iOrderbook: []
+            iOrderbook: [],
+            iVerify: []
         })
     }
 
@@ -816,7 +796,8 @@ export class Simulation {
             chainlink: undefined,
             iSale: undefined,
             iOrderbook: [],
-            iTier: [{ iTierContract: BigNumber.from(iTierAddress), report }]
+            iTier: [{ iTierContract: BigNumber.from(iTierAddress), report }],
+            iVerify: []
         })
     }
 
@@ -874,7 +855,8 @@ export class Simulation {
             chainlink: undefined,
             iTier: [],
             iOrderbook: [],
-            iSale: { status, reserve, token }
+            iSale: { status, reserve, token },
+            iVerify: []
         })
     }
 
@@ -976,7 +958,88 @@ export class Simulation {
                     vaultId: BigNumber.from(vaultId),
                     balance
                 }]
-            }]
+            }],
+            iVerify: []
+        })
+    }
+
+    /**
+     * @public
+     * Method to get the verify status of an account at certain timestamp from mock data, returns 0 if status of 
+     * provided details is not present
+     * 
+     * @param mock - The mock data
+     * @param accountAddress - The address of the account to get its status
+     * @param iVerifyAddress - Address of the iVerify contract
+     * @param timestamp - The timestamp
+     * @returns the status of the iVerify contract for the account, if not found returns 0 i.e. 'nil' status
+     */
+    public static getIVerifyStatusAtTime(
+        mock: Mock,
+        accountAddress: string | BigNumber,
+        iVerifyAddress: string | BigNumber,
+        timestamp: number
+    ): number {
+        let _status = iVerifyStatus.nil
+        const _statuses = mock.accounts.find(
+            v => v.address.eq(accountAddress)
+        )?.iVerify.filter(
+            v => 
+                v.iVerifyContract.eq(iVerifyAddress) && 
+                v.timestamp <= timestamp
+        )
+        if (_statuses?.length) {
+            _status = _statuses.reduce(
+                (a, b) => a.timestamp > b.timestamp ? a : b
+            ).status
+        }
+        return _status
+    }
+
+    /**
+     * @public
+     * Method to update the mock data with iVerify status for an account at a timestamp, If an account 
+     * with this address is not present in the mock data, it will create it with provided details and 
+     * if present the report property will be updated to provided values
+     * 
+     * @param mock - The mock data
+     * @param accountAddress - Address of the account to update its iVerify state
+     * @param iVerifyAddress - The iVerify address
+     * @param status - The iVerify status of the account
+     * @param timestamp - The timestamp that status update is taking place at
+     */
+    public static updateIVerify(
+        mock: Mock,
+        accountAddress: string | BigNumber,
+        iVerifyAddress: string | BigNumber,
+        status: iVerifyStatus,
+        timestamp: number
+    ) {
+        const _index = mock.accounts.findIndex(v => v.address.eq(accountAddress))
+        if (_index > -1) {
+            const _iVerify = mock.accounts[_index].iVerify.filter(
+                v => v.iVerifyContract.eq(iVerifyAddress) &&
+                     v.timestamp === timestamp
+            )
+            if (_iVerify.length) {
+                for (let i = 0; i < _iVerify.length; i++) {
+                    _iVerify[i].status = status
+                }
+            }
+            else _iVerify.push({
+                iVerifyContract: BigNumber.from(iVerifyAddress),
+                status,
+                timestamp
+            })
+        }
+        else mock.accounts.push({
+            address: BigNumber.from(accountAddress),
+            assets: [],
+            chainlink: undefined,
+            iSale: undefined,
+            iOrderbook: [],
+            iTier: [],
+            iVerify: [{ iVerifyContract: BigNumber.from(iVerifyAddress), status, timestamp}]
         })
     }
 }

@@ -77,10 +77,6 @@ export type kvStorage = {
  */
 export type ReservedData = {
     /**
-     * The chain ID of the current instance of interpreter-ts
-     */
-    chainId: number;
-    /**
      * The ethersjs provider of this instance
      */
     provider: providers.BaseProvider;

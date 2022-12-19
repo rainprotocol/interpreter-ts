@@ -10,7 +10,7 @@ export const OpCall: opClosure = async(
     _operand: number,
     _data: InterpreterData
 ): Promise<BigNumber[]> => {
-    const _interpreter = await RainInterpreterTs.init(
+    const _interpreter = new RainInterpreterTs(
         _data.interpreterAddress,
         _data.provider,
         _data.opConfigs,
@@ -28,7 +28,6 @@ export const OpCall: opClosure = async(
             namespaceType: _data.namespaceType,
             block: _data.block,
             entrypoint: _entrypoint,
-            overrideFunctions: _data.overrides
         }
     )
     if (_result.finalStack.length >= _outputs) 

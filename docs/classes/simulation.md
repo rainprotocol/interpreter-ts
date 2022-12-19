@@ -14,7 +14,6 @@ class Simulation
 
 |  Property | Type | Description |
 |  --- | --- | --- |
-|  [chainId](./simulation.md#chainId-property) | `number` | Chain ID of this simulation |
 |  [interpreterInstances](./simulation.md#interpreterInstances-property) | `RainInterpreterTs[]` |  |
 |  [mock](./simulation.md#mock-property) | [Mock](../types/mock.md) |  |
 |  [provider](./simulation.md#provider-property) | `providers.BaseProvider` | Ethersjs provider |
@@ -28,6 +27,7 @@ class Simulation
 |  [getChainlink(mock, chainlinkAddress)](./simulation.md#getChainlink-method-static-1) | Method to get the chainlink price from mock data, returns undefined if the chainlink account is not present |
 |  [getDecimals(mock, accountAddress, assetAddress)](./simulation.md#getDecimals-method-static-1) | Method to get the total supply of a asset for an account, returns zero if such asset or account or token is of type erc721 or erc1155 |
 |  [getISale(mock, iSaleAddress)](./simulation.md#getISale-method-static-1) | Method to get the iSale details from mock data, returns undefined if not present in mock data |
+|  [getIVerifyStatusAtTime(mock, accountAddress, iVerifyAddress, timestamp)](./simulation.md#getIVerifyStatusAtTime-method-static-1) | Method to get the verify status of an account at certain timestamp from mock data, returns 0 if status of provided details is not present |
 |  [getOwner(mock, assetAddress, id)](./simulation.md#getOwner-method-static-1) | Method to get the owner of an erc721 token with id |
 |  [getReport(mock, accountAddress, iTierAddress)](./simulation.md#getReport-method-static-1) | Method to get the report of an account from mock data, returns NEVER if any of provided account or iTier address are not present in the mock data |
 |  [getTotalSupply(mock, assetAddress, id)](./simulation.md#getTotalSupply-method-static-1) | Method to get the total supply of a asset for an account, returns zero if such asset or account or token id (in case of erc1155) is not present in the mock data and return or asset is of type erc721 |
@@ -35,6 +35,7 @@ class Simulation
 |  [rainterpreter(providerish, configs, mock)](./simulation.md#rainterpreter-method-static-1) | Instantiates the class object with default Rainterpreter opcodes All simulations will be using the Rainterpreter opcodes and its overrides all teh time |
 |  [updateChainlink(mock, chainlinkAddress, updatedAt, answer)](./simulation.md#updateChainlink-method-static-1) | Method to update the mock data with an chainlink account that has aswer and updatedat properties If an account with this address is not present in the mock data, it will create it with provided details and if present the answwer and updatedAt properties will be updated to provided values |
 |  [updateISale(mock, iSaleAddress, status, reserve, token)](./simulation.md#updateISale-method-static-1) | Method to update the mock data with provided iSale details for an account, If an account with this address is not present in the mock data, it will create it with provided details and if present the report property will be updated to provided values |
+|  [updateIVerify(mock, accountAddress, iVerifyAddress, status, timestamp)](./simulation.md#updateIVerify-method-static-1) | Method to update the mock data with iVerify status for an account at a timestamp, If an account with this address is not present in the mock data, it will create it with provided details and if present the report property will be updated to provided values |
 |  [updateMockAsset(mock, account, asset)](./simulation.md#updateMockAsset-method-static-1) | Method to update asset of an account in mock data, if the account is already present in the mock data, as well as the asset for that account, it will overwrite it with provided asset, so in order to for example update the balance of such account for that asset, caller must use the getBalance() and calculate the final amount seperately |
 |  [updateReport(mock, accountAddress, iTierAddress, report)](./simulation.md#updateReport-method-static-1) | Method to update the mock data with report for an account, If an account with this address is not present in the mock data, it will create it with provided details and if present the report property will be updated to provided values |
 |  [updateVault(mock, accountAddress, iOrderbookAddress, tokenAddress, vaultId, balance)](./simulation.md#updateVault-method-static-1) | Method to update the mock data with provided iOrderbook details for an account, If an account with this address is not present in the mock data, it will create it with provided details and if present the report property will be updated to provided values |
@@ -54,18 +55,6 @@ class Simulation
 |  [setMock(mock)](./simulation.md#setMock-method-1) | Set mock data |
 
 ## Property Details
-
-<a id="chainId-property"></a>
-
-### chainId
-
-Chain ID of this simulation
-
-<b>Signature:</b>
-
-```typescript
-readonly chainId: number;
-```
 
 <a id="interpreterInstances-property"></a>
 
@@ -112,7 +101,7 @@ Instantiates the class object with custom opcodes closures All simulations will 
 <b>Signature:</b>
 
 ```typescript
-static custom(providerish: Providerish, configs: CustomSimulationArgs[], mock?: Mock): Promise<Simulation>;
+static custom(providerish: Providerish, configs: CustomSimulationArgs[], mock?: Mock): Simulation;
 ```
 
 #### Parameters
@@ -125,7 +114,7 @@ static custom(providerish: Providerish, configs: CustomSimulationArgs[], mock?: 
 
 <b>Returns:</b>
 
-`Promise<Simulation>`
+`Simulation`
 
 <a id="getBalance-method-static-1"></a>
 
@@ -244,6 +233,33 @@ static getISale(mock: Mock, iSaleAddress: string | BigNumber): {
 
 - iSale status, reseve and rTKN details and balances, and undefined if iSale is not present in mock data
 
+<a id="getIVerifyStatusAtTime-method-static-1"></a>
+
+### getIVerifyStatusAtTime(mock, accountAddress, iVerifyAddress, timestamp)
+
+Method to get the verify status of an account at certain timestamp from mock data, returns 0 if status of provided details is not present
+
+<b>Signature:</b>
+
+```typescript
+static getIVerifyStatusAtTime(mock: Mock, accountAddress: string | BigNumber, iVerifyAddress: string | BigNumber, timestamp: number): number;
+```
+
+#### Parameters
+
+|  Parameter | Type | Description |
+|  --- | --- | --- |
+|  mock | [Mock](../types/mock.md) | The mock data |
+|  accountAddress | `string \| BigNumber` | The address of the account to get its status |
+|  iVerifyAddress | `string \| BigNumber` | Address of the iVerify contract |
+|  timestamp | `number` | The timestamp |
+
+<b>Returns:</b>
+
+`number`
+
+the status of the iVerify contract for the account, if not found returns 0 i.e. 'nil' status
+
 <a id="getOwner-method-static-1"></a>
 
 ### getOwner(mock, assetAddress, id)
@@ -359,7 +375,7 @@ Instantiates the class object with default Rainterpreter opcodes All simulations
 <b>Signature:</b>
 
 ```typescript
-static rainterpreter(providerish: Providerish, configs: RainterpreterSimulationArgs[], mock?: Mock): Promise<Simulation>;
+static rainterpreter(providerish: Providerish, configs: RainterpreterSimulationArgs[], mock?: Mock): Simulation;
 ```
 
 #### Parameters
@@ -372,7 +388,7 @@ static rainterpreter(providerish: Providerish, configs: RainterpreterSimulationA
 
 <b>Returns:</b>
 
-`Promise<Simulation>`
+`Simulation`
 
 <a id="updateChainlink-method-static-1"></a>
 
@@ -420,6 +436,32 @@ static updateISale(mock: Mock, iSaleAddress: string | BigNumber, status: iSaleSt
 |  status | [iSaleStatus](../enums/isalestatus.md) | The iSale status |
 |  reserve | [MockERC20](../types/mockerc20.md) | The reserve token |
 |  token | [MockERC20](../types/mockerc20.md) | The rTKN |
+
+<b>Returns:</b>
+
+`void`
+
+<a id="updateIVerify-method-static-1"></a>
+
+### updateIVerify(mock, accountAddress, iVerifyAddress, status, timestamp)
+
+Method to update the mock data with iVerify status for an account at a timestamp, If an account with this address is not present in the mock data, it will create it with provided details and if present the report property will be updated to provided values
+
+<b>Signature:</b>
+
+```typescript
+static updateIVerify(mock: Mock, accountAddress: string | BigNumber, iVerifyAddress: string | BigNumber, status: iVerifyStatus, timestamp: number): void;
+```
+
+#### Parameters
+
+|  Parameter | Type | Description |
+|  --- | --- | --- |
+|  mock | [Mock](../types/mock.md) | The mock data |
+|  accountAddress | `string \| BigNumber` | Address of the account to update its iVerify state |
+|  iVerifyAddress | `string \| BigNumber` | The iVerify address |
+|  status | [iVerifyStatus](../enums/iverifystatus.md) | The iVerify status of the account |
+|  timestamp | `number` | The timestamp that status update is taking place at |
 
 <b>Returns:</b>
 

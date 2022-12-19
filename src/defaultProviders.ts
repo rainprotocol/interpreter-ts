@@ -1,8 +1,7 @@
 import * as dotenv from 'dotenv';
 import { isBigNumberish } from './utils';
 import { BigNumber, BigNumberish, ethers, providers } from "ethers";
-import { resolve } from 'path';
-dotenv.config()
+dotenv?.config()
 
 /**
  * @public
