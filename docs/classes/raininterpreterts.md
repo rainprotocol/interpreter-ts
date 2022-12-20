@@ -15,9 +15,9 @@ class RainInterpreterTs
 |  Property | Type | Description |
 |  --- | --- | --- |
 |  [expressions](./raininterpreterts.md#expressions-property) | `StateConfig[]` | The expressions of this iterpreter |
-|  [functionPointers](./raininterpreterts.md#functionPointers-property) | `opConfig[]` | Array of opcodes' enums and their ts functions, inputs and outputs which defines the closure for each of them |
 |  [interpreterAddress](./raininterpreterts.md#interpreterAddress-property) | `string` | The interpreter's address |
 |  [lastStack](./raininterpreterts.md#lastStack-property) | `BigNumber[]` | The latest result (final stack) of an evaluated expression. |
+|  [opConfigs](./raininterpreterts.md#opConfigs-property) | `opConfig[]` | Array of opcodes' enums and their ts functions, inputs and outputs which defines the closure for each of them |
 |  [overrideFns](./raininterpreterts.md#overrideFns-property) | [OverrideFns](../types/overridefns.md) | Functions to override the existing opcodes ts functions (closures) |
 |  [provider](./raininterpreterts.md#provider-property) | `Provider` | An ethersjs provider used to read onchain data |
 |  [state](./raininterpreterts.md#state-property) | [State](../interfaces/state.md) | The state which which is used to eval an expression. |
@@ -28,7 +28,7 @@ class RainInterpreterTs
 
 |  Method | Description |
 |  --- | --- |
-|  [addStorage(storage, sender, namespace, kv)](./raininterpreterts.md#addStorage-method-static-1) | Method to add key/value storage for a interpreter-ts instance |
+|  [addStorage(storage, sender, namespace, kv)](./raininterpreterts.md#addStorage-method-static-1) | Method to add key/value item to a kvStorage object |
 |  [getStorage(storage, sender, namespace)](./raininterpreterts.md#getStorage-method-static-1) | Methdo to get the k/v items of a sender and namespace, undefined if doesn't exist |
 
 ## Methods
@@ -52,18 +52,6 @@ The expressions of this iterpreter
 readonly expressions: StateConfig[];
 ```
 
-<a id="functionPointers-property"></a>
-
-### functionPointers
-
-Array of opcodes' enums and their ts functions, inputs and outputs which defines the closure for each of them
-
-<b>Signature:</b>
-
-```typescript
-readonly functionPointers: opConfig[];
-```
-
 <a id="interpreterAddress-property"></a>
 
 ### interpreterAddress
@@ -73,7 +61,7 @@ The interpreter's address
 <b>Signature:</b>
 
 ```typescript
-interpreterAddress: string;
+readonly interpreterAddress: string;
 ```
 
 <a id="lastStack-property"></a>
@@ -88,6 +76,18 @@ The latest result (final stack) of an evaluated expression.
 readonly lastStack: BigNumber[];
 ```
 
+<a id="opConfigs-property"></a>
+
+### opConfigs
+
+Array of opcodes' enums and their ts functions, inputs and outputs which defines the closure for each of them
+
+<b>Signature:</b>
+
+```typescript
+readonly opConfigs: opConfig[];
+```
+
 <a id="overrideFns-property"></a>
 
 ### overrideFns
@@ -97,7 +97,7 @@ Functions to override the existing opcodes ts functions (closures)
 <b>Signature:</b>
 
 ```typescript
-overrideFns?: OverrideFns;
+readonly overrideFns?: OverrideFns;
 ```
 
 <a id="provider-property"></a>
@@ -154,7 +154,7 @@ readonly voidSigner: VoidSigner;
 
 ### addStorage(storage, sender, namespace, kv)
 
-Method to add key/value storage for a interpreter-ts instance
+Method to add key/value item to a kvStorage object
 
 <b>Signature:</b>
 
@@ -243,11 +243,7 @@ Method to run eval for an expression of an instance of interpreter-ts. If no exp
 <b>Signature:</b>
 
 ```typescript
-run(sender: string, data: RuntimeData, config?: RunConfig): Promise<{
-        finalStack: BigNumber[];
-        blockNumber: number;
-        blockTimestamp: number;
-    }>;
+run(sender: string, data: RuntimeData, config?: RunConfig): Promise<EvalResult>;
 ```
 
 #### Parameters
@@ -260,11 +256,7 @@ run(sender: string, data: RuntimeData, config?: RunConfig): Promise<{
 
 <b>Returns:</b>
 
-`Promise<{
-        finalStack: BigNumber[];
-        blockNumber: number;
-        blockTimestamp: number;
-    }>`
+`Promise<EvalResult>`
 
 - An object with array of BigNumbers as final stack items and block number and timestamp.
 

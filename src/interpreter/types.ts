@@ -261,3 +261,22 @@ export type RunConfig = {
         mock?: Mock;
     }
 }
+
+/**
+ * @public
+ * Results of evaluated expression by RainInterpreterTs at a specific block number and timestamp
+ */
+export type EvalResult = {
+    /**
+     * The final stack items, ie the result fo eval
+     */
+    finalStack: BigNumber[];
+    /**
+     * The block number this eval executed at
+     */
+    blockNumber: number;
+    /**
+     * The block timestamp this eval executed at
+     */
+    blockTimestamp: number; 
+}

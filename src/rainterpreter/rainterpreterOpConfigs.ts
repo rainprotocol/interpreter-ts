@@ -67,7 +67,7 @@ import { OpFoldContext } from './ops/core/OpFoldContext';
  * @public
  * All Standard Rainterpreter OpMeta with Function Pointers
  */
-export const rainterpreterClosures: opConfig[] = [
+export const rainterpreterOpConfigs: opConfig[] = [
     {
         enum: AllStandardOps.CHAINLINK_PRICE,
         outputs: (_operand) => 1,

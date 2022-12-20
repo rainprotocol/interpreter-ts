@@ -74,7 +74,7 @@
 |  [paddedUInt32](./variables/paddeduint32.md) | Utility function to produce 32 bits size hexString |
 |  [paddedUInt64](./variables/paddeduint64.md) | Utility function to produce 64 bits size hexString |
 |  [parseUnits](./variables/parseunits.md) | ethers parseUnits |
-|  [rainterpreterClosures](./variables/rainterpreterclosures.md) | All Standard Rainterpreter OpMeta with Function Pointers |
+|  [rainterpreterOpConfigs](./variables/rainterpreteropconfigs.md) | All Standard Rainterpreter OpMeta with Function Pointers |
 |  [saturatingAdd](./variables/saturatingadd.md) |  |
 |  [saturatingDiff](./variables/saturatingdiff.md) |  |
 |  [saturatingMul](./variables/saturatingmul.md) |  |
@@ -91,6 +91,7 @@
 |  Type Alias | Description |
 |  --- | --- |
 |  [CustomSimulationArgs](./types/customsimulationargs.md) | Arguments for initiating a default simulation which uses any custom opcodes' closures |
+|  [EvalResult](./types/evalresult.md) | Results of evaluated expression by RainInterpreterTs at a specific block number and timestamp |
 |  [Hexable](./types/hexable.md) | A native type for ethers Hexable |
 |  [InterpreterData](./types/interpreterdata.md) | All data and values available to opcodes' closures during eval, consists of Reserved and Runtime data |
 |  [kvStorage](./types/kvstorage.md) | Type os interpreter-ts storage obj which holds key/value pairs mapped by sender and namespace addresses |

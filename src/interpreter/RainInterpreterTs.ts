@@ -1,6 +1,5 @@
-import { arrayify } from '../utils';
-import { deepCopy } from 'ethers/lib/utils';
-import { BigNumber, VoidSigner } from 'ethers';
+import { arrayify, deepFreeze } from '../utils';
+import { BigNumber, providers, VoidSigner, Wallet } from 'ethers';
 import { Provider } from '@ethersproject/abstract-provider'
 import { getProvider, Providerish } from '../defaultProviders';
 import { 
@@ -13,6 +12,7 @@ import {
     RunConfig,
     RuntimeData,
     InterpreterData,
+    EvalResult,
 } from './types';
 
 
@@ -45,20 +45,20 @@ export class RainInterpreterTs {
      * @public
      * The interpreter's address
      */
-    public interpreterAddress: string;
+    public readonly interpreterAddress: string;
 
     /**
      * @public
      * Array of opcodes' enums and their ts functions, inputs and 
      * outputs which defines the closure for each of them
      */
-    public readonly functionPointers: opConfig[];
+    public readonly opConfigs: opConfig[];
 
     /**
      * @public
      * Functions to override the existing opcodes ts functions (closures)
      */
-    public overrideFns?: OverrideFns;
+    public readonly overrideFns?: OverrideFns;
 
     /**
      * @public
@@ -85,7 +85,7 @@ export class RainInterpreterTs {
      *
      * @param interpreterAddress - The interpreter's address
      * @param providerish - The chainId or rpc url or a valid ethersj provider
-     * @param functionPointers - Array of functions (closures) paired with opcodes' enums and their inputs and ouputs
+     * @param opConfigs - Array of functions (closures) paired with opcodes' enums and their inputs and ouputs
      * @param overrides - (optional) The functions to override the original opcode functions of interpreter-ts instance
      * @param stateConfigs - (optional) StateConfigs to add to this instance of interpreter-ts
      * @param storages - (optional) The storage obj to add to this interpreter-ts instance
@@ -93,7 +93,7 @@ export class RainInterpreterTs {
     constructor(
         interpreterAddress: string,
         providerish: Providerish,
-        functionPointers: opConfig[],
+        opConfigs: opConfig[],
         overrides?: OverrideFns,
         stateConfigs?: StateConfig[],
         storages?: kvStorage
@@ -125,13 +125,15 @@ export class RainInterpreterTs {
             }
         }
         this.interpreterAddress = interpreterAddress.toLowerCase()
-        this.functionPointers = functionPointers
+        this.opConfigs = opConfigs
         this.overrideFns = overrides;
         this.provider = getProvider(providerish)
         this.voidSigner = new VoidSigner(
             '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
             this.provider
         )
+        deepFreeze(this.opConfigs)
+        deepFreeze(this.overrideFns)
     }
 
     /**
@@ -140,36 +142,58 @@ export class RainInterpreterTs {
      * override functions provided.
      *
      * @param data - Used as any additional data that opcode functions may need.
+     * @param expIndex - Index of the expression in expression array of class
+     * @param overrideFns - The functions to override the original opcode functions of interpreter-ts instance
+     * @param blockNumber - The block number of this run
+     * @param blockTimestamp - The block timestamp of this run
      * @param entrypoint - (optional) The entrypoint of expression sources
-     * @param overrideFns - (optional) The functions to override the original opcode functions of interpreter-ts instance
      */
     private async eval(
         data: InterpreterData,
+        expIndex: number,
+        overrideFns: OverrideFns,
+        blockNumber: number,
+        blockTimestamp: number,
         entrypoint?: number,
-        overrideFns?: OverrideFns
     ): Promise<void> {
-        // keeping the original data obj to make sure reserved props don't get changed during eval
-        const _interpreterData = deepCopy(data)
-
-        // reassigning the reserved data items to change their reference to the freezed data 
-        // props and keep them intact during eval in case opcodes closures change them, some 
-        // other props such as storage and mock are excluded as they are modifiable during
-        // eval by opcodes' closures
-        data.stateConfig        = _interpreterData.stateConfig
-        data.interpreterAddress = _interpreterData.interpreterAddress
-        data.sender             = _interpreterData.sender
-        data.namespaceType      = _interpreterData.namespaceType
-        data.block              = _interpreterData.block
-        data.opConfigs          = _interpreterData.opConfigs
-        data.overrides          = _interpreterData.overrides
-        data.mode               = _interpreterData.mode
-        data.simulationCount    = _interpreterData.simulationCount
+        // keeping a copy of original immutable data props to make sure they 
+        // don't get changed during eval by re-assigning them
+        const _sender = data.sender
+        const _namespaceType = data.namespaceType
+        const _mode = data.mode
+        const _simulationCount = data.simulationCount
+        const _namespace = data.namespace
+        const _context: BigNumber[][] = []
+        for (let i = 0; i < data.context.length; i++) {
+            _context.push([...data.context[i]])
+        }
+        deepFreeze(_context)
+        const _block = { number: blockNumber, timestamp: blockTimestamp }
+        deepFreeze(_block)
 
         // setting the entrypoint
         const _entrypoint = entrypoint && entrypoint >= 0 ? entrypoint : 0
 
         // start eval
         for (let i = 0; i < this.state.sources[_entrypoint]?.length; i += 4) {
+
+            // reassigning the immutable data items to keep them intact during eval in case 
+            // opcodes closures change them, some other props such as storage and mock are 
+            // excluded as they are mutable
+            data.provider           = this.provider
+            data.voidSigner         = this.voidSigner
+            data.interpreterAddress = this.interpreterAddress
+            data.stateConfig        = this.expressions[expIndex]
+            data.opConfigs          = this.opConfigs
+            data.overrides          = overrideFns
+            data.sender             = _sender
+            data.namespaceType      = _namespaceType
+            data.mode               = _mode
+            data.simulationCount    = _simulationCount
+            data.namespace          = _namespace
+            data.context            = _context
+            data.block              = _block
+
             // re-assign stack prop in data to current stack at each step
             data.stack = [...this.state.stack]
 
@@ -179,11 +203,11 @@ export class RainInterpreterTs {
             const _operand = (this.state.sources[_entrypoint][i + 2] << 8) +
                 this.state.sources[_entrypoint][i + 3]
 
-            const _index = this.functionPointers.findIndex(v => v.enum === _op)
+            const _index = this.opConfigs.findIndex(v => v.enum === _op)
 
             if (_index > -1) {
-                const _inputs = this.functionPointers[_index].inputs(_operand)
-                const _outputs = this.functionPointers[_index].outputs(_operand)
+                const _inputs = this.opConfigs[_index].inputs(_operand)
+                const _outputs = this.opConfigs[_index].outputs(_operand)
                 const _peekUp = _inputs > 0 ? this.state.stack.splice(-_inputs) : []
                 let _result: BigNumber[]
                 if (_peekUp.length === _inputs) {
@@ -222,7 +246,7 @@ export class RainInterpreterTs {
         operand: number,
         data: InterpreterData
     ): Promise<BigNumber[]> {
-        return await this.functionPointers[opcode].functionPointer.call(
+        return await this.opConfigs[opcode].functionPointer.call(
             this,
             inputs,
             operand,
@@ -266,11 +290,7 @@ export class RainInterpreterTs {
         sender: string,
         data: RuntimeData,
         config?: RunConfig,
-    ): Promise<{ 
-        finalStack: BigNumber[];
-        blockNumber: number;
-        blockTimestamp: number; 
-    }> {
+    ): Promise<EvalResult> {
         // default expression to run is the last expression
         let _index = this.expressions.length - 1
 
@@ -304,36 +324,39 @@ export class RainInterpreterTs {
 
             // set the runtime overrides
             let overrides: OverrideFns = {}
-            if (this.overrideFns) 
-                overrides = Object.assign(overrides, this.overrideFns)
-            if (config?.overrideFunctions) 
-                overrides = Object.assign(overrides, config.overrideFunctions)
+            if (this.overrideFns) overrides = this.overrideFns
+            if (config?.overrideFunctions) overrides = config.overrideFunctions
+            deepFreeze(overrides)
 
             // construct the interpreter data obj
-            const _interpreterData: InterpreterData = Object.assign({
+            const _interpreterData: InterpreterData = {
                 provider: this.provider,
                 voidSigner: this.voidSigner,
                 stateConfig: this.expressions[_index],
-                stack: this.state.stack,
+                stack: [...this.state.stack],
                 interpreterAddress: this.interpreterAddress,
                 sender: sender.toLowerCase(),
-                namespaceType: config?.namespaceType 
-                    ? config.namespaceType
-                    : NamespaceType.public,
+                namespaceType: config?.namespaceType ?? NamespaceType.public,
                 block: { number: _number, timestamp: _timestamp },
-                opConfigs: this.functionPointers,
+                opConfigs: this.opConfigs,
                 overrides,
-                storage: {},
+                storage: this.storage,
+                mock: config?.simulationArgs?.mock,
                 mode: config?.simulationArgs?.mode,
                 simulationCount: config?.simulationArgs?.simulationCount,
                 ...data
-            })
-            _interpreterData.storage = this.storage
-            _interpreterData.mock = config?.simulationArgs?.mock
+            } 
 
             // start eval and put the results into the lastStack
             this.lastStack.splice(-this.lastStack.length)
-            await this.eval(_interpreterData, config?.entrypoint, overrides)
+            await this.eval(
+                _interpreterData, 
+                _index, 
+                overrides, 
+                _number, 
+                _timestamp, 
+                config?.entrypoint
+            )
             this.lastStack.push(
                 ...this.state.stack.splice(-this.state.stack.length)
             )
@@ -354,12 +377,13 @@ export class RainInterpreterTs {
      * @param stateConfig - StateConfig to add
      */
     public addExpression(stateConfig: StateConfig) {
-        this.expressions.push(stateConfig)
+        this.expressions.push(...[stateConfig])
+        deepFreeze(this.expressions[this.expressions.length - 1])
     }
 
     /**
      * @public
-     * Method to add key/value storage for a interpreter-ts instance
+     * Method to add key/value item to a kvStorage object
      * 
      * @param storage - The storage obj to add the kv to under sender and namespace
      * @param sender - The msg.sender address, address that calls the eval method of interpreter

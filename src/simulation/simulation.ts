@@ -3,7 +3,7 @@ import { Provider } from '@ethersproject/abstract-provider'
 import { getProvider, Providerish } from "../defaultProviders";
 import { RainInterpreterTs } from "../interpreter/RainInterpreterTs";
 import { RunConfig, RuntimeData, StateConfig } from "../interpreter/types";
-import { rainterpreterClosures } from "../rainterpreter/rainterpreterOpsConfigs";
+import { rainterpreterOpConfigs } from "../rainterpreter/rainterpreterOpConfigs";
 import { defaultOverrides } from "../rainterpreter/defaultOverrides";
 import { 
     RainterpreterSimulationArgs,
@@ -20,7 +20,6 @@ import {
     iSaleStatus,
     iVerifyStatus
 } from "./types";
-
 
 
 /**
@@ -84,7 +83,7 @@ export class Simulation {
                 _instance.interpreterInstances.push(new RainInterpreterTs(
                     configs[i].interpreterAddress,
                     _provider,
-                    rainterpreterClosures,
+                    rainterpreterOpConfigs,
                     defaultOverrides,
                     configs[i].stateConfigs,
                     configs[i].storages
