@@ -14,7 +14,6 @@ import {
     RuntimeData,
     InterpreterData,
 } from './types';
-import { rainterpreterClosures } from '../rainterpreter/rainterpreterOpsConfigs';
 
 
 
