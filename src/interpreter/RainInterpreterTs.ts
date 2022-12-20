@@ -1,6 +1,7 @@
 import { cloneDeep } from 'lodash';
-import { BigNumber, providers, VoidSigner } from 'ethers';
+import { BigNumber, VoidSigner } from 'ethers';
 import { arrayify, deepFreeze } from '../utils';
+import { Provider } from '@ethersproject/abstract-provider'
 import { getProvider, Providerish } from '../defaultProviders';
 import { 
     OverrideFns,
@@ -13,7 +14,7 @@ import {
     RuntimeData,
     InterpreterData,
 } from './types';
-import { rainterpreterClosures } from '../rainterpreter/rainterpreterOpsConfigs';
+
 
 
 /**
@@ -71,7 +72,7 @@ export class RainInterpreterTs {
      * @public
      * An ethersjs provider used to read onchain data
      */
-    public readonly provider: providers.BaseProvider;
+    public readonly provider: Provider;
 
     /**
      * @public

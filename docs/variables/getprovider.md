@@ -7,5 +7,5 @@ Function to get an ethers Provider
 <b>Signature:</b>
 
 ```typescript
-getProvider: (providerish: Providerish) => providers.BaseProvider
+getProvider: (providerish: Providerish) => Provider
 ```

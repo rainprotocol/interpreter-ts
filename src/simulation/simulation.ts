@@ -1,4 +1,5 @@
-import { BigNumber, ethers, providers } from "ethers";
+import { BigNumber, ethers } from "ethers";
+import { Provider } from '@ethersproject/abstract-provider'
 import { getProvider, Providerish } from "../defaultProviders";
 import { RainInterpreterTs } from "../interpreter/RainInterpreterTs";
 import { RunConfig, RuntimeData, StateConfig } from "../interpreter/types";
@@ -19,7 +20,7 @@ import {
     iSaleStatus,
     iVerifyStatus
 } from "./types";
-import { isBigNumberish } from "../utils";
+
 
 
 /**
@@ -47,12 +48,12 @@ export class Simulation {
      * @public
      * Ethersjs provider
      */
-    public readonly provider: providers.BaseProvider
+    public readonly provider: Provider
 
     /**
      * Constructor of the class
      */
-    private constructor(provider: providers.BaseProvider, mock?: Mock) {
+    private constructor(provider: Provider, mock?: Mock) {
         this.provider = provider
         if (mock) this.mock = mock
     }

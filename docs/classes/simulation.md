@@ -16,7 +16,7 @@ class Simulation
 |  --- | --- | --- |
 |  [interpreterInstances](./simulation.md#interpreterInstances-property) | `RainInterpreterTs[]` |  |
 |  [mock](./simulation.md#mock-property) | [Mock](../types/mock.md) |  |
-|  [provider](./simulation.md#provider-property) | `providers.BaseProvider` | Ethersjs provider |
+|  [provider](./simulation.md#provider-property) | `Provider` | Ethersjs provider |
 
 ## Static Methods
 
@@ -87,7 +87,7 @@ Ethersjs provider
 <b>Signature:</b>
 
 ```typescript
-readonly provider: providers.BaseProvider;
+readonly provider: Provider;
 ```
 
 ## Static Method Details

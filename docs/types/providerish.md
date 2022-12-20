@@ -7,5 +7,5 @@ Type needed to construct a provider, which is either: - chain id of the network 
 <b>Signature:</b>
 
 ```typescript
-type Providerish = BigNumberish | string | providers.BaseProvider;
+type Providerish = BigNumberish | string | Provider;
 ```

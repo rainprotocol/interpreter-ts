@@ -1,4 +1,5 @@
-import { BigNumber, BigNumberish, BytesLike, providers, VoidSigner } from "ethers";
+import { Provider } from '@ethersproject/abstract-provider'
+import { BigNumber, BigNumberish, BytesLike, VoidSigner } from "ethers";
 import { Mock, SimulationMode } from "../simulation/types";
 
 
@@ -79,7 +80,7 @@ export type ReservedData = {
     /**
      * The ethersjs provider of this instance
      */
-    provider: providers.BaseProvider;
+    provider: Provider;
     /**
      * The ethersjs VoidSigner of this instance
      */

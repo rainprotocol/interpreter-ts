@@ -1,5 +1,6 @@
 import { isBigNumberish } from './utils';
-import { BigNumber, BigNumberish, ethers, providers } from "ethers";
+import { BigNumber, BigNumberish, ethers } from "ethers";
+import { Provider } from '@ethersproject/abstract-provider'
 
 /**
  * @public
@@ -8,7 +9,7 @@ import { BigNumber, BigNumberish, ethers, providers } from "ethers";
  * - https(s) or websocket (ws, wss) URL of the RPC to construct the Provider from
  * - any valid ethersjs Provider
  */
-export type Providerish = BigNumberish | string | providers.BaseProvider
+export type Providerish = BigNumberish | string | Provider
 
 /**
  * @public
@@ -39,10 +40,10 @@ export const defaultProvidersUrls: Record<number, string> = {
  * @param providerish - The argument needed to construct a Provider
  * @returns An ethersjs provider
  */
-export const getProvider = (providerish: Providerish): providers.BaseProvider => {
+export const getProvider = (providerish: Providerish): Provider => {
 
     // if a provider was passed
-    if (providerish instanceof providers.BaseProvider) return providerish
+    if (providerish instanceof Provider) return providerish
 
     // if providerish is number or string number as chain id, construct provider from default urls
     if (isBigNumberish(providerish)) {

@@ -19,7 +19,7 @@ class RainInterpreterTs
 |  [interpreterAddress](./raininterpreterts.md#interpreterAddress-property) | `string` | The interpreter's address |
 |  [lastStack](./raininterpreterts.md#lastStack-property) | `BigNumber[]` | The latest result (final stack) of an evaluated expression. |
 |  [overrideFns](./raininterpreterts.md#overrideFns-property) | [OverrideFns](../types/overridefns.md) | Functions to override the existing opcodes ts functions (closures) |
-|  [provider](./raininterpreterts.md#provider-property) | `providers.BaseProvider` | An ethersjs provider used to read onchain data |
+|  [provider](./raininterpreterts.md#provider-property) | `Provider` | An ethersjs provider used to read onchain data |
 |  [state](./raininterpreterts.md#state-property) | [State](../interfaces/state.md) | The state which which is used to eval an expression. |
 |  [storage](./raininterpreterts.md#storage-property) | [kvStorage](../types/kvstorage.md) | An object to store key/value pairs of an interpreter which is mapped by each msg.sender and namespace |
 |  [voidSigner](./raininterpreterts.md#voidSigner-property) | `VoidSigner` | An etherjs VoidSigner used to read onchain data |
@@ -109,7 +109,7 @@ An ethersjs provider used to read onchain data
 <b>Signature:</b>
 
 ```typescript
-readonly provider: providers.BaseProvider;
+readonly provider: Provider;
 ```
 
 <a id="state-property"></a>
