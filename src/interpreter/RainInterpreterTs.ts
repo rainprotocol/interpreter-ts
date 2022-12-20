@@ -1,6 +1,6 @@
-import { cloneDeep } from 'lodash';
+import { arrayify } from '../utils';
+import { deepCopy } from 'ethers/lib/utils';
 import { BigNumber, VoidSigner } from 'ethers';
-import { arrayify, deepFreeze } from '../utils';
 import { Provider } from '@ethersproject/abstract-provider'
 import { getProvider, Providerish } from '../defaultProviders';
 import { 
@@ -14,7 +14,6 @@ import {
     RuntimeData,
     InterpreterData,
 } from './types';
-
 
 
 /**
@@ -150,8 +149,7 @@ export class RainInterpreterTs {
         overrideFns?: OverrideFns
     ): Promise<void> {
         // keeping the original data obj to make sure reserved props don't get changed during eval
-        const _interpreterData = cloneDeep(data)
-        deepFreeze(_interpreterData)
+        const _interpreterData = deepCopy(data)
 
         // reassigning the reserved data items to change their reference to the freezed data 
         // props and keep them intact during eval in case opcodes closures change them, some 
@@ -306,11 +304,13 @@ export class RainInterpreterTs {
 
             // set the runtime overrides
             let overrides: OverrideFns = {}
-            if (this.overrideFns) overrides = cloneDeep(this.overrideFns)
-            if (config?.overrideFunctions) overrides = cloneDeep(config.overrideFunctions)
+            if (this.overrideFns) 
+                overrides = Object.assign(overrides, this.overrideFns)
+            if (config?.overrideFunctions) 
+                overrides = Object.assign(overrides, config.overrideFunctions)
 
             // construct the interpreter data obj
-            const _interpreterData: InterpreterData = cloneDeep({
+            const _interpreterData: InterpreterData = Object.assign({
                 provider: this.provider,
                 voidSigner: this.voidSigner,
                 stateConfig: this.expressions[_index],
@@ -322,7 +322,7 @@ export class RainInterpreterTs {
                     : NamespaceType.public,
                 block: { number: _number, timestamp: _timestamp },
                 opConfigs: this.functionPointers,
-                overrides: overrides,
+                overrides,
                 storage: {},
                 mode: config?.simulationArgs?.mode,
                 simulationCount: config?.simulationArgs?.simulationCount,
@@ -423,4 +423,3 @@ export class RainInterpreterTs {
         }
     }
 }
-
