@@ -569,7 +569,6 @@ export const areEqualStateConfigs = (
  * Deeply freezes an object, all of the properties of propterties gets frozen
  * 
  * @param object - object to freez
- * @returns frozen object
  */
 export function deepFreeze(object: any) {
     if (typeof object === 'object') {
@@ -580,10 +579,13 @@ export function deepFreeze(object: any) {
         for (const name of propNames) {
             const value = object[name]
             if (value && typeof value === "object") {
-                deepFreeze(value)
+                try {
+                    deepFreeze(value)
+                }
+                catch {}
             }
         }
-        return Object.freeze(object)
+        Object.freeze(object)
     }
 }
 

@@ -1,5 +1,6 @@
+import { cloneDeep } from 'lodash';
 import { BigNumber, providers, VoidSigner } from 'ethers';
-import { arrayify, isBigNumberish } from '../utils';
+import { arrayify, deepFreeze } from '../utils';
 import { getProvider, Providerish } from '../defaultProviders';
 import { 
     OverrideFns,
@@ -147,29 +148,32 @@ export class RainInterpreterTs {
         overrideFns?: OverrideFns
     ): Promise<void> {
         // keeping the original data obj to make sure reserved props don't get changed during eval
-        const _interpreterData = Object.assign({}, data)
+        const _interpreterData = cloneDeep(data)
+        deepFreeze(_interpreterData)
+
+        // reassigning the reserved data items to change their reference to the freezed data 
+        // props and keep them intact during eval in case opcodes closures change them, some 
+        // other props such as storage and mock are excluded as they are modifiable during
+        // eval by opcodes' closures
+        data.provider           = _interpreterData.provider
+        data.voidSigner         = _interpreterData.voidSigner
+        data.stateConfig        = _interpreterData.stateConfig
+        data.interpreterAddress = _interpreterData.interpreterAddress
+        data.sender             = _interpreterData.sender
+        data.namespaceType      = _interpreterData.namespaceType
+        data.block              = _interpreterData.block
+        data.opConfigs          = _interpreterData.opConfigs
+        data.overrides          = _interpreterData.overrides
+        data.mode               = _interpreterData.mode
+        data.simulationCount    = _interpreterData.simulationCount
 
         // setting the entrypoint
         const _entrypoint = entrypoint && entrypoint >= 0 ? entrypoint : 0
 
         // start eval
         for (let i = 0; i < this.state.sources[_entrypoint].length; i += 4) {
-
-            // reassigning the reserved data items to keep them intact during eval in case opcodes closures change them
-            Object.assign(data.provider, _interpreterData.provider)
-            Object.assign(data.voidSigner, _interpreterData.voidSigner)
-            Object.assign(data.stateConfig, _interpreterData.stateConfig)
-            Object.assign(data.interpreterAddress, _interpreterData.interpreterAddress)
-            Object.assign(data.sender, _interpreterData.sender)
-            Object.assign(data.namespaceType, _interpreterData.namespaceType)
-            Object.assign(data.block, _interpreterData.block)
-            Object.assign(data.opConfigs, _interpreterData.opConfigs)
-            Object.assign(data.overrides, _interpreterData.overrides)
-            Object.assign(data.stack, this.state.stack)
-            if (!data.mode) data.mode = 'always'
-            Object.assign(data.mode, _interpreterData.mode)
-            if (!data.simulationCount) data.simulationCount = 0
-            Object.assign(data.simulationCount, _interpreterData.simulationCount)
+            // re-assign stack prop in data to current stack at each step
+            data.stack = [...this.state.stack]
 
             const _op = (this.state.sources[_entrypoint][i] << 8) +
                 this.state.sources[_entrypoint][i + 1]
@@ -293,7 +297,7 @@ export class RainInterpreterTs {
             let _number, _timestamp;
             if (!config?.block) {
                 _number = await this.provider.getBlockNumber(),
-                _timestamp = (await this.provider.getBlock(data.blockNumber)).timestamp
+                _timestamp = (await this.provider.getBlock(_number)).timestamp
             }
             else {
                 _number = config.block.number
@@ -301,31 +305,29 @@ export class RainInterpreterTs {
             }
 
             // set the runtime overrides
-            const overrides = {}
-            Object.assign(overrides, this.overrideFns)
-            if (config?.overrideFunctions) Object.assign(overrides, config.overrideFunctions)
+            let overrides: OverrideFns = {}
+            if (this.overrideFns) overrides = cloneDeep(this.overrideFns)
+            if (config?.overrideFunctions) overrides = cloneDeep(config.overrideFunctions)
 
             // construct the interpreter data obj
-            const _interpreterData: InterpreterData = Object.assign(
-                {}, {
-                    provider: this.provider,
-                    voidSigner: this.voidSigner,
-                    stateConfig: this.expressions[_index],
-                    stack: [],
-                    interpreterAddress: this.interpreterAddress,
-                    sender: sender.toLowerCase(),
-                    namespaceType: config?.namespaceType 
-                        ? config.namespaceType
-                        : NamespaceType.public,
-                    block: { number: _number, timestamp: _timestamp },
-                    opConfigs: this.functionPointers,
-                    overrides: overrides,
-                    storage: {},
-                    mode: config?.simulationArgs?.mode,
-                    simulationCount: config?.simulationArgs?.simulationCount,
-                    ...data
-                }
-            )
+            const _interpreterData: InterpreterData = cloneDeep({
+                provider: this.provider,
+                voidSigner: this.voidSigner,
+                stateConfig: this.expressions[_index],
+                stack: this.state.stack,
+                interpreterAddress: this.interpreterAddress,
+                sender: sender.toLowerCase(),
+                namespaceType: config?.namespaceType 
+                    ? config.namespaceType
+                    : NamespaceType.public,
+                block: { number: _number, timestamp: _timestamp },
+                opConfigs: this.functionPointers,
+                overrides: overrides,
+                storage: {},
+                mode: config?.simulationArgs?.mode,
+                simulationCount: config?.simulationArgs?.simulationCount,
+                ...data
+            })
             _interpreterData.storage = this.storage
             _interpreterData.mock = config?.simulationArgs?.mock
 
@@ -338,8 +340,8 @@ export class RainInterpreterTs {
 
             return {
                 finalStack: this.lastStack,
-                blockNumber: data.block.number,
-                blockTimestamp: data.block.timestamp
+                blockNumber: _number,
+                blockTimestamp: _timestamp
             }
         }
         else throw new Error('no expression exists')
@@ -421,3 +423,4 @@ export class RainInterpreterTs {
         }
     }
 }
+
