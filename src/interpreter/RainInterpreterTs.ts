@@ -14,6 +14,7 @@ import {
     RuntimeData,
     InterpreterData,
 } from './types';
+import { rainterpreterClosures } from '../rainterpreter/rainterpreterOpsConfigs';
 
 
 
@@ -157,8 +158,6 @@ export class RainInterpreterTs {
         // props and keep them intact during eval in case opcodes closures change them, some 
         // other props such as storage and mock are excluded as they are modifiable during
         // eval by opcodes' closures
-        data.provider           = _interpreterData.provider
-        data.voidSigner         = _interpreterData.voidSigner
         data.stateConfig        = _interpreterData.stateConfig
         data.interpreterAddress = _interpreterData.interpreterAddress
         data.sender             = _interpreterData.sender
@@ -425,3 +424,4 @@ export class RainInterpreterTs {
         }
     }
 }
+
