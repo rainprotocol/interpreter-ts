@@ -13,6 +13,7 @@ import {
     RuntimeData,
     InterpreterData,
 } from './types';
+import { rainterpreterClosures } from '../rainterpreter/rainterpreterOpsConfigs';
 
 
 /**
@@ -171,7 +172,7 @@ export class RainInterpreterTs {
         const _entrypoint = entrypoint && entrypoint >= 0 ? entrypoint : 0
 
         // start eval
-        for (let i = 0; i < this.state.sources[_entrypoint].length; i += 4) {
+        for (let i = 0; i < this.state.sources[_entrypoint]?.length; i += 4) {
             // re-assign stack prop in data to current stack at each step
             data.stack = [...this.state.stack]
 
@@ -423,4 +424,3 @@ export class RainInterpreterTs {
         }
     }
 }
-
