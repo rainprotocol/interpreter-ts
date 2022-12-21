@@ -1,18 +1,18 @@
 {
-    "name": "@beehiveinnovation/rain-interpreter-ts",
+    "name": "@rainprotocol/interpreter-ts",
     "version": "0.0.0",
     "description": "Rain Interpreter written in TypeScript",
-    "author": "Beehive Innovation",
+    "author": "Rain Protocol",
     "license": "CAL-1.0",
     "repository": {
         "type": "git",
-        "url": "https://github.com/beehive-innovation/rain-interpreter-ts.git"
+        "url": "https://github.com/rainprotocol/interpreter-ts.git"
     },
     "keywords": [],
     "bugs": {
-        "url": "https://github.com/beehive-innovation/rain-interpreter-ts/issues"
+        "url": "https://github.com/rainprotocol/interpreter-ts/issues"
     },
-    "homepage": "http://beehive-innovation.github.io/rain-interpreter-ts/",
+    "homepage": "http://rainprotocol.github.io/interpreter-ts/",
     "main": "dist/index.js",
     "typings": "dist/index.d.ts",
     "module": "dist/index.js",
@@ -31,7 +31,7 @@
         "test": "echo 'there is no test at the moment'",
         "lint": "eslint --fix \"src/**\" \"test/**\"",
         "docgen": "rm -rf ./docs && api-extractor run --local && api-documenter -i ./ -o ./docs",
-        "copy-contracts": "mkdir -p contracts && cp -r node_modules/@beehiveinnovation/rain-protocol/contracts . && hardhat compile --no-typechain",
+        "copy-contracts": "mkdir -p contracts && cp -r node_modules/rainprotocol/rain-protocol/contracts . && hardhat compile --no-typechain",
         "generate-typechain": "hardhat typechain && rm -rf src/typechain && mkdir -p src/typechain && cp -r typechain src"
     },
     "prettier": {
