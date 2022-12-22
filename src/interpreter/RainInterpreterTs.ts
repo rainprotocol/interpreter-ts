@@ -1,5 +1,5 @@
 import { arrayify, deepFreeze } from '../utils';
-import { BigNumber, providers, VoidSigner, Wallet } from 'ethers';
+import { BigNumber, VoidSigner } from 'ethers';
 import { Provider } from '@ethersproject/abstract-provider'
 import { getProvider, Providerish } from '../defaultProviders';
 import { 

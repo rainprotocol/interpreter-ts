@@ -1,6 +1,6 @@
 [Home](./index.md)
 
-# @beehiveinnovation/rain-interpreter-ts
+# @rainprotocol/interpreter-ts
 
 ## Classes
 

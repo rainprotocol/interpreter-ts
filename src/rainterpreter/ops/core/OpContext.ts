@@ -10,11 +10,12 @@ export const OpContext: opClosure = (
     _data: InterpreterData
 ): BigNumber[] => {
     const column = _operand >> 8
-    const row = _operand & 8
-    if (_data?.context && _data.context[column][row] !== undefined) {
-        return [
+    const row = _operand & 255
+    if (_data[column]) {
+        if (_data.context[column][row]) return [
             BigNumber.from(_data.context[column][row])
         ]
+        else throw new Error(`undefined context cell at column ${column}, row ${row}`)
     }
-    else throw new Error('undefined context')
+    else throw new Error(`column ${column} was not found in context`)
 }
