@@ -11,7 +11,7 @@ export const OpContext: opClosure = (
 ): BigNumber[] => {
     const column = _operand >> 8
     const row = _operand & 255
-    if (_data[column]) {
+    if (_data.context[column]) {
         if (_data.context[column][row]) return [
             BigNumber.from(_data.context[column][row])
         ]
