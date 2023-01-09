@@ -362,7 +362,7 @@ export class RainInterpreterTs {
             )
 
             return {
-                finalStack: this.lastStack,
+                finalStack: [...this.lastStack],
                 blockNumber: _number,
                 blockTimestamp: _timestamp
             }
